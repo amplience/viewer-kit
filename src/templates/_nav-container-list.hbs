@@ -1,0 +1,5 @@
+<ul class="list">
+    {{#each items}}
+        {{renderPartial 'nav-container-list-item' item=this templates=../templates locale =../locale}}
+    {{/each}}
+</ul>

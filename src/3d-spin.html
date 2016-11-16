@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Viewer Kit Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- build:[href] css/viewer.min.css -->
+    <link rel="stylesheet" href="../dist/css/viewer.css">
+    <!-- /build -->
+    <style>
+        .cont {
+            max-width: 587px;
+            margin: 0 auto;
+        }
+
+        @media screen and (max-width: 768px) {
+            .cont{
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="cont">
+    <div class="blocks">
+        <div class="block block-8">
+            <div class="gallery">
+                <div id="amp-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<button id="switch" style="position: fixed;right: 0;bottom: 0;z-index:100;">Switch Set</button>
+
+<!-- build:js jquery.min.js -->
+<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<!-- /build -->
+
+<!-- build:js jquery-ui-custom.js -->
+<script src="../bower_components/jquery-ui/ui/jquery.ui.core.js"></script>
+<script src="../bower_components/jquery-ui/ui/jquery.ui.widget.js"></script>
+
+<!-- /build -->
+<!-- build:js viewer.min.js -->
+<script src="../dist/viewer.js"></script>
+<!-- /build -->
+
+
+
+<script>
+    $(function () {
+        var viewer = new amp.Viewer({
+            client: 'bccdemo',
+            imageBasePath: '//i1.adis.ws/',
+            set: 'root_set',
+            locale: 'en-gb',
+            spin3d: true,
+            cacheControl: Date.now(),
+            secure: true,
+            errCallback: function(){
+                console.log('set call failed');
+            },
+            navIconsMain: {
+                next: 'icon icon-right main-next-test',
+                prev: 'icon icon-left main-prev-test'
+            },
+            navIconsNav: {
+                next: 'icon icon-right nav-next-test',
+                prev: 'icon icon-left nav-prev-test'
+            },
+            navIconsPortraitNav: {
+                next: 'icon icon-right navPortrait-next-test',
+                prev: 'icon icon-left navPortrait-next-test'
+            },
+            templates: {
+                thumb: 'w=85&h=85&qlt=70',
+                desktop: {
+                    main: 'w=1000&h=1000',
+                    mainRetina: 'w=2000&h=2000'
+                },
+                desktopFull: {
+                    main: 'w=1000',
+                    mainRetina: 'w=2000'
+                },
+                mobile: {
+                    main: 'w=500&h=500',
+                    mainRetina: 'w=1000&h=1000'
+                }
+            }
+        });
+
+
+
+    });
+</script>
+</body>
+
+</html>

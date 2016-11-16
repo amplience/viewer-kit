@@ -1,0 +1,14 @@
+node_modules
+dist
+.tmp
+.sass-cache
+bower_components
+.DS_Store
+.idea/
+.iml
+.ipr
+.iws
+*.orig
+*.compiled.js
+cucumber/failed.png
+GruntfileLocal.js

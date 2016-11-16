@@ -1,0 +1,12 @@
+<li>
+    <div class="spin-trap"></div>
+    <ul id="{{spin.name}}" class="inner-element">
+        {{#each spin.set.items}}
+            <li>
+                <img data-amp-src="{{src}}?{{../templates.main}}{{../locale.second}}"
+                    data-amp-srcset="{{src}}?{{../templates.main}}{{../locale.second}} 1x, {{src}}?{{../templates.mainRetina}}{{../locale.second}} 2x"
+                    class="amp-main-img">
+            </li>
+        {{/each}}
+    </ul>
+</li>

@@ -1,0 +1,9 @@
+{
+  "name": "viewer-kit",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "jquery-ui": "1.10.3",
+    "video.js": "~5.12.0"
+  }
+}

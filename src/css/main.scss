@@ -1,0 +1,8 @@
+@import "../../node_modules/amplience-sdk-client/css/amp";
+@import "viewer";
+@import "portrait";
+
+//Show videojs big play button on pause
+.vjs-paused.vjs-has-started .vjs-big-play-button {
+  display: block;
+}

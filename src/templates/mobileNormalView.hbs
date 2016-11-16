@@ -1,0 +1,21 @@
+<div class="mobile-normal-view">
+    <div class="main-container">
+        {{renderPartial 'main-container-list' items=items templates=templates locale=locale}}
+        <div class="icon close"></div>
+        <div class="tooltip">
+            <span class="text"></span>
+            <span class="tooltip-icon"></span>
+        </div>
+    </div>
+    <div class="nav-container">
+        <ul class="list">
+            {{#each items}}
+                <div>
+                    <div class="mobile-thumbnail"></div>
+                </div>
+            {{/each}}
+        </ul>
+        <div class="{{templates.navIcons.nav.prev}} amp-js-nav nav-container-prev"></div>
+        <div class="{{templates.navIcons.nav.next}} amp-js-nav nav-container-next"></div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+//=================   N E W   S T Y L E   =================
+@font-face {
+  font-family: 'Neuzeit Regular';
+  src: url('fonts/neuzeitgrot-webfont.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Neuzeit Light';
+  src: url('fonts/neuzeitgrot-light-webfont.woff')  format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Neuzeit Regular';
+  src: url('fonts/neuzeitgrot-bold-webfont.woff')  format('woff');
+  font-weight: bold;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// V A R I A B L E S
+$verydarkgrey: #494A4C;
+$darkergrey: #707175;
+$grey: #c1bab0;
+$lightgrey: #F2F2F2;
+
+$main-container-icon-width: 32px;
+$main-container-icon-height: $main-container-icon-width;
+
+$nav-container-icon-width: 26px;
+$nav-container-icon-height: $nav-container-icon-width;
+// V A R I A B L E S

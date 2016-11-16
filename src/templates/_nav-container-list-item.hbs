@@ -1,0 +1,15 @@
+<li>
+    {{#if item.set}}
+        <div class="tooltip {{#if item.set.items.[0].set}}spin-3d{{else}}spin{{/if}}">
+            <span class="tooltip-icon"></span>
+        </div>
+    {{/if}}
+    {{#if item.media}}
+        <div class="tooltip video">
+            <span class="tooltip-icon"></span>
+        </div>
+    {{/if}}
+    <img data-amp-src="{{item.src}}?{{templates.thumb}}{{locale.second}}"
+        alt=""
+        class="amp-main-img thumbnail">
+</li>

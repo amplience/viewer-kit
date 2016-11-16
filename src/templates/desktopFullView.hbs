@@ -1,0 +1,21 @@
+<div class="desktop-full-view">
+    <div class="main-container">
+        {{renderPartial 'main-container-list' items=items templates=templates locale=locale}}
+        <div class="icon close"></div>
+        <div class="tooltip">
+            <span class="text"></span>
+            <span class="tooltip-icon"></span>
+        </div>
+        <div class="{{templates.navIcons.main.prev}} amp-js-nav main-container-prev"></div>
+        <div class="{{templates.navIcons.main.next}} amp-js-nav main-container-next"></div>
+    </div>
+    <div class="nav-container">
+        {{renderPartial 'nav-container-list' items=items templates=templates locale=locale}}
+        <div class="{{templates.navIcons.nav.prev}} amp-js-nav nav-container-prev"></div>
+        <div class="{{templates.navIcons.nav.next}} amp-js-nav nav-container-next"></div>
+    </div>
+    <div class="panel">
+        <div class="icon plus"></div>
+        <div class="icon minus"></div>
+    </div>
+</div>
