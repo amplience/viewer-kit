@@ -133,7 +133,8 @@ module.exports = function (grunt) {
                     'dist/3d-spin.html': ['src/3d-spin.html'],
                     'dist/bridge.html': ['src/bridge.html'],
                     'dist/portrait-view.html': ['src/portrait-view.html'],
-                    'dist/demos/any-set.html': ['demos/any-set.html']
+                    'dist/demos/any-set.html': ['demos/any-set.html'],
+                    'dist/demos/outer-video.html': ['demos/outer-video.html']
                 }
             }
         },
