@@ -15,17 +15,17 @@
             self.isPortraitView = true;
         }
 
-        else if (settings.view === 'landscape'){
+        else if (settings.view === 'landscape') {
             self.isLandscapeView = true;
         }
 
-        else{
+        else {
             self.isSquareView = true;
         }
 
         self.settings = $.extend(true, {}, defaultSettings, settings);
 
-        if (self.settings.locale && self.settings.locale.length > 0){
+        if (self.settings.locale && self.settings.locale.length > 0) {
             self.settings.ampConfigs.mainContainerZoomInline.transforms.push('&locale=' + self.settings.locale);
         }
 
@@ -42,9 +42,10 @@
         self.deviceWidth = global.innerWidth;
 
         self.controller();
+        self.tags = [];
     };
 
-        Viewer.prototype.controller = function () {
+    Viewer.prototype.controller = function () {
         var self = this;
         amp.init({
             'client_id': self.settings.client,
@@ -107,14 +108,14 @@
         }
     };
 
-    Viewer.prototype.secureData = function(data){
+    Viewer.prototype.secureData = function (data) {
         var self = this;
-            if(self.settings.secure){
-                var strData = JSON.stringify(data);
-                strData = strData.replace(/http:\/\//g, 'https://');
-                data = JSON.parse(strData);
-            }
-            return data;
+        if (self.settings.secure) {
+            var strData = JSON.stringify(data);
+            strData = strData.replace(/http:\/\//g, 'https://');
+            data = JSON.parse(strData);
+        }
+        return data;
     };
 
     Viewer.prototype.getSet = function (setInfo) {
@@ -208,7 +209,7 @@
 
     Viewer.prototype.isMobile = function () {
         var self = this;
-        if(self.settings.isMobile){
+        if (self.settings.isMobile) {
             return true;
         }
         return global.innerWidth <= 768;
@@ -271,21 +272,25 @@
                 self.bindMobileNormalViewEvents();
                 break;
         }
+
+        if(self.settings.initCallback){
+            self.settings.initCallback.apply(self);
+        }
     };
 
-    Viewer.prototype.getTemplateData = function(firstLocaleParam){
+    Viewer.prototype.getTemplateData = function (firstLocaleParam) {
         var self = this;
-        var data  = {
+        var data = {
             items: self.assets,
             templates: self.getTemplates(),
             locale: {
-                first : '',
+                first: '',
                 second: ''
             },
             view: ''
         };
 
-        if(self.settings.locale && $.trim(self.settings.locale).length > 0){
+        if (self.settings.locale && $.trim(self.settings.locale).length > 0) {
             var base = 'locale=' + self.settings.locale;
             data.locale.first = '?' + base;
             data.locale.second = '&' + base;
@@ -319,18 +324,18 @@
     Viewer.prototype.applyImgTemplates = function () {
         var self = this;
         var errImgTransform = '&img404=' + self.settings.errImg + '&v=' + self.settings.cacheControl;
-        var iterate = function(obj, callback){
-            $.each(obj, function(key, val){
-                if($.type(val) === 'string'){
+        var iterate = function (obj, callback) {
+            $.each(obj, function (key, val) {
+                if ($.type(val) === 'string') {
                     callback(obj, key);
                 }
-                else{
+                else {
                     iterate(val, callback);
                 }
             });
-      };
+        };
 
-        iterate(self.settings.templates, function(obj, key){
+        iterate(self.settings.templates, function (obj, key) {
             obj[key] += errImgTransform;
         });
     };
@@ -340,14 +345,14 @@
         var thumbTemplate = self.settings.templates.thumb;
         var isPortrait = self.isPortraitView && self.currentView === self.views.desktopNormalView;
 
-        if(isPortrait){
+        if (isPortrait) {
             thumbTemplate = self.settings.templates.thumbPortrait;
         }
 
         var tts = {
-            thumb:thumbTemplate,
+            thumb: thumbTemplate,
             navIcons: {
-                nav: isPortrait ? self.settings.navIconsPortraitNav: self.settings.navIconsNav,
+                nav: isPortrait ? self.settings.navIconsPortraitNav : self.settings.navIconsNav,
                 main: self.settings.navIconsMain
             }
         };
@@ -387,7 +392,7 @@
 
         var navSettings = ampConfigs.navContainerCarousel;
 
-        if(self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView'){
+        if (self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView') {
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
@@ -402,16 +407,16 @@
 
             if (asset.hasOwnProperty('set')) {
                 var spinSettings = ampConfigs.mainContainerSpin;
-                if(self.settings.view && self.isPortraitView  && self.currentView === self.views.desktopNormalView){
+                if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     spinSettings = ampConfigs.mainContainerSpinPortrait;
                 }
 
                 var $spin = $('#' + asset.name);
                 var $spin3d = $spin.find('.amp-inner-spinset');
 
-                if($spin3d.length > 0){
+                if ($spin3d.length > 0) {
                     $spin.ampSpin(ampConfigs.mainContainerSpin3d);
-                    $spin3d.each(function(i){
+                    $spin3d.each(function (i) {
                         var spinConfig = $.extend(true, {}, ampConfigs.mainContainerSpin, {
                             play: {
                                 onVisible: false,
@@ -422,16 +427,23 @@
                     });
                 }
 
-                else{
+                else {
                     $spin.ampSpin(ampConfigs.mainContainerSpin);
                 }
 
             } else if (asset.hasOwnProperty('media')) {
                 var videoSettings = ampConfigs.mainContainerVideo;
-                if(self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView){
+                if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
                 }
-                self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
+
+                var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
+
+                self.tags.push({
+                    alias : 'videoContainer',
+                    $tag: $videoTag
+                });
+
             } else if (self.currentView !== self.views.desktopNormalView) {
                 self.mainContainerList.find('> > li:eq(' + i + ') img')
                     .ampZoomInline(ampConfigs.mainContainerZoomInline);
@@ -443,7 +455,7 @@
 
     Viewer.prototype.destroyAmpWidgets = function () {
         var self = this;
-
+        self.tags.length = 0;
         for (var i = 0; i < self.assets.length; i++) {
             var asset = self.assets[i];
 
@@ -530,7 +542,7 @@
 
         if (currentAsset.hasOwnProperty('set')) {
             var spin3D = false;
-            if(currentAsset.set.items && currentAsset.set.items.length > 0 && currentAsset.set.items[0].set){
+            if (currentAsset.set.items && currentAsset.set.items.length > 0 && currentAsset.set.items[0].set) {
                 spin3D = true;
             }
             self.initSpinTooltip(spin3D);
@@ -553,7 +565,7 @@
                     self.fadeOutTooltip();
                 } else {
                     self.tooltip.fadeOut(0);
-                    
+
                     var margin = +self.mainContainerList.css('margin-left').replace('px', '');
 
                     self.tooltipText.text(self.settings.tooltips.desktop.image.noTouch.text);
@@ -719,7 +731,7 @@
     Viewer.prototype._resize = function () {
         this.checkView();
         if (this.currentView === this.views.mobileNormalView ||
-            this.isPortraitView  && this.currentView === this.views.desktopNormalView) {
+            this.isPortraitView && this.currentView === this.views.desktopNormalView) {
             this.navigateToActiveThumb();
             this.applyNavigationStyles();
             this.checkNavContainerNavArrows();
@@ -768,7 +780,7 @@
             var state = $(e.target).ampVideo('state');
 
             if ($('.mobile-normal-view').length) {
-                if(self._resized){
+                if (self._resized) {
                     self._resized = false;
                     $(window).on('resize', self._resize.bind(self));
                 } else {
@@ -828,7 +840,7 @@
 
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                if(!self.settings.view && !self.isPortraitView){
+                if (!self.settings.view && !self.isPortraitView) {
                     ampConfigs.navContainerCarousel.width = self.settings.ampConfigs.navElementsCount.forDesktop;
                 }
                 break;
@@ -991,9 +1003,9 @@
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
             }
-            setTimeout(function(){
+            setTimeout(function () {
                 self.isZoomCycle = false;
-            },500)
+            }, 500)
         }
     };
 
@@ -1074,19 +1086,19 @@
         element.on(startEvents, function (e) {
             var $self = $(this);
 
-            if(e.which === 3){
+            if (e.which === 3) {
                 return false;
             }
 
             if ($self.data('startEvent') === 'progress') return;
             $self.data('startEvent', 'progress');
-            setTimeout(function(){
+            setTimeout(function () {
                 $self.data('startEvent', 'done');
-            },500);
+            }, 500);
 
             element.one(endEvents, function (e) {
 
-                if(e.which === 3){
+                if (e.which === 3) {
                     return false;
                 }
 
