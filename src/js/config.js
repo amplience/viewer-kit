@@ -216,7 +216,7 @@
                     pauseOnHide: true,
                     nativeControlsForTouch: false,
                     plugins: {
-                        resolutions: true
+                        videoJsResolutionSwitcher : true
                     }
                 },
                 mainContainerZoomInline: {
@@ -341,7 +341,7 @@
                 pauseOnHide: true,
                 nativeControlsForTouch: true,
                 plugins: {
-                    resolutions: true
+                    videoJsResolutionSwitcher : true
                 }
             });
         },
