@@ -241,9 +241,9 @@
                 break;
         }
 
-        self.mainContainerList = $('.main-container .list');
-        self.navContainerList = $('.nav-container .list');
-        self.tooltip = $('.main-container .tooltip');
+        self.mainContainerList = self.wrapper.find('.main-container .list');
+        self.navContainerList =  self.wrapper.find('.nav-container .list');
+        self.tooltip =  self.wrapper.find('.main-container .tooltip');
         self.tooltipText = self.tooltip.find('span.text');
 
         self.bindGenericEvents();
@@ -381,7 +381,7 @@
     Viewer.prototype.initImagesSrcset = function () {
         var self = this;
 
-        $('.main-container [data-amp-srcset]').each(function (index) {
+        self.wrapper.find('.main-container [data-amp-srcset]').each(function (index) {
             $(this).attr('srcset', $(this).attr('data-amp-srcset'));
         });
     };
@@ -779,7 +779,7 @@
         self.mainContainerList.find('.video').on('ampvideofullscreenchange', function (e, data) {
             var state = $(e.target).ampVideo('state');
 
-            if ($('.mobile-normal-view').length) {
+            if (self.wrapper.find('.mobile-normal-view').length) {
                 if (self._resized) {
                     self._resized = false;
                     $(window).on('resize', self._resize.bind(self));
@@ -802,25 +802,25 @@
         var self = this;
         var assetIndex = self.currentAssetIndex;
 
-        $('.main-container > .amp-js-nav').removeClass('disabled');
+        self.wrapper.find('.main-container > .amp-js-nav').removeClass('disabled');
 
         if (assetIndex === 0) {
-            $('.main-container-prev').addClass('disabled');
+            self.wrapper.find('.main-container-prev').addClass('disabled');
         }
         if (assetIndex === self.assets.length - 1) {
-            $('.main-container-next').addClass('disabled');
+            self.wrapper.find('.main-container-next').addClass('disabled');
         }
     };
 
     Viewer.prototype.checkNavContainerNavArrows = function () {
         var self = this;
-        $('.nav-container > .amp-js-nav').removeClass('disabled');
+        self.wrapper.find('.nav-container > .amp-js-nav').removeClass('disabled');
         var info = self.getNavigationVisibleSlidesInfo();
         if (info.isFirst) {
-            $('.nav-container-prev').addClass('disabled');
+            self.wrapper.find('.nav-container-prev').addClass('disabled');
         }
         if (info.isLast) {
-            $('.nav-container-next').addClass('disabled');
+            self.wrapper.find('.nav-container-next').addClass('disabled');
         }
     };
 
