@@ -933,7 +933,7 @@
         var elements = self.navContainerList.find('.amp-slide');
         var firstVisible = elements.length;
         for (var i = 0; i < elements.length; i++) {
-            if (elements.eq(i).hasClass('amp-visible') && i < firstVisible) {
+            if (elements.eq(i).is('.amp-visible, .amp-partially-visible') && i < firstVisible) {
                 firstVisible = i;
             }
         }
@@ -941,7 +941,7 @@
         var visibleCount = ampConfigs.navContainerCarousel.width;
 
         if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
-            visibleCount = elements.filter('.amp-visible').length;
+            visibleCount = elements.filter('.amp-visible, .amp-partially-visible').length;
         }
 
         return {
