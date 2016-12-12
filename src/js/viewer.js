@@ -428,6 +428,10 @@
                 }
 
                 else {
+                    if($spin.data()['amp-ampSpin']){
+                        $spin.ampSpin('destroy');
+                    }
+
                     $spin.ampSpin(ampConfigs.mainContainerSpin);
                 }
 
