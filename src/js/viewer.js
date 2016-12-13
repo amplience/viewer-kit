@@ -242,6 +242,11 @@
                 break;
         }
 
+        var callbacks = self.settings.callbacks;
+        if (callbacks && callbacks.after && callbacks.after[view]) {
+          callbacks.after[view]();
+        }
+
         self.mainContainerList = self.wrapper.find('.main-container .list');
         self.navContainerList =  self.wrapper.find('.nav-container .list');
         self.tooltip =  self.wrapper.find('.main-container .tooltip');
