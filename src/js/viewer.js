@@ -240,6 +240,11 @@
                 break;
         }
 
+        var callbacks = self.settings.callbacks;
+        if (callbacks && callbacks.after && callbacks.after[view]) {
+          callbacks.after[view]();
+        }
+
         self.mainContainerList = $('.main-container .list');
         self.navContainerList = $('.nav-container .list');
         self.tooltip = $('.main-container .tooltip');
