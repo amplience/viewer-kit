@@ -244,7 +244,7 @@
 
         var callbacks = self.settings.callbacks;
         if (callbacks && callbacks.after && callbacks.after[view]) {
-          callbacks.after[view]();
+          callbacks.after[view](self.wrapper);
         }
 
         self.mainContainerList = self.wrapper.find('.main-container .list');
