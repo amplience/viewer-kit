@@ -510,9 +510,11 @@
 
         self.bindIconClickEvent(self.wrapper.find('.main-container-prev'), function () {
             self.mainContainerList.ampCarousel('prev');
+            self.navContainerMove('prev');
         });
         self.bindIconClickEvent(self.wrapper.find('.main-container-next'), function () {
             self.mainContainerList.ampCarousel('next');
+            self.navContainerMove('next');
         });
 
         self.bindIconClickEvent(self.wrapper.find('.nav-container-prev'), function () {
