@@ -198,6 +198,7 @@
                     loop:false,
                     dragDistance: 200,
                     orientation: 'vert',
+                    preloadType: 'full',
                     width: 1,
                     height: 1,
                     gesture: {
