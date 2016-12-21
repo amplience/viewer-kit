@@ -430,9 +430,12 @@
                 else {
                     if($spin.data()['amp-ampSpin']){
                         $spin.ampSpin('destroy');
+                        var rotateOnLoad = ampConfigs.mainContainerSpin.play.onLoad;
+                        ampConfigs.mainContainerSpin.play.onLoad = false;
                     }
 
                     $spin.ampSpin(ampConfigs.mainContainerSpin);
+                    ampConfigs.mainContainerSpin.play.onLoad = rotateOnLoad;
                 }
 
             } else if (asset.hasOwnProperty('media')) {
