@@ -221,8 +221,9 @@
         self.renderView(self.currentView);
     };
 
-    Viewer.prototype.renderView = function (view) {
+    Viewer.prototype.renderView = function (view, spinManipulate) {
         var self = this;
+        var spinManipulate = spinManipulate || false;
         self.destroyAmpWidgets();
 
         switch (view) {
@@ -252,7 +253,7 @@
         self.bindSpinEvents();
 
         self.initImagesSrcset();
-        self.initAmpWidgets();
+        self.initAmpWidgets(spinManipulate);
 
         self.applyNavigationStyles();
 
@@ -386,7 +387,7 @@
         });
     };
 
-    Viewer.prototype.initAmpWidgets = function () {
+    Viewer.prototype.initAmpWidgets = function (spinManipulate) {
         var self = this;
         var ampConfigs = self.getAmpConfigs();
 
@@ -428,14 +429,12 @@
                 }
 
                 else {
-                    if($spin.data()['amp-ampSpin']){
-                        $spin.ampSpin('destroy');
-                        var rotateOnLoad = ampConfigs.mainContainerSpin.play.onLoad;
-                        ampConfigs.mainContainerSpin.play.onLoad = false;
+                    var mainContainerSpin = ampConfigs.mainContainerSpin;
+                    if(spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1){
+                        mainContainerSpin = $.extend(true, {}, mainContainerSpin, mainContainerSpin);
+                        mainContainerSpin.play.onLoad = false;
                     }
-
-                    $spin.ampSpin(ampConfigs.mainContainerSpin);
-                    ampConfigs.mainContainerSpin.play.onLoad = rotateOnLoad;
+                    $spin.ampSpin(mainContainerSpin);
                 }
 
             } else if (asset.hasOwnProperty('media')) {
@@ -692,7 +691,7 @@
     Viewer.prototype.bindDesktopFullViewEvents = function () {
         var self = this;
         self.bindIconClickEvent(self.wrapper.find('.main-container .close'), function () {
-            self.renderView(self.views.desktopNormalView);
+            self.renderView(self.views.desktopNormalView, true);
         });
 
         self.bindIconClickEvent(self.wrapper.find('.panel .plus'), function () {
@@ -1008,7 +1007,6 @@
             self.isZoomCycle = true;
             var slide = self.getZoomSlide();
             if (slide.length > 0) {
-                console.log('zoomCycle');
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
             }
