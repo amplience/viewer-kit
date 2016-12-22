@@ -349,7 +349,7 @@
         overwritePortraitSettings: function (settings) {
             var self = this;
             settings.ampConfigs.mainContainerCarousel.width = 0.8;
-            settings.ampConfigs.mainContainerCarousel.height = 1;
+            settings.ampConfigs.mainContainerCarousel.height = 1.2;
             settings.templates = {
                 thumb: 'w=85&h=85&qlt=70',
                 thumbPortrait: 'w=67&h=89&qlt=100',
