@@ -216,8 +216,10 @@
                     controls: true,
                     pauseOnHide: true,
                     nativeControlsForTouch: false,
-                    plugins: {
-                        videoJsResolutionSwitcher : true
+                    "plugins": {
+                        "videoJsResolutionSwitcher": {
+                            "default": "Medium"
+                        }
                     }
                 },
                 mainContainerZoomInline: {
