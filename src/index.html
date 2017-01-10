@@ -63,7 +63,7 @@
                         var videoData = null;
                         for (var x = 0; x < this.tags.length; x++) {
                             if (this.tags[x].alias === 'videoContainer') {
-                                var $tag = this.tags[0].$tag;
+                                var $tag = this.tags[x].$tag;
                                 videoData = $tag.data();
                                 var player = videoData['amp-ampVideo']._player;
                                 player.ready(function () {

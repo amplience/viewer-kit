@@ -3,15 +3,14 @@
 .amp-viewer-kit {
   .amp-portrait-view {
 
-    .amp-main-img{
-      max-height:100%;
-      width:auto;
+    .amp-main-img {
+      max-height: 100%;
+      width: auto;
     }
 
-    .amp-spin{
-      height:auto !important;
+    .amp-spin {
+      height: auto !important;
     }
-
 
     .main-container {
       margin: 0 0 0 100px;
@@ -44,8 +43,8 @@
       top: 0;
       left: 0;
 
-      &.amp-without-thumbs{
-        padding:0;
+      &.amp-without-thumbs {
+        padding: 0;
       }
 
       .icon.icon-right, .icon.icon-left {
@@ -58,13 +57,13 @@
       .icon.icon-right {
         bottom: 0;
         right: auto !important;
-        left:50% !important;
+        left: 50% !important;
         top: auto;
         background-image: url('svg/ic_stepforward_vert_24px.svg');
       }
       .icon.icon-left {
         top: 0;
-        left:50% !important;
+        left: 50% !important;
         background-image: url('svg/ic_stepbackward_vert_24px.svg');
       }
 
@@ -77,7 +76,7 @@
           width: 70px !important;
           height: 90px;
           margin: 0 10px;
-          padding:6px;
+          padding: 6px;
           &.amp-selected::after {
             content: "";
             position: absolute;
