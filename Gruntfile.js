@@ -133,7 +133,8 @@ module.exports = function (grunt) {
                     'dist/3d-spin.html': ['src/3d-spin.html'],
                     'dist/bridge.html': ['src/bridge.html'],
                     'dist/portrait-view.html': ['src/portrait-view.html'],
-                    'dist/demos/any-set.html': ['demos/any-set.html']
+                    'dist/demos/any-set.html': ['demos/any-set.html'],
+                    'dist/demos/outer-video.html': ['demos/outer-video.html']
                 }
             }
         },
@@ -142,7 +143,7 @@ module.exports = function (grunt) {
                 files: {
                     'dist/css/viewer.css': [
                         '.tmp/css/viewer.css',
-                        'bower_components/video.js/dist/video-js.css'
+                        'node_modules/amplience-sdk-client/dist/video-js/video-js.min.css',
                     ]
                 }
             },
@@ -156,7 +157,7 @@ module.exports = function (grunt) {
                         'bower_components/jquery-ui/ui/jquery.ui.widget.js'
                     ],
                     'dist/viewer.js': [
-                        'bower_components/video.js/dist/video.js',
+                        'node_modules/amplience-sdk-client/dist/video-js/video.min.js',
                         'node_modules/amplience-sdk-client/dist/amplience-sdk-client.js',
                         'node_modules/grunt-contrib-handlebars/node_modules/handlebars/dist/handlebars.runtime.min.js',
                         '.tmp/templates.js',

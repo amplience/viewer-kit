@@ -15,17 +15,17 @@
             self.isPortraitView = true;
         }
 
-        else if (settings.view === 'landscape'){
+        else if (settings.view === 'landscape') {
             self.isLandscapeView = true;
         }
 
-        else{
+        else {
             self.isSquareView = true;
         }
 
         self.settings = $.extend(true, {}, defaultSettings, settings);
 
-        if (self.settings.locale && self.settings.locale.length > 0){
+        if (self.settings.locale && self.settings.locale.length > 0) {
             self.settings.ampConfigs.mainContainerZoomInline.transforms.push('&locale=' + self.settings.locale);
         }
 
@@ -42,9 +42,10 @@
         self.deviceWidth = global.innerWidth;
 
         self.controller();
+        self.tags = [];
     };
 
-        Viewer.prototype.controller = function () {
+    Viewer.prototype.controller = function () {
         var self = this;
         amp.init({
             'client_id': self.settings.client,
@@ -107,14 +108,14 @@
         }
     };
 
-    Viewer.prototype.secureData = function(data){
+    Viewer.prototype.secureData = function (data) {
         var self = this;
-            if(self.settings.secure){
-                var strData = JSON.stringify(data);
-                strData = strData.replace(/http:\/\//g, 'https://');
-                data = JSON.parse(strData);
-            }
-            return data;
+        if (self.settings.secure) {
+            var strData = JSON.stringify(data);
+            strData = strData.replace(/http:\/\//g, 'https://');
+            data = JSON.parse(strData);
+        }
+        return data;
     };
 
     Viewer.prototype.getSet = function (setInfo) {
@@ -208,7 +209,7 @@
 
     Viewer.prototype.isMobile = function () {
         var self = this;
-        if(self.settings.isMobile){
+        if (self.settings.isMobile) {
             return true;
         }
         return global.innerWidth <= 768;
@@ -220,8 +221,9 @@
         self.renderView(self.currentView);
     };
 
-    Viewer.prototype.renderView = function (view) {
+    Viewer.prototype.renderView = function (view, spinManipulate) {
         var self = this;
+        var spinManipulate = spinManipulate || false;
         self.destroyAmpWidgets();
 
         switch (view) {
@@ -240,9 +242,9 @@
                 break;
         }
 
-        self.mainContainerList = $('.main-container .list');
-        self.navContainerList = $('.nav-container .list');
-        self.tooltip = $('.main-container .tooltip');
+        self.mainContainerList = self.wrapper.find('.main-container .list');
+        self.navContainerList =  self.wrapper.find('.nav-container .list');
+        self.tooltip =  self.wrapper.find('.main-container .tooltip');
         self.tooltipText = self.tooltip.find('span.text');
 
         self.bindGenericEvents();
@@ -251,7 +253,7 @@
         self.bindSpinEvents();
 
         self.initImagesSrcset();
-        self.initAmpWidgets();
+        self.initAmpWidgets(spinManipulate);
 
         self.applyNavigationStyles();
 
@@ -271,21 +273,25 @@
                 self.bindMobileNormalViewEvents();
                 break;
         }
+
+        if(self.settings.initCallback){
+            self.settings.initCallback.apply(self);
+        }
     };
 
-    Viewer.prototype.getTemplateData = function(firstLocaleParam){
+    Viewer.prototype.getTemplateData = function (firstLocaleParam) {
         var self = this;
-        var data  = {
+        var data = {
             items: self.assets,
             templates: self.getTemplates(),
             locale: {
-                first : '',
+                first: '',
                 second: ''
             },
             view: ''
         };
 
-        if(self.settings.locale && $.trim(self.settings.locale).length > 0){
+        if (self.settings.locale && $.trim(self.settings.locale).length > 0) {
             var base = 'locale=' + self.settings.locale;
             data.locale.first = '?' + base;
             data.locale.second = '&' + base;
@@ -319,18 +325,18 @@
     Viewer.prototype.applyImgTemplates = function () {
         var self = this;
         var errImgTransform = '&img404=' + self.settings.errImg + '&v=' + self.settings.cacheControl;
-        var iterate = function(obj, callback){
-            $.each(obj, function(key, val){
-                if($.type(val) === 'string'){
+        var iterate = function (obj, callback) {
+            $.each(obj, function (key, val) {
+                if ($.type(val) === 'string') {
                     callback(obj, key);
                 }
-                else{
+                else {
                     iterate(val, callback);
                 }
             });
-      };
+        };
 
-        iterate(self.settings.templates, function(obj, key){
+        iterate(self.settings.templates, function (obj, key) {
             obj[key] += errImgTransform;
         });
     };
@@ -340,14 +346,14 @@
         var thumbTemplate = self.settings.templates.thumb;
         var isPortrait = self.isPortraitView && self.currentView === self.views.desktopNormalView;
 
-        if(isPortrait){
+        if (isPortrait) {
             thumbTemplate = self.settings.templates.thumbPortrait;
         }
 
         var tts = {
-            thumb:thumbTemplate,
+            thumb: thumbTemplate,
             navIcons: {
-                nav: isPortrait ? self.settings.navIconsPortraitNav: self.settings.navIconsNav,
+                nav: isPortrait ? self.settings.navIconsPortraitNav : self.settings.navIconsNav,
                 main: self.settings.navIconsMain
             }
         };
@@ -376,18 +382,18 @@
     Viewer.prototype.initImagesSrcset = function () {
         var self = this;
 
-        $('.main-container [data-amp-srcset]').each(function (index) {
+        self.wrapper.find('.main-container [data-amp-srcset]').each(function (index) {
             $(this).attr('srcset', $(this).attr('data-amp-srcset'));
         });
     };
 
-    Viewer.prototype.initAmpWidgets = function () {
+    Viewer.prototype.initAmpWidgets = function (spinManipulate) {
         var self = this;
         var ampConfigs = self.getAmpConfigs();
 
         var navSettings = ampConfigs.navContainerCarousel;
 
-        if(self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView'){
+        if (self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView') {
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
@@ -402,16 +408,16 @@
 
             if (asset.hasOwnProperty('set')) {
                 var spinSettings = ampConfigs.mainContainerSpin;
-                if(self.settings.view && self.isPortraitView  && self.currentView === self.views.desktopNormalView){
+                if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     spinSettings = ampConfigs.mainContainerSpinPortrait;
                 }
 
                 var $spin = $('#' + asset.name);
                 var $spin3d = $spin.find('.amp-inner-spinset');
 
-                if($spin3d.length > 0){
+                if ($spin3d.length > 0) {
                     $spin.ampSpin(ampConfigs.mainContainerSpin3d);
-                    $spin3d.each(function(i){
+                    $spin3d.each(function (i) {
                         var spinConfig = $.extend(true, {}, ampConfigs.mainContainerSpin, {
                             play: {
                                 onVisible: false,
@@ -422,16 +428,28 @@
                     });
                 }
 
-                else{
-                    $spin.ampSpin(ampConfigs.mainContainerSpin);
+                else {
+                    var mainContainerSpin = ampConfigs.mainContainerSpin;
+                    if(spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1){
+                        mainContainerSpin = $.extend(true, {}, mainContainerSpin, mainContainerSpin);
+                        mainContainerSpin.play.onLoad = false;
+                    }
+                    $spin.ampSpin(mainContainerSpin);
                 }
 
             } else if (asset.hasOwnProperty('media')) {
                 var videoSettings = ampConfigs.mainContainerVideo;
-                if(self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView){
+                if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
                 }
-                self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
+
+                var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
+
+                self.tags.push({
+                    alias : 'videoContainer',
+                    $tag: $videoTag
+                });
+
             } else if (self.currentView !== self.views.desktopNormalView) {
                 self.mainContainerList.find('> > li:eq(' + i + ') img')
                     .ampZoomInline(ampConfigs.mainContainerZoomInline);
@@ -443,7 +461,7 @@
 
     Viewer.prototype.destroyAmpWidgets = function () {
         var self = this;
-
+        self.tags.length = 0;
         for (var i = 0; i < self.assets.length; i++) {
             var asset = self.assets[i];
 
@@ -494,9 +512,11 @@
 
         self.bindIconClickEvent(self.wrapper.find('.main-container-prev'), function () {
             self.mainContainerList.ampCarousel('prev');
+            self.navContainerMove('prev');
         });
         self.bindIconClickEvent(self.wrapper.find('.main-container-next'), function () {
             self.mainContainerList.ampCarousel('next');
+            self.navContainerMove('next');
         });
 
         self.bindIconClickEvent(self.wrapper.find('.nav-container-prev'), function () {
@@ -530,7 +550,7 @@
 
         if (currentAsset.hasOwnProperty('set')) {
             var spin3D = false;
-            if(currentAsset.set.items && currentAsset.set.items.length > 0 && currentAsset.set.items[0].set){
+            if (currentAsset.set.items && currentAsset.set.items.length > 0 && currentAsset.set.items[0].set) {
                 spin3D = true;
             }
             self.initSpinTooltip(spin3D);
@@ -553,7 +573,7 @@
                     self.fadeOutTooltip();
                 } else {
                     self.tooltip.fadeOut(0);
-                    
+
                     var margin = +self.mainContainerList.css('margin-left').replace('px', '');
 
                     self.tooltipText.text(self.settings.tooltips.desktop.image.noTouch.text);
@@ -671,7 +691,7 @@
     Viewer.prototype.bindDesktopFullViewEvents = function () {
         var self = this;
         self.bindIconClickEvent(self.wrapper.find('.main-container .close'), function () {
-            self.renderView(self.views.desktopNormalView);
+            self.renderView(self.views.desktopNormalView, true);
         });
 
         self.bindIconClickEvent(self.wrapper.find('.panel .plus'), function () {
@@ -719,7 +739,7 @@
     Viewer.prototype._resize = function () {
         this.checkView();
         if (this.currentView === this.views.mobileNormalView ||
-            this.isPortraitView  && this.currentView === this.views.desktopNormalView) {
+            this.isPortraitView && this.currentView === this.views.desktopNormalView) {
             this.navigateToActiveThumb();
             this.applyNavigationStyles();
             this.checkNavContainerNavArrows();
@@ -767,8 +787,8 @@
         self.mainContainerList.find('.video').on('ampvideofullscreenchange', function (e, data) {
             var state = $(e.target).ampVideo('state');
 
-            if ($('.mobile-normal-view').length) {
-                if(self._resized){
+            if (self.wrapper.find('.mobile-normal-view').length) {
+                if (self._resized) {
                     self._resized = false;
                     $(window).on('resize', self._resize.bind(self));
                 } else {
@@ -790,25 +810,25 @@
         var self = this;
         var assetIndex = self.currentAssetIndex;
 
-        $('.main-container > .amp-js-nav').removeClass('disabled');
+        self.wrapper.find('.main-container > .amp-js-nav').removeClass('disabled');
 
         if (assetIndex === 0) {
-            $('.main-container-prev').addClass('disabled');
+            self.wrapper.find('.main-container-prev').addClass('disabled');
         }
         if (assetIndex === self.assets.length - 1) {
-            $('.main-container-next').addClass('disabled');
+            self.wrapper.find('.main-container-next').addClass('disabled');
         }
     };
 
     Viewer.prototype.checkNavContainerNavArrows = function () {
         var self = this;
-        $('.nav-container > .amp-js-nav').removeClass('disabled');
+        self.wrapper.find('.nav-container > .amp-js-nav').removeClass('disabled');
         var info = self.getNavigationVisibleSlidesInfo();
         if (info.isFirst) {
-            $('.nav-container-prev').addClass('disabled');
+            self.wrapper.find('.nav-container-prev').addClass('disabled');
         }
         if (info.isLast) {
-            $('.nav-container-next').addClass('disabled');
+            self.wrapper.find('.nav-container-next').addClass('disabled');
         }
     };
 
@@ -828,7 +848,7 @@
 
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                if(!self.settings.view && !self.isPortraitView){
+                if (!self.settings.view && !self.isPortraitView) {
                     ampConfigs.navContainerCarousel.width = self.settings.ampConfigs.navElementsCount.forDesktop;
                 }
                 break;
@@ -921,7 +941,7 @@
         var elements = self.navContainerList.find('.amp-slide');
         var firstVisible = elements.length;
         for (var i = 0; i < elements.length; i++) {
-            if (elements.eq(i).hasClass('amp-visible') && i < firstVisible) {
+            if (elements.eq(i).is('.amp-visible, .amp-partially-visible') && i < firstVisible) {
                 firstVisible = i;
             }
         }
@@ -929,7 +949,7 @@
         var visibleCount = ampConfigs.navContainerCarousel.width;
 
         if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
-            visibleCount = elements.filter('.amp-visible').length;
+            visibleCount = elements.filter('.amp-visible, .amp-partially-visible').length;
         }
 
         return {
@@ -987,13 +1007,12 @@
             self.isZoomCycle = true;
             var slide = self.getZoomSlide();
             if (slide.length > 0) {
-                console.log('zoomCycle');
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
             }
-            setTimeout(function(){
+            setTimeout(function () {
                 self.isZoomCycle = false;
-            },500)
+            }, 500)
         }
     };
 
@@ -1074,19 +1093,19 @@
         element.on(startEvents, function (e) {
             var $self = $(this);
 
-            if(e.which === 3){
+            if (e.which === 3) {
                 return false;
             }
 
             if ($self.data('startEvent') === 'progress') return;
             $self.data('startEvent', 'progress');
-            setTimeout(function(){
+            setTimeout(function () {
                 $self.data('startEvent', 'done');
-            },500);
+            }, 500);
 
             element.one(endEvents, function (e) {
 
-                if(e.which === 3){
+                if (e.which === 3) {
                     return false;
                 }
 

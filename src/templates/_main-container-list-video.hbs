@@ -2,7 +2,7 @@
     <div id="{{video.name}}" class="inner-element video">
         <video poster="{{video.src}}?{{templates.main}}{{locale.second}}">
             {{#each video.media}}
-                <source src="{{src}}{{../locale.first}}" data-res="{{profileLabel}}" data-bitrate="{{bitrate}}" type="{{htmlCodec}}; codecs={{video.codec}}">
+                <source src="{{src}}{{../locale.first}}" data-res="{{profileLabel}}" data-bitrate="{{bitrate}}" label="{{profileLabel}}" type="{{htmlCodec}}; codecs={{video.codec}}">
             {{/each}}
         </video>
     </div>

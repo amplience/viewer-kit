@@ -5,24 +5,17 @@
     <meta charset='UTF-8'>
     <title>Viewer Kit Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- build:[href] css/viewer.min.css -->
-    <link rel="stylesheet" href="../dist/css/viewer.css">
-    <!-- /build -->
+    <link rel="stylesheet" href="css/viewer.min.css">
     <style>
         .cont {
-            max-width: 580px;
+            max-width: 587px;
             margin: 0 auto;
         }
 
         @media screen and (max-width: 768px) {
             .cont{
-                max-width: 400px;
+                max-width: 500px;
             }
-        }
-
-
-        .nav-container{
-            max-height:420px;
         }
     </style>
 </head>
@@ -39,18 +32,13 @@
 </div>
 <button id="switch" style="position: fixed;right: 0;bottom: 0;z-index:100;">Switch Set</button>
 
-<!-- build:js jquery.min.js -->
-<script src="../node_modules/jquery/dist/jquery.min.js"></script>
-<!-- /build -->
+<script src="jquery.min.js"></script>
 
-<!-- build:js jquery-ui-custom.js -->
-<script src="../bower_components/jquery-ui/ui/jquery.ui.core.js"></script>
-<script src="../bower_components/jquery-ui/ui/jquery.ui.widget.js"></script>
+<script src="jquery-ui-custom.js"></script>
 
-<!-- /build -->
-<!-- build:js viewer.min.js -->
-<script src="../dist/viewer.js"></script>
-<!-- /build -->
+<script src="amplience-ecommerce-bridge-mock.js"></script>
+
+<script src="viewer.min.js"></script>
 
 <script>
     $(function () {
@@ -58,10 +46,8 @@
             client: 'Natacha',
             imageBasePath: '//i1.adis.ws/',
             set: 'rendering_kit_square_ms',
-            locale: 'en-gb',
             cacheControl: Date.now(),
-            secure: true,
-            view: 'portrait'
+            ecommBridge: true
         });
 
         window.viewer = viewer;
@@ -70,7 +56,15 @@
         $('#switch').on('click', function(){
             if (set === 0) {
                 set = 1;
-                viewer.changeSet('123');
+                viewer.changeSet([
+                    {"type": "i", "name": "rendering_kit_square_2"},
+                    {"type": "i", "name": "rendering_kit_square_1"},
+                    {"type": "s", "name": "rendering_kit_square_ss"},
+                    {"type": "i", "name": "rendering_kit_square_3"},
+                    {"type": "i", "name": "rendering_kit_square_5"},
+                    {"type": "v", "name": "rendering_kit_v"},
+                    {"type": "i", "name": "rendering_kit_square_spin12"}
+                ]);
             } else {
                 set = 0;
                 viewer.changeSet('rendering_kit_square_ms');
