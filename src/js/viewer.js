@@ -285,7 +285,9 @@
     };
 
     Viewer.prototype.getTemplateData = function (firstLocaleParam) {
+        var basePath = document.querySelector('meta[name="base-path"]').getAttribute('content');
         var self = this;
+
         var data = {
             items: self.assets,
             templates: self.getTemplates(),
@@ -293,7 +295,8 @@
                 first: '',
                 second: ''
             },
-            view: ''
+            view: '',
+            basePath: basePath
         };
 
         if (self.settings.locale && $.trim(self.settings.locale).length > 0) {
