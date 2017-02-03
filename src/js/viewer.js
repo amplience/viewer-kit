@@ -285,7 +285,11 @@
     };
 
     Viewer.prototype.getTemplateData = function (firstLocaleParam) {
-        var basePath = document.querySelector('meta[name="base-path"]').getAttribute('content');
+        var basePath = document.querySelector('meta[name="base-path"]');
+        if (basePath) {
+          basePath = basePath.getAttribute('content');
+        }
+
         var self = this;
 
         var data = {
