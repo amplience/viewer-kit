@@ -272,7 +272,8 @@
       .amp-viewer-kit .mobile-normal-view .main-container .list .amp-slide .zoom-trap {
         position: absolute;
         width: 100%;
-        height: 100%; }
+        height: 100%;
+        cursor: pointer; }
     .amp-viewer-kit .desktop-normal-view .main-container .icon,
     .amp-viewer-kit .desktop-full-view .main-container .icon,
     .amp-viewer-kit .mobile-normal-view .main-container .icon {
