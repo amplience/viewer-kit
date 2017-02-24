@@ -242,6 +242,13 @@
                 break;
         }
 
+        if (view === self.views.desktopFullView) {
+            $('body').addClass('amp-no-scroll');
+        }
+        else {
+            $('body').removeClass('amp-no-scroll');
+        }
+
         self.mainContainerList = self.wrapper.find('.main-container .list');
         self.navContainerList =  self.wrapper.find('.nav-container .list');
         self.tooltip =  self.wrapper.find('.main-container .tooltip');

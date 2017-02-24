@@ -1,5 +1,9 @@
 @import "variables";
 
+.amp-no-scroll{
+  overflow:hidden;
+}
+
 .amp-viewer-kit {
   font-family: "Neuzeit Regular", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   position: relative;
