@@ -52,14 +52,30 @@
                         }
                     },
                     spin: {
-                        text: ''
+                        noTouch: {
+                            text: ''
+                        },
+                        touch: {
+                            text: ''
+                        }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 },
@@ -73,14 +89,30 @@
                         }
                     },
                     spin: {
-                        text: ''
+                        noTouch: {
+                            text: ''
+                        },
+                        touch: {
+                            text: ''
+                        }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 },
@@ -95,18 +127,29 @@
                     },
                     spin: {
                         noTouch: {
-                            text: 'Click to spin'
+                            text: ''
                         },
                         touch: {
-                            text: 'Tap to spin'
+                            text: ''
                         }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 }
