@@ -7210,7 +7210,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 muted: false,
                 controls: true,
                 pauseOnHide: true,
-                nativeControlsForTouch: true,
+                nativeControlsForTouch: false,
                 plugins: {
                     videoJsResolutionSwitcher : true
                 }

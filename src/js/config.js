@@ -385,7 +385,7 @@
                 muted: false,
                 controls: true,
                 pauseOnHide: true,
-                nativeControlsForTouch: true,
+                nativeControlsForTouch: false,
                 plugins: {
                     videoJsResolutionSwitcher : true
                 }
