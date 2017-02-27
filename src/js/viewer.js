@@ -448,6 +448,7 @@
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
+                    videoSettings.nativeControlsForTouch = false;
                 }
 
                 var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);

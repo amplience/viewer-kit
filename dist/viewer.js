@@ -7210,7 +7210,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 muted: false,
                 controls: true,
                 pauseOnHide: true,
-                nativeControlsForTouch: false,
+                nativeControlsForTouch: true,
                 plugins: {
                     videoJsResolutionSwitcher : true
                 }
@@ -7692,6 +7692,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
+                    videoSettings.nativeControlsForTouch = false;
                 }
 
                 var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
