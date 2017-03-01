@@ -49,14 +49,20 @@
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: ''
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
 
                     },
@@ -82,18 +88,24 @@
                 desktopFull: {
                     image: {
                         noTouch: {
-                            text: ''
+                            text: 'Click to zoom'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: ''
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
 
                     },
@@ -123,14 +135,20 @@
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: ''
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
 
                     },
@@ -247,7 +265,7 @@
                     gesture: {
                         enabled: true,
                         fingers: 1
-                    },
+                    }
                 },
                 mainContainerVideo: {
                     width: 1,

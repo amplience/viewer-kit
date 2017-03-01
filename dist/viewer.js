@@ -6874,14 +6874,20 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: ''
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
 
                     },
@@ -6907,18 +6913,24 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 desktopFull: {
                     image: {
                         noTouch: {
-                            text: ''
+                            text: 'Click to zoom'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: ''
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
 
                     },
@@ -6948,14 +6960,20 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: ''
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
 
                     },
@@ -7072,7 +7090,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     gesture: {
                         enabled: true,
                         fingers: 1
-                    },
+                    }
                 },
                 mainContainerVideo: {
                     width: 1,
@@ -7825,13 +7843,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.initImageTooltip = function () {
         var self = this;
+        var tapText = '';
         self.tooltip.attr({class: 'tooltip image'});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
                 if (self.canTouch) {
+                    tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.image.doubleTouch.text :
+                        self.settings.tooltips.desktop.image.touch.text;
                     self.tooltip.css({position: 'absolute'});
-                    self.tooltipText.text(self.settings.tooltips.desktop.image.touch.text);
+                    self.tooltipText.text(tapText);
                     self.fadeOutTooltip();
                 } else {
                     self.tooltip.fadeOut(0);
@@ -7854,11 +7874,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 }
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.image.touch.text : self.settings.tooltips.mobile.image.noTouch.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.image.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.image.noTouch.text);
                 self.tooltip.fadeOut(0);
                 break;
             case self.views.mobileNormalView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.image.touch.text : self.settings.tooltips.mobile.image.noTouch.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.image.doubleTouch.text :
+                    self.settings.tooltips.mobile.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.image.noTouch.text);
                 self.fadeOutTooltip();
                 break;
         }
@@ -7866,18 +7890,24 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.initSpinTooltip = function (spin3D) {
         var self = this;
+        var tapText = '';
         var spinClass = spin3D ? 'spin-3d' : 'spin';
         self.tooltip.attr({class: 'tooltip ' + spinClass});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktop.spin.touch.text : self.settings.tooltips.desktop.spin.noTouch.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.spin.doubleTouch.text :
+                    self.settings.tooltips.desktop.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktop.spin.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktopFull.spin.touch.text : self.settings.tooltips.desktopFull.spin.noTouch.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.spin.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.spin.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.spin.touch.text : self.settings.tooltips.mobile.spin.noTouch.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.spin.doubleTouch.text :
+                    self.settings.tooltips.mobile.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.spin.noTouch.text);
                 break;
         }
 
@@ -8335,7 +8365,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         // Need to remove mouse events on touch devices since it fires callbacks twice on tap
         var startEvents = (self.canTouch ? '' : 'mousedown ');
         var endEvents = (self.canTouch ? '' : 'mouseup ');
-
         if (this.settings.zoomInlineDoubleTap) {
             startEvents += self.doubleTapEvent(element);
             endEvents += 'doubletapend';

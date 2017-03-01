@@ -46,7 +46,6 @@
             locale: 'en-gb',
             cacheControl: Date.now(),
             secure: true,
-            zoomInlineDoubleTap: true,
             doubleTapTime: 250,
             initCallback: function () {
                 if (this.currentView === "desktopFullView") {
@@ -92,63 +91,7 @@
                     top: -39
                 },
                 displayTime: 3000,
-                desktop: {
-                    image: {
-                        noTouch: {
-                            text: 'Click to zoom'
-                        },
-                        touch: {
-                            text: 'Double tap to zoom'
-                        }
-                    },
-                    spin: {
-                        noTouch: {
-                            text: 'Drag to rotate'
-                        },
-                        touch: {
-                            text: 'Double tap to rotate'
-                        }
 
-                    }
-                },
-                desktopFull: {
-                    image: {
-                        noTouch: {
-                            text: 'Click to zoom'
-                        },
-                        touch: {
-                            text: 'Double tap to zoom'
-                        }
-                    },
-                    spin: {
-                        noTouch: {
-                            text: 'Drag to rotate'
-                        },
-                        touch: {
-                            text: 'Double tap to rotate'
-                        }
-
-                    }
-                },
-                mobile: {
-                    image: {
-                        noTouch: {
-                            text: 'Click to zoom'
-                        },
-                        touch: {
-                            text: 'Double tap to zoom'
-                        }
-                    },
-                    spin: {
-                        noTouch: {
-                            text: 'Drag to rotate'
-                        },
-                        touch: {
-                            text: 'Double tap to rotate'
-                        }
-
-                    }
-                }
             }
         });
 
