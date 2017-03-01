@@ -7095,6 +7095,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 mainContainerVideo: {
                     width: 1,
                     height: 1,
+                    center: true,
                     responsive: true,
                     autoplay: false,
                     loop: false,
