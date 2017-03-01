@@ -242,9 +242,16 @@
                 break;
         }
 
+        if (view === self.views.desktopFullView) {
+            $('body').addClass('amp-no-scroll');
+        }
+        else {
+            $('body').removeClass('amp-no-scroll');
+        }
+
         self.mainContainerList = self.wrapper.find('.main-container .list');
-        self.navContainerList =  self.wrapper.find('.nav-container .list');
-        self.tooltip =  self.wrapper.find('.main-container .tooltip');
+        self.navContainerList = self.wrapper.find('.nav-container .list');
+        self.tooltip = self.wrapper.find('.main-container .tooltip');
         self.tooltipText = self.tooltip.find('span.text');
 
         self.bindGenericEvents();
@@ -274,7 +281,7 @@
                 break;
         }
 
-        if(self.settings.initCallback){
+        if (self.settings.initCallback) {
             self.settings.initCallback.apply(self);
         }
     };
@@ -430,7 +437,7 @@
 
                 else {
                     var mainContainerSpin = ampConfigs.mainContainerSpin;
-                    if(spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1){
+                    if (spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1) {
                         mainContainerSpin = $.extend(true, {}, mainContainerSpin, mainContainerSpin);
                         mainContainerSpin.play.onLoad = false;
                     }
@@ -441,12 +448,23 @@
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
+                    videoSettings.nativeControlsForTouch = false;
                 }
 
                 var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
 
+                $videoTag.find('video').on('touchstart', function () {
+                    var state = $videoTag.ampVideo('state');
+                    if (state == 2) {
+                        $videoTag.ampVideo('play');
+                    }
+                    else {
+                        $videoTag.ampVideo('pause');
+                    }
+                });
+
                 self.tags.push({
-                    alias : 'videoContainer',
+                    alias: 'videoContainer',
                     $tag: $videoTag
                 });
 
@@ -563,13 +581,15 @@
 
     Viewer.prototype.initImageTooltip = function () {
         var self = this;
+        var tapText = '';
         self.tooltip.attr({class: 'tooltip image'});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
                 if (self.canTouch) {
+                    tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.image.doubleTouch.text :
+                        self.settings.tooltips.desktop.image.touch.text;
                     self.tooltip.css({position: 'absolute'});
-                    self.tooltipText.text(self.settings.tooltips.desktop.image.touch.text);
+                    self.tooltipText.text(tapText);
                     self.fadeOutTooltip();
                 } else {
                     self.tooltip.fadeOut(0);
@@ -592,14 +612,15 @@
                 }
                 break;
             case self.views.desktopFullView:
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.image.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.image.noTouch.text);
                 self.tooltip.fadeOut(0);
                 break;
             case self.views.mobileNormalView:
-                if (self.canTouch) {
-                    self.tooltipText.text(self.settings.tooltips.mobile.image.touch.text);
-                } else {
-                    self.tooltipText.text(self.settings.tooltips.mobile.image.noTouch.text);
-                }
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.image.doubleTouch.text :
+                    self.settings.tooltips.mobile.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.image.noTouch.text);
                 self.fadeOutTooltip();
                 break;
         }
@@ -607,22 +628,24 @@
 
     Viewer.prototype.initSpinTooltip = function (spin3D) {
         var self = this;
+        var tapText = '';
         var spinClass = spin3D ? 'spin-3d' : 'spin';
         self.tooltip.attr({class: 'tooltip ' + spinClass});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.settings.tooltips.desktop.spin.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.spin.doubleTouch.text :
+                    self.settings.tooltips.desktop.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktop.spin.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.settings.tooltips.desktopFull.spin.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.spin.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.spin.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                if (self.canTouch) {
-                    self.tooltipText.text(self.settings.tooltips.mobile.spin.touch.text);
-                } else {
-                    self.tooltipText.text(self.settings.tooltips.mobile.spin.noTouch.text);
-                }
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.spin.doubleTouch.text :
+                    self.settings.tooltips.mobile.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.spin.noTouch.text);
                 break;
         }
 
@@ -636,13 +659,13 @@
 
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.settings.tooltips.desktop.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktop.video.play.touch.text : self.settings.tooltips.desktop.video.play.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.settings.tooltips.desktopFull.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktopFull.video.play.touch.text : self.settings.tooltips.desktopFull.video.play.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                self.tooltipText.text(self.settings.tooltips.mobile.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.video.play.touch.text : self.settings.tooltips.mobile.video.play.noTouch.text);
                 break;
         }
 
@@ -1080,7 +1103,6 @@
         // Need to remove mouse events on touch devices since it fires callbacks twice on tap
         var startEvents = (self.canTouch ? '' : 'mousedown ');
         var endEvents = (self.canTouch ? '' : 'mouseup ');
-
         if (this.settings.zoomInlineDoubleTap) {
             startEvents += self.doubleTapEvent(element);
             endEvents += 'doubletapend';
