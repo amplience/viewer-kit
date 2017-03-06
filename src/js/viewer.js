@@ -739,7 +739,9 @@
         var self = this;
         var spinTraps = self.mainContainerList.find('.spin-trap');
         var spins = self.mainContainerList.find('.spin-trap + ul');
-
+        spinTraps.each(function(ix,val) {
+            $(val).parent().on('touchstart', self._prevent);
+        });
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
                 $(this).addClass('active-for-scrolling');
@@ -1137,7 +1139,6 @@
                     val.off('touchmove', self._prevent);
                 });
                 self._preventElements = [];
-                self._preventElements.push(element);
                 element.on('touchmove', self._prevent);
                 self._preventElements.push(element);
 
