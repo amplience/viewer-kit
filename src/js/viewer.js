@@ -1008,6 +1008,10 @@
 
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
+        $.each(self._preventElements, function(ix,val) {
+            val.off('touchmove', self._prevent);
+        });
+        self._preventElements = [];
         var slide = self.getZoomSlide();
         if (slide.length > 0) {
             slide.ampZoomInline('zoomOutFull');
@@ -1111,10 +1115,8 @@
             endEvents += 'touchend';
         }
 
-
         element.on(startEvents, function (e) {
             var $self = $(this);
-
             if (e.which === 3) {
                 return false;
             }
@@ -1130,6 +1132,14 @@
                 if (e.which === 3) {
                     return false;
                 }
+
+                $.each(self._preventElements, function(ix,val) {
+                    val.off('touchmove', self._prevent);
+                });
+                self._preventElements = [];
+                self._preventElements.push(element);
+                element.on('touchmove', self._prevent);
+                self._preventElements.push(element);
 
                 var target = this;
                 var coords = getPageCoords(e);
@@ -1235,6 +1245,10 @@
             self.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
         }
     };
+    Viewer.prototype._prevent = function(e) {
+        e.preventDefault();
+    };
+    Viewer.prototype._preventElements = [];
 
     global.amp.Viewer = Viewer;
 }(window, jQuery));
