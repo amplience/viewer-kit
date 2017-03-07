@@ -5958,7 +5958,7 @@ amp.stats.event = function(dom,type,event,value){
             var self = this,
                 children = this._children = this.element.children(),
                 count = this._count = this.element.children().length;
-            this.isWebkit = /Chrome|Safari/.test(navigator.userAgent);
+            this.isWebkit = /Chrome|Safari/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
             this.$document = $(document);
             this.options.friction = Math.min(this.options.friction,0.999);
             this.options.friction = Math.max(this.options.friction,0);
@@ -6062,18 +6062,21 @@ amp.stats.event = function(dom,type,event,value){
             return false;
         },
         visible:function(visible) {
-            if (visible != this._visible) {
-                this._super(visible);
+            var self = this;
+            if (visible != self._visible) {
+                self._super(visible);
                 if(visible) {
-                    if(this.options.preload=='visible') {
-                        this._startPreload();
+                    if(self.options.preload=='visible') {
+                        self._startPreload();
                     }
 
                     if(this.options.preload == 'none'){
-                        this._startPreload(this._index);
+                        self._startPreload(self._index);
                     }
-                    if(this.options.play.onVisible && this._loaded) {
-                        this.playRepeat(this.options.play.repeat);
+                    if(self.options.play.onVisible && self._loaded) {
+                        setTimeout(function() {
+                            self.playRepeat(self.options.play.repeat);
+                        }, 600);
                     }
                 }
             }
