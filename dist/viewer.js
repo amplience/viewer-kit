@@ -7095,6 +7095,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 mainContainerVideo: {
                     width: 1,
                     height: 1,
+                    center: true,
                     responsive: true,
                     autoplay: false,
                     loop: false,
@@ -7736,6 +7737,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             }
         }
 
+        var mainHeight = self.mainContainerList.height() + 'px';
+
+        self.mainContainerList.find('.zoom-trap').css({
+            'line-height': mainHeight
+        });
+        self.mainContainerList.find('.amp-spin').css({
+            'line-height': mainHeight
+        });
+
         self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
     };
 
@@ -8001,7 +8011,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         var self = this;
         var spinTraps = self.mainContainerList.find('.spin-trap');
         var spins = self.mainContainerList.find('.spin-trap + ul');
-
+        spinTraps.each(function(ix,val) {
+            $(val).parent().on('touchstart', self._prevent);
+        });
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
                 $(this).addClass('active-for-scrolling');
@@ -8270,6 +8282,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
+        $.each(self._preventElements, function(ix,val) {
+            val.off('touchmove', self._prevent);
+        });
+        self._preventElements = [];
         var slide = self.getZoomSlide();
         if (slide.length > 0) {
             slide.ampZoomInline('zoomOutFull');
@@ -8373,10 +8389,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             endEvents += 'touchend';
         }
 
-
         element.on(startEvents, function (e) {
             var $self = $(this);
-
             if (e.which === 3) {
                 return false;
             }
@@ -8392,6 +8406,13 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 if (e.which === 3) {
                     return false;
                 }
+
+                $.each(self._preventElements, function(ix,val) {
+                    val.off('touchmove', self._prevent);
+                });
+                self._preventElements = [];
+                element.on('touchmove', self._prevent);
+                self._preventElements.push(element);
 
                 var target = this;
                 var coords = getPageCoords(e);
@@ -8497,6 +8518,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
         }
     };
+    Viewer.prototype._prevent = function(e) {
+        e.preventDefault();
+    };
+    Viewer.prototype._preventElements = [];
 
     global.amp.Viewer = Viewer;
 }(window, jQuery));
