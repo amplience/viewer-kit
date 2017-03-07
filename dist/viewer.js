@@ -7737,6 +7737,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             }
         }
 
+        var mainHeight = self.mainContainerList.height() + 'px';
+
+        self.mainContainerList.find('.zoom-trap').css({
+            'line-height': mainHeight
+        });
+        self.mainContainerList.find('.amp-spin').css({
+            'line-height': mainHeight
+        });
+
         self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
     };
 

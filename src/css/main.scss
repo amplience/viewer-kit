@@ -6,3 +6,8 @@
 .vjs-paused.vjs-has-started .vjs-big-play-button {
   display: block;
 }
+.amp-viewer-kit {
+  .amp-spin {
+    height: auto !important;
+  }
+}
