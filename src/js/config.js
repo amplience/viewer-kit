@@ -250,7 +250,8 @@
                     play: {
                         onLoad: true,
                         onVisible: true,
-                        repeat: 1
+                        repeat: 1,
+                        delay: 600
                     },
                     lazyLoad: false,
                     orientation: 'horz'
