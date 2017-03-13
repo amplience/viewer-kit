@@ -267,7 +267,6 @@
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
-        self.checkMainContainerSlidesVisibility(true);
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -794,7 +793,6 @@
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
-            self.checkMainContainerSlidesVisibility(false);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -1234,26 +1232,6 @@
 
         leftArrow.css('left', shift);
         rightArrow.css('right', shift);
-    };
-
-    Viewer.prototype.checkMainContainerSlidesVisibility = function (hideImmediately) {
-        var self = this;
-        clearTimeout(self.hideSlidesTimeout);
-        self.mainContainerList.find('.amp-slide').css('opacity', 1);
-
-        if (hideImmediately) {
-            hideSlides();
-        } else {
-            var ampConfigs = self.getAmpConfigs();
-
-            self.hideSlidesTimeout = setTimeout(function () {
-                hideSlides();
-            }, ampConfigs.mainContainerCarousel.animDuration);
-        }
-
-        function hideSlides() {
-            self.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
-        }
     };
     Viewer.prototype._prevent = function(e) {
         e.preventDefault();
