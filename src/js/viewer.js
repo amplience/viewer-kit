@@ -689,10 +689,20 @@
         }, self.settings.tooltips.displayTime);
     };
 
-    Viewer.prototype.doubleTapEvent = function (element) {
+    Viewer.prototype.doubleTapEvent = function ($element) {
         var lastTapTime = 0;
+        var lastTapTime2 = 0;
         var self = this;
-        element.on('touchend', function () {
+        $element.on('touchstart', function(e){
+            var currentTime = new Date();
+            var tapTime = currentTime - lastTapTime2;
+            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+                e.preventDefault();
+            }
+
+            lastTapTime2 = currentTime;
+        });
+        $element.on('touchend', function () {
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime;
             if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
