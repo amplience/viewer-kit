@@ -2544,7 +2544,8 @@ amp.stats.event = function(dom,type,event,value){
             states : {
                 visible : 'amp-visible',
                 partiallyVisible: 'amp-partially-visible'
-            }
+            },
+            animationEndCallback: function(){}
         },
         _getCreateOptions:function(){
             var attributes = this.element.data().ampCarousel;
@@ -2594,7 +2595,7 @@ amp.stats.event = function(dom,type,event,value){
                     var move = function(evt) {
                         self._movedCounter +=1;
                         if(self._movedCounter >= 7){
-                        self.moved = true;
+                            self.moved = true;
                         }
                     };
                     var activate = (function(_i){
@@ -2622,7 +2623,7 @@ amp.stats.event = function(dom,type,event,value){
             if(this.options.responsive){
                 $(window).bind("resize", function(_self) {
                     return function() {
-                       return setTimeout($.proxy(_self.redraw,_self),1);
+                        return setTimeout($.proxy(_self.redraw,_self),1);
                     }
                 }(self));
             }
@@ -2710,37 +2711,37 @@ amp.stats.event = function(dom,type,event,value){
         },
         _direction : function(index) {
 
-          if(!this.options.loop) {
-              return index>this._index;
-          }
-          var forw=0, back=0;
-          this._index = Math.min(this._index,this.count);
-           var oIndex =  this._index;
-          while(oIndex!=index) {
-              if(oIndex>this.count){
-                oIndex = 1;
-                continue;
-              } else {
-                oIndex++;
-              }
-              forw++
-          }
-          oIndex = this._index;
-          while(oIndex!=index) {
-              if(oIndex<1) {
-                  oIndex = this.count;
-                  continue;
-              } else {
-                oIndex--;
-              }
+            if(!this.options.loop) {
+                return index>this._index;
+            }
+            var forw=0, back=0;
+            this._index = Math.min(this._index,this.count);
+            var oIndex =  this._index;
+            while(oIndex!=index) {
+                if(oIndex>this.count){
+                    oIndex = 1;
+                    continue;
+                } else {
+                    oIndex++;
+                }
+                forw++
+            }
+            oIndex = this._index;
+            while(oIndex!=index) {
+                if(oIndex<1) {
+                    oIndex = this.count;
+                    continue;
+                } else {
+                    oIndex--;
+                }
                 back++;
-          }
-          if(this.options.preferForward) {
-              if(forw>1 && back >1) {
-                  return true;
-              }
-          }
-          return forw<=back;
+            }
+            if(this.options.preferForward) {
+                if(forw>1 && back >1) {
+                    return true;
+                }
+            }
+            return forw<=back;
         },
         _loopIndex : function(dir,start,count) {
             var inc = dir ? 1 : -1;
@@ -2850,10 +2851,10 @@ amp.stats.event = function(dom,type,event,value){
 
             for (var i=0; i<count; i++) {
 
-               var eindex = dir? index+i:index-i;
-               if (eindex > this.count) {
-                   eindex = 1;
-               }
+                var eindex = dir? index+i:index-i;
+                if (eindex > this.count) {
+                    eindex = 1;
+                }
                 if(eindex < 1) {
                     eindex = this.count;
                 }
@@ -2906,6 +2907,7 @@ amp.stats.event = function(dom,type,event,value){
                     $container.css(self._canCSS3.transitionDuration,'');
                     if(onDone)
                         onDone();
+                    self.options.animationEndCallback();
                 });
             } else {
                 var anim = {};
@@ -2914,7 +2916,11 @@ amp.stats.event = function(dom,type,event,value){
                 } else {
                     anim.top = howMuch+'px';
                 }
-                $container.animate(anim, self.options.animDuration,'swing',onDone);
+                $container.animate(anim, self.options.animDuration,'swing',function(){
+                    if(onDone)
+                        onDone();
+                    self.options.animationEndCallback();
+                });
             }
 
         },
@@ -6874,38 +6880,82 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
-                        text: ''
+                        noTouch: {
+                            text: 'Drag to rotate'
+                        },
+                        touch: {
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
+                        }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 },
                 desktopFull: {
                     image: {
                         noTouch: {
-                            text: ''
+                            text: 'Click to zoom'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
-                        text: ''
+                        noTouch: {
+                            text: 'Drag to rotate'
+                        },
+                        touch: {
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
+                        }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 },
@@ -6916,22 +6966,39 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: 'Click to spin'
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: 'Tap to spin'
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 }
@@ -7014,7 +7081,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     play: {
                         onLoad: true,
                         onVisible: true,
-                        repeat: 1
+                        repeat: 1,
+                        delay: 600
                     },
                     lazyLoad: false,
                     orientation: 'horz'
@@ -7029,11 +7097,12 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     gesture: {
                         enabled: true,
                         fingers: 1
-                    },
+                    }
                 },
                 mainContainerVideo: {
                     width: 1,
                     height: 1,
+                    center: true,
                     responsive: true,
                     autoplay: false,
                     loop: false,
@@ -7443,9 +7512,16 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 break;
         }
 
+        if (view === self.views.desktopFullView) {
+            $('body').addClass('amp-no-scroll');
+        }
+        else {
+            $('body').removeClass('amp-no-scroll');
+        }
+
         self.mainContainerList = self.wrapper.find('.main-container .list');
-        self.navContainerList =  self.wrapper.find('.nav-container .list');
-        self.tooltip =  self.wrapper.find('.main-container .tooltip');
+        self.navContainerList = self.wrapper.find('.nav-container .list');
+        self.tooltip = self.wrapper.find('.main-container .tooltip');
         self.tooltipText = self.tooltip.find('span.text');
 
         self.bindGenericEvents();
@@ -7461,7 +7537,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
-        self.checkMainContainerSlidesVisibility(true);
+        self.toggleSlidesOpacity();
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -7475,7 +7551,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 break;
         }
 
-        if(self.settings.initCallback){
+        if (self.settings.initCallback) {
             self.settings.initCallback.apply(self);
         }
     };
@@ -7598,6 +7674,12 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
+        ampConfigs.mainContainerCarousel.animationEndCallback = function(){
+            self.toggleSlidesOpacity();
+            console.log('test');
+
+        }
+
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
         self.mainContainerList.ampNav(ampConfigs.mainContainerNav);
 
@@ -7631,7 +7713,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
                 else {
                     var mainContainerSpin = ampConfigs.mainContainerSpin;
-                    if(spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1){
+                    if (spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1) {
                         mainContainerSpin = $.extend(true, {}, mainContainerSpin, mainContainerSpin);
                         mainContainerSpin.play.onLoad = false;
                     }
@@ -7642,12 +7724,23 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
+                    videoSettings.nativeControlsForTouch = false;
                 }
 
                 var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
 
+                $videoTag.find('video').on('touchstart', function () {
+                    var state = $videoTag.ampVideo('state');
+                    if (state == 2) {
+                        $videoTag.ampVideo('play');
+                    }
+                    else {
+                        $videoTag.ampVideo('pause');
+                    }
+                });
+
                 self.tags.push({
-                    alias : 'videoContainer',
+                    alias: 'videoContainer',
                     $tag: $videoTag
                 });
 
@@ -7656,6 +7749,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     .ampZoomInline(ampConfigs.mainContainerZoomInline);
             }
         }
+
+        var mainHeight = self.mainContainerList.height() + 'px';
+
+        self.mainContainerList.find('.zoom-trap').css({
+            'line-height': mainHeight
+        });
+        self.mainContainerList.find('.amp-spin').css({
+            'line-height': mainHeight
+        });
 
         self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
     };
@@ -7764,13 +7866,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.initImageTooltip = function () {
         var self = this;
+        var tapText = '';
         self.tooltip.attr({class: 'tooltip image'});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
                 if (self.canTouch) {
+                    tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.image.doubleTouch.text :
+                        self.settings.tooltips.desktop.image.touch.text;
                     self.tooltip.css({position: 'absolute'});
-                    self.tooltipText.text(self.settings.tooltips.desktop.image.touch.text);
+                    self.tooltipText.text(tapText);
                     self.fadeOutTooltip();
                 } else {
                     self.tooltip.fadeOut(0);
@@ -7793,14 +7897,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 }
                 break;
             case self.views.desktopFullView:
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.image.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.image.noTouch.text);
                 self.tooltip.fadeOut(0);
                 break;
             case self.views.mobileNormalView:
-                if (self.canTouch) {
-                    self.tooltipText.text(self.settings.tooltips.mobile.image.touch.text);
-                } else {
-                    self.tooltipText.text(self.settings.tooltips.mobile.image.noTouch.text);
-                }
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.image.doubleTouch.text :
+                    self.settings.tooltips.mobile.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.image.noTouch.text);
                 self.fadeOutTooltip();
                 break;
         }
@@ -7808,22 +7913,24 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.initSpinTooltip = function (spin3D) {
         var self = this;
+        var tapText = '';
         var spinClass = spin3D ? 'spin-3d' : 'spin';
         self.tooltip.attr({class: 'tooltip ' + spinClass});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.settings.tooltips.desktop.spin.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.spin.doubleTouch.text :
+                    self.settings.tooltips.desktop.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktop.spin.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.settings.tooltips.desktopFull.spin.text);
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.spin.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.spin.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                if (self.canTouch) {
-                    self.tooltipText.text(self.settings.tooltips.mobile.spin.touch.text);
-                } else {
-                    self.tooltipText.text(self.settings.tooltips.mobile.spin.noTouch.text);
-                }
+                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.spin.doubleTouch.text :
+                    self.settings.tooltips.mobile.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.spin.noTouch.text);
                 break;
         }
 
@@ -7837,13 +7944,13 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.settings.tooltips.desktop.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktop.video.play.touch.text : self.settings.tooltips.desktop.video.play.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.settings.tooltips.desktopFull.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktopFull.video.play.touch.text : self.settings.tooltips.desktopFull.video.play.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                self.tooltipText.text(self.settings.tooltips.mobile.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.video.play.touch.text : self.settings.tooltips.mobile.video.play.noTouch.text);
                 break;
         }
 
@@ -7859,10 +7966,20 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         }, self.settings.tooltips.displayTime);
     };
 
-    Viewer.prototype.doubleTapEvent = function (element) {
+    Viewer.prototype.doubleTapEvent = function ($element) {
         var lastTapTime = 0;
+        var lastTapTime2 = 0;
         var self = this;
-        element.on('touchend', function () {
+        $element.on('touchstart', function(e){
+            var currentTime = new Date();
+            var tapTime = currentTime - lastTapTime2;
+            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+                e.preventDefault();
+            }
+
+            lastTapTime2 = currentTime;
+        });
+        $element.on('touchend', function () {
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime;
             if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
@@ -7917,7 +8034,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         var self = this;
         var spinTraps = self.mainContainerList.find('.spin-trap');
         var spins = self.mainContainerList.find('.spin-trap + ul');
-
+        spinTraps.each(function(ix,val) {
+            $(val).parent().on('touchstart', self._prevent);
+        });
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
                 $(this).addClass('active-for-scrolling');
@@ -7961,7 +8080,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
-            self.checkMainContainerSlidesVisibility(false);
+            self.toggleSlidesOpacity(true);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -8020,6 +8139,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.wrapper.find('.main-container-next').addClass('disabled');
         }
     };
+
+    Viewer.prototype.toggleSlidesOpacity = function(show){
+        if(show){
+            this.mainContainerList.find('.amp-slide').css('opacity', 1);
+            return;
+        }
+
+        this.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
+    }
 
     Viewer.prototype.checkNavContainerNavArrows = function () {
         var self = this;
@@ -8186,6 +8314,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
+        $.each(self._preventElements, function(ix,val) {
+            val.off('touchmove', self._prevent);
+        });
+        self._preventElements = [];
         var slide = self.getZoomSlide();
         if (slide.length > 0) {
             slide.ampZoomInline('zoomOutFull');
@@ -8281,7 +8413,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         // Need to remove mouse events on touch devices since it fires callbacks twice on tap
         var startEvents = (self.canTouch ? '' : 'mousedown ');
         var endEvents = (self.canTouch ? '' : 'mouseup ');
-
         if (this.settings.zoomInlineDoubleTap) {
             startEvents += self.doubleTapEvent(element);
             endEvents += 'doubletapend';
@@ -8290,10 +8421,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             endEvents += 'touchend';
         }
 
-
         element.on(startEvents, function (e) {
             var $self = $(this);
-
             if (e.which === 3) {
                 return false;
             }
@@ -8309,6 +8438,13 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 if (e.which === 3) {
                     return false;
                 }
+
+                $.each(self._preventElements, function(ix,val) {
+                    val.off('touchmove', self._prevent);
+                });
+                self._preventElements = [];
+                element.on('touchmove', self._prevent);
+                self._preventElements.push(element);
 
                 var target = this;
                 var coords = getPageCoords(e);
@@ -8394,26 +8530,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         leftArrow.css('left', shift);
         rightArrow.css('right', shift);
     };
-
-    Viewer.prototype.checkMainContainerSlidesVisibility = function (hideImmediately) {
-        var self = this;
-        clearTimeout(self.hideSlidesTimeout);
-        self.mainContainerList.find('.amp-slide').css('opacity', 1);
-
-        if (hideImmediately) {
-            hideSlides();
-        } else {
-            var ampConfigs = self.getAmpConfigs();
-
-            self.hideSlidesTimeout = setTimeout(function () {
-                hideSlides();
-            }, ampConfigs.mainContainerCarousel.animDuration);
-        }
-
-        function hideSlides() {
-            self.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
-        }
+    Viewer.prototype._prevent = function(e) {
+        e.preventDefault();
     };
+    Viewer.prototype._preventElements = [];
 
     global.amp.Viewer = Viewer;
 }(window, jQuery));
