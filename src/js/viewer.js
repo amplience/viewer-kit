@@ -404,10 +404,12 @@
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
+        ampConfigs.mainContainerCarousel.animationStartCallback = function(){
+            self.toggleSlidesOpacity(true);
+        }
+
         ampConfigs.mainContainerCarousel.animationEndCallback = function(){
             self.toggleSlidesOpacity();
-            console.log('test');
-
         }
 
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);

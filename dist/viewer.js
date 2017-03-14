@@ -2545,6 +2545,7 @@ amp.stats.event = function(dom,type,event,value){
                 visible : 'amp-visible',
                 partiallyVisible: 'amp-partially-visible'
             },
+            animationStartCallback: function(){},
             animationEndCallback: function(){}
         },
         _getCreateOptions:function(){
@@ -3079,6 +3080,7 @@ amp.stats.event = function(dom,type,event,value){
                 $(window).on('touchcancel',$.proxy(this.stop,this));
                 $(window).on('touchend',$.proxy(this.stop,this));
                 $(window).on('mouseup',$.proxy(this.stop,this));
+                widget.options.animationStartCallback();
                 return true;
             };
 
@@ -7674,10 +7676,12 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
+        ampConfigs.mainContainerCarousel.animationStartCallback = function(){
+            self.toggleSlidesOpacity(true);
+        }
+
         ampConfigs.mainContainerCarousel.animationEndCallback = function(){
             self.toggleSlidesOpacity();
-            console.log('test');
-
         }
 
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
