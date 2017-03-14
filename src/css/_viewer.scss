@@ -61,6 +61,10 @@ body {
   .video-js {
     background-color: #fff;
     box-sizing: content-box;
+
+    *{
+      -webkit-transform: translate3d(0,0,0);
+    }
   }
 
   .vjs-poster {
