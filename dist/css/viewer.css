@@ -316,15 +316,20 @@ body {
       font-family: 'Neuzeit Light';
       font-size: 20px;
       position: absolute;
-      margin: auto;
+      width: 230px;
+      height: 42px;
+      line-height: 42px;
+      margin-left: -115px;
+      margin-top: -21px;
+      border-radius: 3px;
+      right: auto;
+      bottom: auto;
       padding: 0 10px;
       top: 50%;
       left: 50%;
       background-color: rgba(200, 200, 200, 0.5);
       color: white;
       text-align: center;
-      -ms-transform: translateX(-50%) translateY(-50%);
-          transform: translateX(-50%) translateY(-50%);
       pointer-events: none;
       display: inline-table;
       opacity: 1; }
@@ -339,16 +344,11 @@ body {
         width: 42px;
         display: inline-block;
         line-height: 100%;
-        vertical-align: top; }
+        vertical-align: top;
+        float: right; }
       .amp-viewer-kit .desktop-normal-view .main-container .tooltip.image,
       .amp-viewer-kit .desktop-full-view .main-container .tooltip.image,
       .amp-viewer-kit .mobile-normal-view .main-container .tooltip.image {
-        width: 230px;
-        height: 42px;
-        right: auto;
-        bottom: auto;
-        line-height: 42px;
-        border-radius: 3px;
         position: fixed; }
         .amp-viewer-kit .desktop-normal-view .main-container .tooltip.image .tooltip-icon,
         .amp-viewer-kit .desktop-full-view .main-container .tooltip.image .tooltip-icon,
@@ -357,13 +357,7 @@ body {
       .amp-viewer-kit .desktop-normal-view .main-container .tooltip.spin,
       .amp-viewer-kit .desktop-full-view .main-container .tooltip.spin,
       .amp-viewer-kit .mobile-normal-view .main-container .tooltip.spin {
-        height: 42px;
-        line-height: 42px;
-        border-radius: 3px;
-        top: 50%;
-        left: 50%;
-        right: auto;
-        bottom: auto; }
+        position: absolute; }
         .amp-viewer-kit .desktop-normal-view .main-container .tooltip.spin .tooltip-icon,
         .amp-viewer-kit .desktop-full-view .main-container .tooltip.spin .tooltip-icon,
         .amp-viewer-kit .mobile-normal-view .main-container .tooltip.spin .tooltip-icon {
@@ -371,13 +365,7 @@ body {
       .amp-viewer-kit .desktop-normal-view .main-container .tooltip.spin-3d,
       .amp-viewer-kit .desktop-full-view .main-container .tooltip.spin-3d,
       .amp-viewer-kit .mobile-normal-view .main-container .tooltip.spin-3d {
-        height: 42px;
-        line-height: 42px;
-        border-radius: 3px;
-        top: 50%;
-        left: 50%;
-        right: auto;
-        bottom: auto; }
+        position: absolute; }
         .amp-viewer-kit .desktop-normal-view .main-container .tooltip.spin-3d .tooltip-icon,
         .amp-viewer-kit .desktop-full-view .main-container .tooltip.spin-3d .tooltip-icon,
         .amp-viewer-kit .mobile-normal-view .main-container .tooltip.spin-3d .tooltip-icon {
