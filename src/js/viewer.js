@@ -267,6 +267,7 @@
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
+        self.toggleSlidesOpacity();
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -401,6 +402,12 @@
 
         if (self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView') {
             navSettings = ampConfigs.navContainerCarouselPortrait;
+        }
+
+        ampConfigs.mainContainerCarousel.animationEndCallback = function(){
+            self.toggleSlidesOpacity();
+            console.log('test');
+
         }
 
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
@@ -803,6 +810,7 @@
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
+            self.toggleSlidesOpacity(true);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -861,6 +869,15 @@
             self.wrapper.find('.main-container-next').addClass('disabled');
         }
     };
+
+    Viewer.prototype.toggleSlidesOpacity = function(show){
+        if(show){
+            this.mainContainerList.find('.amp-slide').css('opacity', 1);
+            return;
+        }
+
+        this.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
+    }
 
     Viewer.prototype.checkNavContainerNavArrows = function () {
         var self = this;

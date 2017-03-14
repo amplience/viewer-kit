@@ -2544,7 +2544,8 @@ amp.stats.event = function(dom,type,event,value){
             states : {
                 visible : 'amp-visible',
                 partiallyVisible: 'amp-partially-visible'
-            }
+            },
+            animationEndCallback: function(){}
         },
         _getCreateOptions:function(){
             var attributes = this.element.data().ampCarousel;
@@ -2594,7 +2595,7 @@ amp.stats.event = function(dom,type,event,value){
                     var move = function(evt) {
                         self._movedCounter +=1;
                         if(self._movedCounter >= 7){
-                        self.moved = true;
+                            self.moved = true;
                         }
                     };
                     var activate = (function(_i){
@@ -2622,7 +2623,7 @@ amp.stats.event = function(dom,type,event,value){
             if(this.options.responsive){
                 $(window).bind("resize", function(_self) {
                     return function() {
-                       return setTimeout($.proxy(_self.redraw,_self),1);
+                        return setTimeout($.proxy(_self.redraw,_self),1);
                     }
                 }(self));
             }
@@ -2710,37 +2711,37 @@ amp.stats.event = function(dom,type,event,value){
         },
         _direction : function(index) {
 
-          if(!this.options.loop) {
-              return index>this._index;
-          }
-          var forw=0, back=0;
-          this._index = Math.min(this._index,this.count);
-           var oIndex =  this._index;
-          while(oIndex!=index) {
-              if(oIndex>this.count){
-                oIndex = 1;
-                continue;
-              } else {
-                oIndex++;
-              }
-              forw++
-          }
-          oIndex = this._index;
-          while(oIndex!=index) {
-              if(oIndex<1) {
-                  oIndex = this.count;
-                  continue;
-              } else {
-                oIndex--;
-              }
+            if(!this.options.loop) {
+                return index>this._index;
+            }
+            var forw=0, back=0;
+            this._index = Math.min(this._index,this.count);
+            var oIndex =  this._index;
+            while(oIndex!=index) {
+                if(oIndex>this.count){
+                    oIndex = 1;
+                    continue;
+                } else {
+                    oIndex++;
+                }
+                forw++
+            }
+            oIndex = this._index;
+            while(oIndex!=index) {
+                if(oIndex<1) {
+                    oIndex = this.count;
+                    continue;
+                } else {
+                    oIndex--;
+                }
                 back++;
-          }
-          if(this.options.preferForward) {
-              if(forw>1 && back >1) {
-                  return true;
-              }
-          }
-          return forw<=back;
+            }
+            if(this.options.preferForward) {
+                if(forw>1 && back >1) {
+                    return true;
+                }
+            }
+            return forw<=back;
         },
         _loopIndex : function(dir,start,count) {
             var inc = dir ? 1 : -1;
@@ -2850,10 +2851,10 @@ amp.stats.event = function(dom,type,event,value){
 
             for (var i=0; i<count; i++) {
 
-               var eindex = dir? index+i:index-i;
-               if (eindex > this.count) {
-                   eindex = 1;
-               }
+                var eindex = dir? index+i:index-i;
+                if (eindex > this.count) {
+                    eindex = 1;
+                }
                 if(eindex < 1) {
                     eindex = this.count;
                 }
@@ -2906,6 +2907,7 @@ amp.stats.event = function(dom,type,event,value){
                     $container.css(self._canCSS3.transitionDuration,'');
                     if(onDone)
                         onDone();
+                    self.options.animationEndCallback();
                 });
             } else {
                 var anim = {};
@@ -2914,7 +2916,11 @@ amp.stats.event = function(dom,type,event,value){
                 } else {
                     anim.top = howMuch+'px';
                 }
-                $container.animate(anim, self.options.animDuration,'swing',onDone);
+                $container.animate(anim, self.options.animDuration,'swing',function(){
+                    if(onDone)
+                        onDone();
+                    self.options.animationEndCallback();
+                });
             }
 
         },
@@ -5941,8 +5947,7 @@ amp.stats.event = function(dom,type,event,value){
             play: {
                 onLoad:false,
                 onVisible:false,
-                repeat:1,
-                delay: 10
+                repeat:1
             },
             dragDistance:200,
             lazyLoad:false
@@ -5959,7 +5964,7 @@ amp.stats.event = function(dom,type,event,value){
             var self = this,
                 children = this._children = this.element.children(),
                 count = this._count = this.element.children().length;
-            this.isWebkit = /Chrome|Safari/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
+            this.isWebkit = /Chrome|Safari/.test(navigator.userAgent);
             this.$document = $(document);
             this.options.friction = Math.min(this.options.friction,0.999);
             this.options.friction = Math.max(this.options.friction,0);
@@ -6063,21 +6068,18 @@ amp.stats.event = function(dom,type,event,value){
             return false;
         },
         visible:function(visible) {
-            var self = this;
-            if (visible != self._visible) {
-                self._super(visible);
+            if (visible != this._visible) {
+                this._super(visible);
                 if(visible) {
-                    if(self.options.preload=='visible') {
-                        self._startPreload();
+                    if(this.options.preload=='visible') {
+                        this._startPreload();
                     }
 
                     if(this.options.preload == 'none'){
-                        self._startPreload(self._index);
+                        this._startPreload(this._index);
                     }
-                    if(self.options.play.onVisible && self._loaded) {
-                        setTimeout(function() {
-                            self.playRepeat(self.options.play.repeat);
-                        }, self.options.play.delay);
+                    if(this.options.play.onVisible && this._loaded) {
+                        this.playRepeat(this.options.play.repeat);
                     }
                 }
             }
@@ -7535,6 +7537,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
+        self.toggleSlidesOpacity();
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -7669,6 +7672,12 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
         if (self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView') {
             navSettings = ampConfigs.navContainerCarouselPortrait;
+        }
+
+        ampConfigs.mainContainerCarousel.animationEndCallback = function(){
+            self.toggleSlidesOpacity();
+            console.log('test');
+
         }
 
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
@@ -8071,6 +8080,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
+            self.toggleSlidesOpacity(true);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -8129,6 +8139,15 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.wrapper.find('.main-container-next').addClass('disabled');
         }
     };
+
+    Viewer.prototype.toggleSlidesOpacity = function(show){
+        if(show){
+            this.mainContainerList.find('.amp-slide').css('opacity', 1);
+            return;
+        }
+
+        this.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
+    }
 
     Viewer.prototype.checkNavContainerNavArrows = function () {
         var self = this;
