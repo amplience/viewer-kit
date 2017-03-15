@@ -335,7 +335,7 @@ body {
       .amp-viewer-kit .mobile-normal-view .main-container .tooltip .tooltip-icon {
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 90%;
+        background-size: 100%;
         position: relative;
         height: 42px;
         width: 42px;
