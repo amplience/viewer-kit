@@ -5722,8 +5722,10 @@ amp.stats.event = function(dom,type,event,value){
 
 
                 if (self.options.plugins && self.options.plugins['videoJsResolutionSwitcher'] && self.options.plugins['videoJsResolutionSwitcher'].default) {
-                    self._player.currentResolution(self.options.plugins['videoJsResolutionSwitcher'].default);
-                    self._allowResolutionChange = false;
+                    self._player.on('ready', function () {
+                        self._player.currentResolution(self.options.plugins['videoJsResolutionSwitcher'].default);
+                        self._allowResolutionChange = false;
+                    });
                     self._player.on('resolutionchange', function () {
                         if (self._player.paused()) {
                             if (self._allowResolutionChange) {
@@ -5950,7 +5952,8 @@ amp.stats.event = function(dom,type,event,value){
             play: {
                 onLoad:false,
                 onVisible:false,
-                repeat:1
+                repeat:1,
+                delay: 10
             },
             dragDistance:200,
             lazyLoad:false
@@ -5967,7 +5970,7 @@ amp.stats.event = function(dom,type,event,value){
             var self = this,
                 children = this._children = this.element.children(),
                 count = this._count = this.element.children().length;
-            this.isWebkit = /Chrome|Safari/.test(navigator.userAgent);
+            this.isWebkit = /Chrome|Safari/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent);
             this.$document = $(document);
             this.options.friction = Math.min(this.options.friction,0.999);
             this.options.friction = Math.max(this.options.friction,0);
@@ -6071,18 +6074,21 @@ amp.stats.event = function(dom,type,event,value){
             return false;
         },
         visible:function(visible) {
-            if (visible != this._visible) {
-                this._super(visible);
+            var self = this;
+            if (visible != self._visible) {
+                self._super(visible);
                 if(visible) {
-                    if(this.options.preload=='visible') {
-                        this._startPreload();
+                    if(self.options.preload=='visible') {
+                        self._startPreload();
                     }
 
                     if(this.options.preload == 'none'){
-                        this._startPreload(this._index);
+                        self._startPreload(self._index);
                     }
-                    if(this.options.play.onVisible && this._loaded) {
-                        this.playRepeat(this.options.play.repeat);
+                    if(self.options.play.onVisible && self._loaded) {
+                        setTimeout(function() {
+                            self.playRepeat(self.options.play.repeat);
+                        }, self.options.play.delay);
                     }
                 }
             }
