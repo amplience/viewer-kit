@@ -43,6 +43,7 @@
 
         self.controller();
         self.tags = [];
+        self.IE = self.isIE();
     };
 
     Viewer.prototype.controller = function () {
@@ -206,6 +207,15 @@
                 console.warn(error, PLAYER_NAME + ' unable to get set list.');
             });
     };
+
+    Viewer.prototype.isIE = function () {
+        if (/MSIE [0-9]{1,}/.test(navigator.userAgent)) {
+            return true;
+        } else if (/Trident\/\d./i.test(navigator.userAgent) || /Edge\/\d./i.test(navigator.userAgent)) {
+            return true;
+        }
+        return false;
+    }
 
     Viewer.prototype.isMobile = function () {
         var self = this;
@@ -1247,9 +1257,13 @@
     };
 
     Viewer.prototype.checkMainContainerSlidesVisibility = function () {
+
+        if(!this.IE){
+            return;
+        }
+
         var self = this;
         var videos = self.mainContainerList.find('.amp-slide .video').parent();
-        //console.log(videos);
         videos.each(function(ix, val) {
             var $val = $(val);
             if ($val.hasClass('amp-visible')) {
