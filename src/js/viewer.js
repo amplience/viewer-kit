@@ -797,6 +797,9 @@
         var self = this;
 
         self.mainContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
+            $('.amp-spin').find('.amp-frame').css({
+                'margin-left': '-1px'
+            });
             self.currentAssetIndex = data.index - 1;
             self.zoomOutFull();
             self.initTooltips();
