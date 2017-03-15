@@ -128,14 +128,20 @@ body {
         font-family: 'Neuzeit Light';
         font-size: 20px;
         position: absolute;
-        margin: auto;
+        width: 230px;
+        height: 42px;
+        line-height: 42px;
+        margin-left: - 115px;
+        margin-top: -21px;
+        border-radius: 3px;
+        right: auto;
+        bottom: auto;
         padding: 0 10px;
         top: 50%;
         left: 50%;
         background-color: rgba(200, 200, 200, .5);
         color: white;
         text-align: center;
-        transform: translateX(-50%) translateY(-50%);
         pointer-events: none;
         display: inline-table;
         opacity: 1;
@@ -143,22 +149,16 @@ body {
         .tooltip-icon {
           background-position: center;
           background-repeat: no-repeat;
-          background-size: 90%;
+          background-size: 100%;
           position: relative;
-          height: 42px;
-          width: 42px;
+          margin-top: 2px;
+          height: 38px;
+          width: 38px;
           display: inline-block;
-          line-height: 100%;
-          vertical-align: top;
+          float: right;
         }
 
         &.image {
-          width: 230px;
-          height: 42px;
-          right: auto;
-          bottom: auto;
-          line-height: 42px;
-          border-radius: 3px;
           position: fixed;
 
           .tooltip-icon {
@@ -167,13 +167,7 @@ body {
         }
 
         &.spin {
-          height: 42px;
-          line-height: 42px;
-          border-radius: 3px;
-          top: 50%;
-          left: 50%;
-          right: auto;
-          bottom: auto;
+          position: absolute;
 
           .tooltip-icon {
             background-image: url('svg/ic_360spin_24px.svg');
@@ -181,13 +175,7 @@ body {
         }
 
         &.spin-3d {
-          height: 42px;
-          line-height: 42px;
-          border-radius: 3px;
-          top: 50%;
-          left: 50%;
-          right: auto;
-          bottom: auto;
+          position: absolute;
 
           .tooltip-icon {
             background-image: url('svg/ic_720spin_24px.svg');
