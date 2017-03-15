@@ -2880,6 +2880,8 @@ amp.stats.event = function(dom,type,event,value){
             }
             this._containerPos = howMuch;
 
+            self.options.animationStartCallback();
+
             if(!animate) {
                 if(self._canCSS3.transform && self._canCSS3.transitionDuration) {
                     var transform = self._canCSS3.can3D ? (self.options.dir=='horz'?'translate3d('+howMuch+'px,0,0)':'translate3d(0, '+howMuch+'px,0)') : (self.options.dir=='horz'?'translateX('+howMuch+'px)':'translateY('+howMuch+'px');
@@ -2897,7 +2899,7 @@ amp.stats.event = function(dom,type,event,value){
                 return;
             }
 
-            if(self._canCSS3.transform && self._canCSS3.transitionDuration) {
+            if(self._canCSS3.transform && self._canCSS3.transitionDuration && !self.options.no3D) {
                 var transform = self._canCSS3.can3D ? (self.options.dir=='horz'?'translate3d('+howMuch+'px,0,0)':'translate3d(0, '+howMuch+'px,0)') : (self.options.dir=='horz'?'translateX('+howMuch+'px)':'translateY('+howMuch+'px');
                 $container.css(self._canCSS3.transform,transform);
                 $container.css(self._canCSS3.transitionTimingFunction, self.options.easing);
@@ -3080,7 +3082,6 @@ amp.stats.event = function(dom,type,event,value){
                 $(window).on('touchcancel',$.proxy(this.stop,this));
                 $(window).on('touchend',$.proxy(this.stop,this));
                 $(window).on('mouseup',$.proxy(this.stop,this));
-                widget.options.animationStartCallback();
                 return true;
             };
 
@@ -7315,6 +7316,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
         self.controller();
         self.tags = [];
+        self.IE = self.isIE();
     };
 
     Viewer.prototype.controller = function () {
@@ -7479,6 +7481,20 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             });
     };
 
+    Viewer.prototype.isIE = function () {
+        if (/MSIE [0-9]{1,}/.test(navigator.userAgent)) {
+            console.log('IE')
+            return true;
+        }
+
+        else if (/Trident\/\d./i.test(navigator.userAgent) || /Edge\/\d./i.test(navigator.userAgent)) {
+            console.log('edge');
+            return true;
+        }
+
+        return false;
+    }
+
     Viewer.prototype.isMobile = function () {
         var self = this;
         if (self.settings.isMobile) {
@@ -7539,7 +7555,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
-        self.toggleSlidesOpacity();
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -7677,11 +7692,19 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         }
 
         ampConfigs.mainContainerCarousel.animationStartCallback = function(){
+            console.log('start');
             self.toggleSlidesOpacity(true);
         }
 
         ampConfigs.mainContainerCarousel.animationEndCallback = function(){
+            console.log('end');
             self.toggleSlidesOpacity();
+        }
+
+        if(self.IE){
+            ampConfigs.mainContainerCarousel.no3D = true;
+            navSettings.no3D = true;
+            console.log('no 3d');
         }
 
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
@@ -8084,7 +8107,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
-            self.toggleSlidesOpacity(true);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -8146,11 +8168,11 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.toggleSlidesOpacity = function(show){
         if(show){
-            this.mainContainerList.find('.amp-slide').css('opacity', 1);
+            this.mainContainerList.find('.amp-slide').removeClass('amp-hide-slide');
             return;
         }
-
-        this.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
+        this.mainContainerList.find('.amp-slide.amp-visible').removeClass('amp-hide-slide');
+        this.mainContainerList.find('.amp-slide:not(.amp-visible)').addClass('amp-hide-slide');
     }
 
     Viewer.prototype.checkNavContainerNavArrows = function () {

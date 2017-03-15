@@ -43,6 +43,7 @@
 
         self.controller();
         self.tags = [];
+        self.IE = self.isIE();
     };
 
     Viewer.prototype.controller = function () {
@@ -207,6 +208,20 @@
             });
     };
 
+    Viewer.prototype.isIE = function () {
+        if (/MSIE [0-9]{1,}/.test(navigator.userAgent)) {
+            console.log('IE')
+            return true;
+        }
+
+        else if (/Trident\/\d./i.test(navigator.userAgent) || /Edge\/\d./i.test(navigator.userAgent)) {
+            console.log('edge');
+            return true;
+        }
+
+        return false;
+    }
+
     Viewer.prototype.isMobile = function () {
         var self = this;
         if (self.settings.isMobile) {
@@ -267,7 +282,6 @@
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
-        self.toggleSlidesOpacity();
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -405,11 +419,19 @@
         }
 
         ampConfigs.mainContainerCarousel.animationStartCallback = function(){
+            console.log('start');
             self.toggleSlidesOpacity(true);
         }
 
         ampConfigs.mainContainerCarousel.animationEndCallback = function(){
+            console.log('end');
             self.toggleSlidesOpacity();
+        }
+
+        if(self.IE){
+            ampConfigs.mainContainerCarousel.no3D = true;
+            navSettings.no3D = true;
+            console.log('no 3d');
         }
 
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
@@ -812,7 +834,6 @@
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
-            self.toggleSlidesOpacity(true);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -874,11 +895,11 @@
 
     Viewer.prototype.toggleSlidesOpacity = function(show){
         if(show){
-            this.mainContainerList.find('.amp-slide').css('opacity', 1);
+            this.mainContainerList.find('.amp-slide').removeClass('amp-hide-slide');
             return;
         }
-
-        this.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
+        this.mainContainerList.find('.amp-slide.amp-visible').removeClass('amp-hide-slide');
+        this.mainContainerList.find('.amp-slide:not(.amp-visible)').addClass('amp-hide-slide');
     }
 
     Viewer.prototype.checkNavContainerNavArrows = function () {
