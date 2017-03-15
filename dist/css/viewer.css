@@ -260,7 +260,8 @@ body {
     display: none; }
   .amp-viewer-kit .video-js {
     background-color: #fff;
-    box-sizing: content-box; }
+    box-sizing: content-box;
+    width: 100%; }
     .amp-viewer-kit .video-js * {
       -webkit-transform: translate3d(0, 0, 0); }
   .amp-viewer-kit .vjs-poster {
