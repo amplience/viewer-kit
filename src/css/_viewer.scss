@@ -145,13 +145,12 @@ body {
         .tooltip-icon {
           background-position: center;
           background-repeat: no-repeat;
-          background-size: 90%;
+          background-size: 100%;
           position: relative;
-          height: 42px;
-          width: 42px;
+          margin-top: 2px;
+          height: 38px;
+          width: 38px;
           display: inline-block;
-          line-height: 100%;
-          vertical-align: top;
           float: right;
         }
 
