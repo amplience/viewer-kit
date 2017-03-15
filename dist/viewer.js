@@ -7537,6 +7537,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
+        self.checkMainContainerSlidesVisibility();
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -8073,6 +8074,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
+            self.checkMainContainerSlidesVisibility();
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -8513,9 +8515,31 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         leftArrow.css('left', shift);
         rightArrow.css('right', shift);
     };
+
+    Viewer.prototype.checkMainContainerSlidesVisibility = function () {
+        var self = this;
+        var videos = self.mainContainerList.find('.amp-slide .video').parent();
+        //console.log(videos);
+        videos.each(function(ix, val) {
+            var $val = $(val);
+            if ($val.hasClass('amp-visible')) {
+                $val.css({
+                    'opacity': 1
+                })
+            } else {
+                setTimeout(function(){
+                    $val.css({
+                        'opacity': 0
+                    })
+                }, 400);
+            }
+        });
+    };
+
     Viewer.prototype._prevent = function(e) {
         e.preventDefault();
     };
+
     Viewer.prototype._preventElements = [];
 
     global.amp.Viewer = Viewer;
