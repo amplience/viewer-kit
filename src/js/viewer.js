@@ -26,7 +26,7 @@
         self.settings = $.extend(true, {}, defaultSettings, settings);
 
         if (self.settings.locale && self.settings.locale.length > 0) {
-            self.settings.ampConfigs.mainContainerZoomInline.transforms.push('&locale=' + self.settings.locale);
+            self.settings.ampConfigs.mainContainerZoomInline.transforms.push('locale=' + self.settings.locale);
         }
 
         self.views = {
@@ -410,10 +410,6 @@
 
         var navSettings = ampConfigs.navContainerCarousel;
 
-        if (self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView') {
-            navSettings = ampConfigs.navContainerCarouselPortrait;
-        }
-
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
         self.mainContainerList.ampNav(ampConfigs.mainContainerNav);
 
@@ -605,7 +601,7 @@
         switch (self.currentView) {
             case self.views.desktopNormalView:
                 if (self.canTouch) {
-                    tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.image.doubleTouch.text :
+                    tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktop.image.doubleTouch.text :
                         self.settings.tooltips.desktop.image.touch.text;
                     self.tooltip.css({position: 'absolute'});
                     self.tooltipText.text(tapText);
@@ -631,13 +627,13 @@
                 }
                 break;
             case self.views.desktopFullView:
-                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.image.doubleTouch.text :
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktopFull.image.doubleTouch.text :
                     self.settings.tooltips.desktopFull.image.touch.text;
                 self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.image.noTouch.text);
                 self.tooltip.fadeOut(0);
                 break;
             case self.views.mobileNormalView:
-                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.image.doubleTouch.text :
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.mobile.image.doubleTouch.text :
                     self.settings.tooltips.mobile.image.touch.text;
                 self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.image.noTouch.text);
                 self.fadeOutTooltip();
@@ -652,17 +648,17 @@
         self.tooltip.attr({class: 'tooltip ' + spinClass});
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktop.spin.doubleTouch.text :
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktop.spin.doubleTouch.text :
                     self.settings.tooltips.desktop.spin.touch.text;
                 self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktop.spin.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.desktopFull.spin.doubleTouch.text :
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktopFull.spin.doubleTouch.text :
                     self.settings.tooltips.desktopFull.spin.touch.text;
                 self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.spin.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                tapText = (self.settings.zoomInlineDoubleTap)? self.settings.tooltips.mobile.spin.doubleTouch.text :
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.mobile.spin.doubleTouch.text :
                     self.settings.tooltips.mobile.spin.touch.text;
                 self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.spin.noTouch.text);
                 break;
@@ -704,7 +700,7 @@
         var lastTapTime = 0;
         var lastTapTime2 = 0;
         var self = this;
-        $element.on('touchstart', function(e){
+        $element.on('touchstart', function (e) {
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime2;
             if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
@@ -768,7 +764,7 @@
         var self = this;
         var spinTraps = self.mainContainerList.find('.spin-trap');
         var spins = self.mainContainerList.find('.spin-trap + ul');
-        spinTraps.each(function(ix,val) {
+        spinTraps.each(function (ix, val) {
             $(val).parent().on('touchstart', self._prevent);
         });
         if (self.canTouch) {
@@ -817,7 +813,7 @@
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
-            self.checkMainContainerSlidesVisibility();
+            self.checkMainContainerSlidesVisibility(self.settings.ampConfigs.mainContainerCarousel.animDuration);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -1042,7 +1038,7 @@
 
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
-        $.each(self._preventElements, function(ix,val) {
+        $.each(self._preventElements, function (ix, val) {
             val.off('touchmove', self._prevent);
         });
         self._preventElements = [];
@@ -1167,7 +1163,7 @@
                     return false;
                 }
 
-                $.each(self._preventElements, function(ix,val) {
+                $.each(self._preventElements, function (ix, val) {
                     val.off('touchmove', self._prevent);
                 });
                 self._preventElements = [];
@@ -1259,31 +1255,43 @@
         rightArrow.css('right', shift);
     };
 
-    Viewer.prototype.checkMainContainerSlidesVisibility = function () {
+    Viewer.prototype.checkMainContainerSlidesVisibility = function (timeout) {
 
-        if(!this.IE){
+        //if (!this.IE) {
+        //    return;
+        //}
+        var self = this;
+        var assetIndex = self.currentAssetIndex;
+        var timeout = timeout || 0;
+
+        self.videoTimeout ? clearTimeout(self.videoTimeout) : null;
+
+
+        console.log(assetIndex);
+
+
+        var currentAsset = self.assets[assetIndex];
+
+        var $slide = self.mainContainerList.find('.amp-slide').has('.video');
+
+        console.log($slide);
+
+
+        if (currentAsset.hasOwnProperty('media')) {
+            $slide.css({
+                opacity:1
+            })
             return;
         }
 
-        var self = this;
-        var videos = self.mainContainerList.find('.amp-slide .video').parent();
-        videos.each(function(ix, val) {
-            var $val = $(val);
-            if ($val.hasClass('amp-visible')) {
-                $val.css({
-                    'opacity': 1
-                })
-            } else {
-                setTimeout(function(){
-                    $val.css({
-                        'opacity': 0
-                    })
-                }, 400);
-            }
-        });
+        else {
+            self.videoTimeout = setTimeout(function () {
+                $slide.css({opacity: 0});
+            }, timeout);
+        }
     };
 
-    Viewer.prototype._prevent = function(e) {
+    Viewer.prototype._prevent = function (e) {
         e.preventDefault();
     };
 
