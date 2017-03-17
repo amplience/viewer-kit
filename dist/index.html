@@ -40,9 +40,9 @@
 <script>
     $(function () {
         var viewer = new amp.Viewer({
-            client: 'Natacha',
+            client: 'playground',
             imageBasePath: '//i1.adis.ws/',
-            set: 'rendering_kit_square_ms',
+            set: 'rendering_kit_square_Vms',
             locale: 'en-gb',
             cacheControl: Date.now(),
             secure: true,
@@ -101,10 +101,10 @@
         $('#switch').on('click', function () {
             if (set === 0) {
                 set = 1;
-                viewer.changeSet('rendering_kit_square_ms');
+                viewer.changeSet('rendering_kit_square_Vms');
             } else {
                 set = 0;
-                viewer.changeSet('rendering_kit_square_ms');
+                viewer.changeSet('rendering_kit_square_Vms');
             }
         })
     });

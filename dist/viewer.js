@@ -8121,18 +8121,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             });
 
         self.mainContainerList.find('.video').on('ampvideofullscreenchange', function (e, data) {
+
             var state = $(e.target).ampVideo('state');
-
-            if (self.wrapper.find('.mobile-normal-view').length) {
-                if (self._resized) {
-                    self._resized = false;
-                    $(window).on('resize', self._resize.bind(self));
-                } else {
-                    self._resized = true;
-                    $(window).off('resize');
-                }
-            }
-
             // If video is not paused
             if (state !== 2) {
                 setTimeout(function () {
