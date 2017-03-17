@@ -1257,25 +1257,17 @@
 
     Viewer.prototype.checkMainContainerSlidesVisibility = function (timeout) {
 
-        //if (!this.IE) {
-        //    return;
-        //}
+        if (!this.IE) {
+            return;
+        }
+
         var self = this;
         var assetIndex = self.currentAssetIndex;
         var timeout = timeout || 0;
 
         self.videoTimeout ? clearTimeout(self.videoTimeout) : null;
-
-
-        console.log(assetIndex);
-
-
         var currentAsset = self.assets[assetIndex];
-
         var $slide = self.mainContainerList.find('.amp-slide').has('.video');
-
-        console.log($slide);
-
 
         if (currentAsset.hasOwnProperty('media')) {
             $slide.css({
