@@ -2899,7 +2899,7 @@ amp.stats.event = function(dom,type,event,value){
                 return;
             }
 
-            if(self._canCSS3.transform && self._canCSS3.transitionDuration && !self.options.no3D) {
+            if(self._canCSS3.transform && self._canCSS3.transitionDuration) {
                 var transform = self._canCSS3.can3D ? (self.options.dir=='horz'?'translate3d('+howMuch+'px,0,0)':'translate3d(0, '+howMuch+'px,0)') : (self.options.dir=='horz'?'translateX('+howMuch+'px)':'translateY('+howMuch+'px');
                 $container.css(self._canCSS3.transform,transform);
                 $container.css(self._canCSS3.transitionTimingFunction, self.options.easing);
@@ -5025,7 +5025,7 @@ amp.stats.event = function(dom,type,event,value){
         },
         load:function(){
             this._setupZoomArea().then($.proxy(function(area){
-            this.zoomArea.allowClone = true;
+                this.zoomArea.allowClone = true;
                 area.setScale(this.options.zoom);
             },this))
         },
@@ -5039,7 +5039,7 @@ amp.stats.event = function(dom,type,event,value){
                             img.src = this.element.attr('src');
                             var $loading = $('<div class="amp-loading"></div>');
                             this.$parent.append($loading);
-                            this.zoomArea = new zoomArea(this.element, this.$parent, size, this.options.transforms);
+                            this.zoomArea = new zoomArea(this.element, this.$parent, size, this.options.transforms, this.options);
 
                             img.onload = function(){
                                 $loading.remove();
@@ -5347,7 +5347,7 @@ amp.stats.event = function(dom,type,event,value){
         var x = Math.abs(touches[0].pageX-touches[1].pageX),
             y = Math.abs(touches[0].pageY-touches[1].pageY);
         return Math.sqrt(
-                (x * x) + (y * y)
+            (x * x) + (y * y)
         );
     };
 
@@ -5432,8 +5432,11 @@ amp.stats.event = function(dom,type,event,value){
     };
 
 
-    var zoomArea = function($source,$area,originalSize,transforms) {
+    var zoomArea = function($source,$area,originalSize,transforms, options) {
+        this.options = options;
         this.animating = false;
+        this._allowChangeClone = true;
+        this.isFF = navigator.userAgent.toLowerCase().search("firefox") > -1;
         this.transforms = transforms;
         this.initialSrc = $source[0].src;
         this.scale = 1;
@@ -5535,10 +5538,10 @@ amp.stats.event = function(dom,type,event,value){
                 cb();
             }
             this.animating = false;
-        },this),600);
+        },this),this.isFF ? 1000 : 600);
     };
 
-     zoomArea.prototype.updateImageSrc = function(scaleIncreased){
+    zoomArea.prototype.updateImageSrc = function(scaleIncreased){
         var self = this;
         if(!scaleIncreased || !self.allowClone || !self._preloaderImgLoaded){
             return false;
@@ -5586,7 +5589,7 @@ amp.stats.event = function(dom,type,event,value){
             });
         } else {
             this.animate(this.newSize, this.getPixPos(), function(){
-                    self.updateImageSrc(scaleIncreased);
+                self.updateImageSrc(scaleIncreased);
             });
         }
         this.scale = scale;
@@ -5618,14 +5621,42 @@ amp.stats.event = function(dom,type,event,value){
         if(size.x == 0 || size.y ==0) {
             src='';
         }
+        self.$preloader = new Image();
+        self._preloaderImgLoaded = true;
         self.$preloader.setAttribute('src', src);
 
     };
     zoomArea.prototype.setImage = function() {
         var self = this;
-        var previousSrc = self.$zoomed[0].src;
-        self.$zoomed.attr('src', self.$preloader.src);
-        self.$zoomedClone.attr('src', previousSrc);
+        var loaded;
+        var previousSrc = self.$zoomed.attr('src');
+
+        if(self._allowChangeClone){
+            self.$zoomedClone.attr('src', previousSrc);
+        }
+
+        if(self.$preloader.complete && self.$preloader.naturalWidth && self.$preloader.naturalWidth > 0){
+            if(loaded){
+                return;
+            }
+
+            setTimeout(function(){
+                self.$zoomed.attr('src', self.$preloader.src);
+            }, self.isFF ? 1000 : 10);
+            loaded = true;
+        }
+
+        else{
+            self.$preloader.onload = function(){
+                if(loaded){
+                    return;
+                }
+                self.$zoomed.attr('src', self.$preloader.src);
+                loaded = true;
+            };
+        }
+
+        self._allowChangeClone = false;
     };
 
 
@@ -8118,22 +8149,11 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
         self.mainContainerList.find('.video').on('ampvideofullscreenchange', function (e, data) {
             var state = $(e.target).ampVideo('state');
-
-            if (self.wrapper.find('.mobile-normal-view').length) {
-                if (self._resized) {
-                    self._resized = false;
-                    $(window).on('resize', self._resize.bind(self));
-                } else {
-                    self._resized = true;
-                    $(window).off('resize');
-                }
-            }
-
             // If video is not paused
-            if (state !== 2) {
+            if (state !== 2 && data.player && data.player.isFullscreen_) {
                 setTimeout(function () {
                     $(e.target).ampVideo('play');
-                }, 1500);
+                }, 1000);
             }
         });
     };
@@ -8536,25 +8556,17 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.checkMainContainerSlidesVisibility = function (timeout) {
 
-        //if (!this.IE) {
-        //    return;
-        //}
+        if (!this.IE) {
+            return;
+        }
+
         var self = this;
         var assetIndex = self.currentAssetIndex;
         var timeout = timeout || 0;
 
         self.videoTimeout ? clearTimeout(self.videoTimeout) : null;
-
-
-        console.log(assetIndex);
-
-
         var currentAsset = self.assets[assetIndex];
-
         var $slide = self.mainContainerList.find('.amp-slide').has('.video');
-
-        console.log($slide);
-
 
         if (currentAsset.hasOwnProperty('media')) {
             $slide.css({

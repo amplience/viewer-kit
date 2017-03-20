@@ -595,67 +595,67 @@ body {
 * {
   box-sizing: border-box; }
 
-.amp-viewer-kit .amp-portrait-view .amp-main-img {
-  max-height: 100%;
-  width: auto; }
-
-.amp-viewer-kit .amp-portrait-view .main-container {
-  margin: 0 0 0 100px; }
-  .amp-viewer-kit .amp-portrait-view .main-container .icon.icon-right {
-    right: 0; }
-  .amp-viewer-kit .amp-portrait-view .main-container .icon.icon-left {
-    left: 0; }
-  .amp-viewer-kit .amp-portrait-view .main-container .list {
-    margin: 0; }
-    .amp-viewer-kit .amp-portrait-view .main-container .list .amp-slide {
-      marign: 0; }
-
-.amp-viewer-kit .amp-portrait-view .nav-container {
-  height: 100%;
-  width: 90px;
-  margin: 0;
-  padding: 30px 0;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0; }
-  .amp-viewer-kit .amp-portrait-view .nav-container.amp-without-thumbs {
-    padding: 0; }
-  .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-right, .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-left {
-    margin-left: -13px;
-    -ms-transform: translateY(0);
-    transform: translateY(0); }
-  .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-right {
-    bottom: 0;
-    right: auto !important;
-    left: 50% !important;
-    top: auto;
-    background-image: url("svg/ic_stepforward_vert_24px.svg"); }
-  .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-left {
+.amp-viewer-kit .amp-portrait-view {
+  position: relative; }
+  .amp-viewer-kit .amp-portrait-view .amp-main-img {
+    max-height: 100%;
+    width: auto; }
+  .amp-viewer-kit .amp-portrait-view .main-container {
+    margin: 0 0 0 100px; }
+    .amp-viewer-kit .amp-portrait-view .main-container .icon.icon-right {
+      right: 0; }
+    .amp-viewer-kit .amp-portrait-view .main-container .icon.icon-left {
+      left: 0; }
+    .amp-viewer-kit .amp-portrait-view .main-container .list {
+      margin: 0; }
+      .amp-viewer-kit .amp-portrait-view .main-container .list .amp-slide {
+        marign: 0; }
+  .amp-viewer-kit .amp-portrait-view .nav-container {
+    height: 100%;
+    width: 90px;
+    margin: 0;
+    padding: 30px 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    position: absolute;
     top: 0;
-    left: 50% !important;
-    background-image: url("svg/ic_stepbackward_vert_24px.svg"); }
-  .amp-viewer-kit .amp-portrait-view .nav-container .amp-carousel {
-    width: 90px !important; }
-  .amp-viewer-kit .amp-portrait-view .nav-container .list .amp-slide {
-    width: 70px !important;
-    height: 90px;
-    margin: 0 10px;
-    padding: 6px; }
-    .amp-viewer-kit .amp-portrait-view .nav-container .list .amp-slide.amp-selected::after {
-      content: "";
-      position: absolute;
-      height: 94%;
-      left: 0;
-      right: 0;
+    left: 0; }
+    .amp-viewer-kit .amp-portrait-view .nav-container.amp-without-thumbs {
+      padding: 0; }
+    .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-right, .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-left {
+      margin-left: -13px;
+      -ms-transform: translateY(0);
+      transform: translateY(0); }
+    .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-right {
       bottom: 0;
-      border: 2px solid #707175;
-      margin: 0px;
-      background-color: transparent; }
-    .amp-viewer-kit .amp-portrait-view .nav-container .list .amp-slide .thumbnail {
-      margin: 0 0 10px 0; }
+      right: auto !important;
+      left: 50% !important;
+      top: auto;
+      background-image: url("svg/ic_stepforward_vert_24px.svg"); }
+    .amp-viewer-kit .amp-portrait-view .nav-container .icon.icon-left {
+      top: 0;
+      left: 50% !important;
+      background-image: url("svg/ic_stepbackward_vert_24px.svg"); }
+    .amp-viewer-kit .amp-portrait-view .nav-container .amp-carousel {
+      width: 90px !important; }
+    .amp-viewer-kit .amp-portrait-view .nav-container .list .amp-slide {
+      width: 70px !important;
+      height: 90px;
+      margin: 0 10px;
+      padding: 6px; }
+      .amp-viewer-kit .amp-portrait-view .nav-container .list .amp-slide.amp-selected::after {
+        content: "";
+        position: absolute;
+        height: 94%;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid #707175;
+        margin: 0px;
+        background-color: transparent; }
+      .amp-viewer-kit .amp-portrait-view .nav-container .list .amp-slide .thumbnail {
+        margin: 0 0 10px 0; }
 
 .vjs-paused.vjs-has-started .vjs-big-play-button {
   display: block; }

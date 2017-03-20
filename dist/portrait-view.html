@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="css/viewer.min.css">
     <style>
         .cont {
+            margin: 0 auto;
+        }
+        .desktop-normal-view, .mobile-normal-view {
             max-width: 580px;
             margin: 0 auto;
         }
@@ -45,9 +48,9 @@
 <script>
     $(function () {
         var viewer = new amp.Viewer({
-            client: 'Natacha',
+            client: 'playground',
             imageBasePath: '//i1.adis.ws/',
-            set: 'rendering_kit_square_ms',
+            set: 'rendering_kit_square_Vms',
             locale: 'en-gb',
             cacheControl: Date.now(),
             secure: true,
@@ -63,7 +66,7 @@
                 viewer.changeSet('123');
             } else {
                 set = 0;
-                viewer.changeSet('rendering_kit_square_ms');
+                viewer.changeSet('rendering_kit_square_Vms');
             }
         })
     });
