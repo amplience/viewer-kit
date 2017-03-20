@@ -7720,6 +7720,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
         var navSettings = ampConfigs.navContainerCarousel;
 
+        if (self.settings.view && self.isPortraitView && self.currentView === 'desktopNormalView') {
+            navSettings = ampConfigs.navContainerCarouselPortrait;
+        }
+
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
         self.mainContainerList.ampNav(ampConfigs.mainContainerNav);
 
