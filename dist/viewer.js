@@ -8121,13 +8121,12 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             });
 
         self.mainContainerList.find('.video').on('ampvideofullscreenchange', function (e, data) {
-
             var state = $(e.target).ampVideo('state');
             // If video is not paused
-            if (state !== 2) {
+            if (state !== 2 && data.player && data.player.isFullscreen_) {
                 setTimeout(function () {
                     $(e.target).ampVideo('play');
-                }, 1500);
+                }, 1000);
             }
         });
     };
