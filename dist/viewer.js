@@ -8567,6 +8567,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     Viewer.prototype.bindIconClickEvent = function (icon, action) {
         var self = this;
         icon.on('click', function (e, data) {
+            e.stopPropagation();
             if ($(this).hasClass('disabled')) {
                 e.preventDefault();
             } else {
