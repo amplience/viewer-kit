@@ -25,7 +25,7 @@ Example options object:
 {
     client: 'playground',
     imageBasePath: '//i1.adis.ws/',
-    set: 'viewer-kit_set',
+    set: 'viewer_kit_set',
     errImg: '404'
 }
 ```
@@ -60,7 +60,7 @@ Default options set in the viewer:
     target: '#amp-container',
     client: 'playground',
     imageBasePath: '//i1.adis.ws/',
-    set: 'viewer-kit_set',
+    set: 'viewer_kit_set',
     errImg: '404',
     mainWidth: 1000,
     zoom:{
@@ -205,7 +205,7 @@ or with mediaset name:
 
 ```
 #!javascript
-viewer.changeSet('viewer-kit_set');
+viewer.changeSet('viewer_kit_set');
 ```
 
 Test page is in **src/bridge.html**

@@ -56,7 +56,7 @@
         var viewer = new amp.Viewer({
             client: 'playground',
             imageBasePath: '//i1.adis.ws/',
-            set: 'viewer-kit_set',
+            set: 'viewer_kit_set',
             cacheControl: Date.now(),
             ecommBridge: true
         });
@@ -78,7 +78,7 @@
                 ]);
             } else {
                 set = 0;
-                viewer.changeSet('viewer-kit_set');
+                viewer.changeSet('viewer_kit_set');
             }
         })
     });
