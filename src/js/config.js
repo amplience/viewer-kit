@@ -13,7 +13,7 @@
     amp.viewerSettings = {
         viewerConfigs: {
             target: '#amp-container',
-            client: 'Natacha',
+            client: 'playground',
             imageBasePath: '//i1.adis.ws/',
             errImg: '404',
             errCallback: function () {

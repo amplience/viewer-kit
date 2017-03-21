@@ -6884,7 +6884,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     amp.viewerSettings = {
         viewerConfigs: {
             target: '#amp-container',
-            client: 'Natacha',
+            client: 'playground',
             imageBasePath: '//i1.adis.ws/',
             errImg: '404',
             errCallback: function () {
