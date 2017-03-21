@@ -577,6 +577,9 @@ body {
     -ms-transform: translateX(-50%) translateY(-50%);
         transform: translateX(-50%) translateY(-50%); }
 
+.amp-viewer-kit .amp-slide .video-js .vjs-big-play-button {
+  transition: all 0s; }
+
 @font-face {
   font-family: 'Neuzeit Regular';
   src: url("fonts/neuzeitgrot-webfont.woff") format("woff");
