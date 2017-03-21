@@ -548,12 +548,10 @@
         var self = this;
 
         self.bindIconClickEvent(self.wrapper.find('.main-container-prev'), function () {
-            self.mainContainerList.ampCarousel('prev');
-            self.navContainerMove('prev');
+            self.mainContainerMove('prev');
         });
         self.bindIconClickEvent(self.wrapper.find('.main-container-next'), function () {
-            self.mainContainerList.ampCarousel('next');
-            self.navContainerMove('next');
+            self.mainContainerMove('next');
         });
 
         self.bindIconClickEvent(self.wrapper.find('.nav-container-prev'), function () {
@@ -574,6 +572,18 @@
             goToIndex = info.isLast ? info.firstVisible + 1 : info.firstVisible + 2;
         }
         self.navContainerList.ampCarousel('goTo', goToIndex);
+    };
+
+    Viewer.prototype.mainContainerMove = function (dir) {
+        var self = this;
+        var info = self.getMainVisibleSlidesInfo();
+        var goToIndex = info.firstVisible + 1;
+        if (dir === 'prev') {
+            goToIndex = info.isFirst ? 1 : info.firstVisible;
+        } else if (dir === 'next') {
+            goToIndex = info.isLast ? info.firstVisible + 1 : info.firstVisible + 2;
+        }
+        self.mainContainerList.ampCarousel('goTo', goToIndex);
     };
 
     Viewer.prototype.initTooltips = function () {
@@ -993,6 +1003,29 @@
         }
         var ampConfigs = self.getAmpConfigs();
         var visibleCount = ampConfigs.navContainerCarousel.width;
+
+        if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
+            visibleCount = elements.filter('.amp-visible, .amp-partially-visible').length;
+        }
+
+        return {
+            firstVisible: firstVisible,
+            isFirst: firstVisible === 0,
+            isLast: firstVisible >= elements.length - visibleCount
+        };
+    };
+
+    Viewer.prototype.getMainVisibleSlidesInfo = function () {
+        var self = this;
+        var elements = self.mainContainerList.find('.amp-slide');
+        var firstVisible = elements.length;
+        for (var i = 0; i < elements.length; i++) {
+            if (elements.eq(i).is('.amp-visible, .amp-partially-visible') && i < firstVisible) {
+                firstVisible = i;
+            }
+        }
+        var ampConfigs = self.getAmpConfigs();
+        var visibleCount = ampConfigs.mainContainerCarousel.width;
 
         if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
             visibleCount = elements.filter('.amp-visible, .amp-partially-visible').length;
