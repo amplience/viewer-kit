@@ -7564,10 +7564,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
         if (view === self.views.desktopFullView) {
             this._scrollPosition = $(window).scrollTop();
-            $('body').addClass('amp-no-scroll');
+            $('html, body').addClass('amp-no-scroll');
         }
         else {
-            $('body').removeClass('amp-no-scroll');
+            $('html, body').removeClass('amp-no-scroll');
             $(window).scrollTop(this._scrollPosition)
         }
 
