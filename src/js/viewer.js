@@ -253,10 +253,12 @@
         }
 
         if (view === self.views.desktopFullView) {
+            this._scrollPosition = $(window).scrollTop();
             $('body').addClass('amp-no-scroll');
         }
         else {
             $('body').removeClass('amp-no-scroll');
+            $(window).scrollTop(this._scrollPosition)
         }
 
         self.mainContainerList = self.wrapper.find('.main-container .list');

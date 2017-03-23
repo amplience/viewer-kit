@@ -6328,8 +6328,8 @@ amp.stats.event = function(dom,type,event,value){
             this._moveSpin(this.options.orientation == 'horz' ? dx : dy,e,sindex);
 
             if(this.options.orientation == this.moveDir){
-                e.preventDefault();
                 return false;
+                e.preventDefault();
             }
         },
 
@@ -7563,10 +7563,12 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         }
 
         if (view === self.views.desktopFullView) {
+            this._scrollPosition = $(window).scrollTop();
             $('body').addClass('amp-no-scroll');
         }
         else {
             $('body').removeClass('amp-no-scroll');
+            $(window).scrollTop(this._scrollPosition)
         }
 
         self.mainContainerList = self.wrapper.find('.main-container .list');
