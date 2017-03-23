@@ -171,6 +171,40 @@ module.exports = function (grunt) {
                         'src/js/amplience-ecommerce-bridge-mock.js'
                     ]
                 }
+            },
+            'build-develop': {
+                files: {
+                    'dist/jquery.min.js': [
+                        'node_modules/jquery/dist/jquery.min.js',
+                    ],
+                    'dist/jquery-ui-custom.js': [
+                        'bower_components/jquery-ui/ui/jquery.ui.core.js',
+                        'bower_components/jquery-ui/ui/jquery.ui.widget.js'
+                    ],
+                    'dist/viewer.js': [
+                        'node_modules/amplience-sdk-client/dist/parts/amplience-api.js',
+                        'node_modules/amplience-sdk-client/dist/video-js/video.min.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-stack.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-carousel.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-load.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-auto.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-nav.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-zoom.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-zoom-inline.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-video.js',
+                        'node_modules/amplience-sdk-client/src/amp.ui/widget-spin.js',
+                        'node_modules/grunt-contrib-handlebars/node_modules/handlebars/dist/handlebars.runtime.min.js',
+                        '.tmp/templates.js',
+                        'src/js/hbs-helpers.js',
+                        'src/js/detect.min.js',
+                        'src/js/config.js',
+                        'src/js/viewer.js',
+                        'src/js/bridge-connect.js'
+                    ],
+                    'dist/amplience-ecommerce-bridge-mock.js': [
+                        'src/js/amplience-ecommerce-bridge-mock.js'
+                    ]
+                }
             }
         },
         postcss: {
@@ -336,6 +370,12 @@ module.exports = function (grunt) {
         'uglify:build'
     ]);
 
+    grunt.registerTask('build-js-develop', [
+        'clean:distJs',
+        'concat:build-develop',
+        'uglify:build'
+    ]);
+
     grunt.registerTask('build-css', [
         'clean:distCss',
         'sass',
@@ -357,6 +397,19 @@ module.exports = function (grunt) {
 
     ]);
 
+    grunt.registerTask('build-develop', [
+        'copy:handlebars',
+        'clean:html',
+        'build-css',
+        'build-js-develop',
+        'copy:demos',
+        'clean:templates',
+        'handlebars',
+        'compress:build',
+        'processhtml'
+
+    ]);
+
     grunt.registerTask('code-quality', [
         'jshint'
     ]);
@@ -367,6 +420,12 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'build',
+        'connect:serve',
+        'watch'
+    ]);
+
+    grunt.registerTask('develop', [
+        'build-develop',
         'connect:serve',
         'watch'
     ]);
