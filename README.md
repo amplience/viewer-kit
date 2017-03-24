@@ -23,9 +23,9 @@ Example options object:
 
 ```javascript
 {
-    client: 'Natacha',
-    imageBasePath: '//i1-qa.adis.ws/',
-    set: 'viewer_kit_square_ms',
+    client: 'playground',
+    imageBasePath: '//i1.adis.ws/',
+    set: 'viewer_kit_set',
     errImg: '404'
 }
 ```
@@ -58,9 +58,9 @@ Default options set in the viewer:
 ```javascript
 {
     target: '#amp-container',
-    client: 'viewer_kit_square_ms',
-    client: 'Natacha',
+    client: 'playground',
     imageBasePath: '//i1.adis.ws/',
+    set: 'viewer_kit_set',
     errImg: '404',
     mainWidth: 1000,
     zoom:{
@@ -205,7 +205,7 @@ or with mediaset name:
 
 ```
 #!javascript
-viewer.changeSet('viewer_kit_square_ms');
+viewer.changeSet('viewer_kit_set');
 ```
 
 Test page is in **src/bridge.html**

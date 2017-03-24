@@ -26,7 +26,7 @@
         self.settings = $.extend(true, {}, defaultSettings, settings);
 
         if (self.settings.locale && self.settings.locale.length > 0) {
-            self.settings.ampConfigs.mainContainerZoomInline.transforms.push('&locale=' + self.settings.locale);
+            self.settings.ampConfigs.mainContainerZoomInline.transforms.push('locale=' + self.settings.locale);
         }
 
         self.views = {
@@ -43,6 +43,7 @@
 
         self.controller();
         self.tags = [];
+        self.IE = self.isIE();
     };
 
     Viewer.prototype.controller = function () {
@@ -207,6 +208,15 @@
             });
     };
 
+    Viewer.prototype.isIE = function () {
+        if (/MSIE [0-9]{1,}/.test(navigator.userAgent)) {
+            return true;
+        } else if (/Trident\/\d./i.test(navigator.userAgent) || /Edge\/\d./i.test(navigator.userAgent)) {
+            return true;
+        }
+        return false;
+    }
+
     Viewer.prototype.isMobile = function () {
         var self = this;
         if (self.settings.isMobile) {
@@ -247,9 +257,18 @@
           callbacks.after[view](self.wrapper);
         }
 
+        if (view === self.views.desktopFullView) {
+            this._scrollPosition = $(window).scrollTop();
+            $('html, body').addClass('amp-no-scroll');
+        }
+        else {
+            $('html, body').removeClass('amp-no-scroll');
+            $(window).scrollTop(this._scrollPosition)
+        }
+
         self.mainContainerList = self.wrapper.find('.main-container .list');
-        self.navContainerList =  self.wrapper.find('.nav-container .list');
-        self.tooltip =  self.wrapper.find('.main-container .tooltip');
+        self.navContainerList = self.wrapper.find('.nav-container .list');
+        self.tooltip = self.wrapper.find('.main-container .tooltip');
         self.tooltipText = self.tooltip.find('span.text');
 
         self.bindGenericEvents();
@@ -265,7 +284,7 @@
         self.checkMainContainerNavArrows();
         self.checkNavContainerNavArrows();
         self.checkZoomIcons();
-        self.checkMainContainerSlidesVisibility(true);
+        self.checkMainContainerSlidesVisibility();
 
         switch (view) {
             case self.views.desktopNormalView:
@@ -279,7 +298,7 @@
                 break;
         }
 
-        if(self.settings.initCallback){
+        if (self.settings.initCallback) {
             self.settings.initCallback.apply(self);
         }
     };
@@ -442,7 +461,7 @@
 
                 else {
                     var mainContainerSpin = ampConfigs.mainContainerSpin;
-                    if(spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1){
+                    if (spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1) {
                         mainContainerSpin = $.extend(true, {}, mainContainerSpin, mainContainerSpin);
                         mainContainerSpin.play.onLoad = false;
                     }
@@ -453,12 +472,23 @@
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
+                    videoSettings.nativeControlsForTouch = false;
                 }
 
                 var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
 
+                $videoTag.find('video').on('touchstart', function () {
+                    var state = $videoTag.ampVideo('state');
+                    if (state == 2) {
+                        $videoTag.ampVideo('play');
+                    }
+                    else {
+                        $videoTag.ampVideo('pause');
+                    }
+                });
+
                 self.tags.push({
-                    alias : 'videoContainer',
+                    alias: 'videoContainer',
                     $tag: $videoTag
                 });
 
@@ -467,6 +497,15 @@
                     .ampZoomInline(ampConfigs.mainContainerZoomInline);
             }
         }
+
+        var mainHeight = self.mainContainerList.height() + 'px';
+
+        self.mainContainerList.find('.zoom-trap').css({
+            'line-height': mainHeight
+        });
+        self.mainContainerList.find('.amp-spin').css({
+            'line-height': mainHeight
+        });
 
         self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
     };
@@ -523,12 +562,10 @@
         var self = this;
 
         self.bindIconClickEvent(self.wrapper.find('.main-container-prev'), function () {
-            self.mainContainerList.ampCarousel('prev');
-            self.navContainerMove('prev');
+            self.mainContainerMove('prev');
         });
         self.bindIconClickEvent(self.wrapper.find('.main-container-next'), function () {
-            self.mainContainerList.ampCarousel('next');
-            self.navContainerMove('next');
+            self.mainContainerMove('next');
         });
 
         self.bindIconClickEvent(self.wrapper.find('.nav-container-prev'), function () {
@@ -549,6 +586,18 @@
             goToIndex = info.isLast ? info.firstVisible + 1 : info.firstVisible + 2;
         }
         self.navContainerList.ampCarousel('goTo', goToIndex);
+    };
+
+    Viewer.prototype.mainContainerMove = function (dir) {
+        var self = this;
+        var info = self.getMainVisibleSlidesInfo();
+        var goToIndex = info.firstVisible + 1;
+        if (dir === 'prev') {
+            goToIndex = info.isFirst ? 1 : info.firstVisible;
+        } else if (dir === 'next') {
+            goToIndex = info.isLast ? info.firstVisible + 1 : info.firstVisible + 2;
+        }
+        self.mainContainerList.ampCarousel('goTo', goToIndex);
     };
 
     Viewer.prototype.initTooltips = function () {
@@ -575,13 +624,15 @@
 
     Viewer.prototype.initImageTooltip = function () {
         var self = this;
+        var tapText = '';
         self.tooltip.attr({class: 'tooltip image'});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
                 if (self.canTouch) {
+                    tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktop.image.doubleTouch.text :
+                        self.settings.tooltips.desktop.image.touch.text;
                     self.tooltip.css({position: 'absolute'});
-                    self.tooltipText.text(self.settings.tooltips.desktop.image.touch.text);
+                    self.tooltipText.text(tapText);
                     self.fadeOutTooltip();
                 } else {
                     self.tooltip.fadeOut(0);
@@ -604,14 +655,15 @@
                 }
                 break;
             case self.views.desktopFullView:
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktopFull.image.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.image.noTouch.text);
                 self.tooltip.fadeOut(0);
                 break;
             case self.views.mobileNormalView:
-                if (self.canTouch) {
-                    self.tooltipText.text(self.settings.tooltips.mobile.image.touch.text);
-                } else {
-                    self.tooltipText.text(self.settings.tooltips.mobile.image.noTouch.text);
-                }
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.mobile.image.doubleTouch.text :
+                    self.settings.tooltips.mobile.image.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.image.noTouch.text);
                 self.fadeOutTooltip();
                 break;
         }
@@ -619,22 +671,24 @@
 
     Viewer.prototype.initSpinTooltip = function (spin3D) {
         var self = this;
+        var tapText = '';
         var spinClass = spin3D ? 'spin-3d' : 'spin';
         self.tooltip.attr({class: 'tooltip ' + spinClass});
-
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.settings.tooltips.desktop.spin.text);
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktop.spin.doubleTouch.text :
+                    self.settings.tooltips.desktop.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktop.spin.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.settings.tooltips.desktopFull.spin.text);
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktopFull.spin.doubleTouch.text :
+                    self.settings.tooltips.desktopFull.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.spin.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                if (self.canTouch) {
-                    self.tooltipText.text(self.settings.tooltips.mobile.spin.touch.text);
-                } else {
-                    self.tooltipText.text(self.settings.tooltips.mobile.spin.noTouch.text);
-                }
+                tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.mobile.spin.doubleTouch.text :
+                    self.settings.tooltips.mobile.spin.touch.text;
+                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.spin.noTouch.text);
                 break;
         }
 
@@ -648,13 +702,13 @@
 
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.settings.tooltips.desktop.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktop.video.play.touch.text : self.settings.tooltips.desktop.video.play.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.settings.tooltips.desktopFull.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktopFull.video.play.touch.text : self.settings.tooltips.desktopFull.video.play.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                self.tooltipText.text(self.settings.tooltips.mobile.video.play.text);
+                self.tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.video.play.touch.text : self.settings.tooltips.mobile.video.play.noTouch.text);
                 break;
         }
 
@@ -670,10 +724,20 @@
         }, self.settings.tooltips.displayTime);
     };
 
-    Viewer.prototype.doubleTapEvent = function (element) {
+    Viewer.prototype.doubleTapEvent = function ($element) {
         var lastTapTime = 0;
+        var lastTapTime2 = 0;
         var self = this;
-        element.on('touchend', function () {
+        $element.on('touchstart', function (e) {
+            var currentTime = new Date();
+            var tapTime = currentTime - lastTapTime2;
+            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+                e.preventDefault();
+            }
+
+            lastTapTime2 = currentTime;
+        });
+        $element.on('touchend', function () {
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime;
             if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
@@ -728,7 +792,9 @@
         var self = this;
         var spinTraps = self.mainContainerList.find('.spin-trap');
         var spins = self.mainContainerList.find('.spin-trap + ul');
-
+        spinTraps.each(function (ix, val) {
+            $(val).parent().on('touchstart', self._prevent);
+        });
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
                 $(this).addClass('active-for-scrolling');
@@ -766,13 +832,16 @@
         var self = this;
 
         self.mainContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
+            $('.amp-spin').find('.amp-frame').css({
+                'margin-left': '-1px'
+            });
             self.currentAssetIndex = data.index - 1;
             self.zoomOutFull();
             self.initTooltips();
             self.checkSpins();
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
-            self.checkMainContainerSlidesVisibility(false);
+            self.checkMainContainerSlidesVisibility(self.settings.ampConfigs.mainContainerCarousel.animDuration);
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -798,22 +867,11 @@
 
         self.mainContainerList.find('.video').on('ampvideofullscreenchange', function (e, data) {
             var state = $(e.target).ampVideo('state');
-
-            if (self.wrapper.find('.mobile-normal-view').length) {
-                if (self._resized) {
-                    self._resized = false;
-                    $(window).on('resize', self._resize.bind(self));
-                } else {
-                    self._resized = true;
-                    $(window).off('resize');
-                }
-            }
-
             // If video is not paused
-            if (state !== 2) {
+            if (state !== 2 && data.player && data.player.isFullscreen_) {
                 setTimeout(function () {
                     $(e.target).ampVideo('play');
-                }, 1500);
+                }, 1000);
             }
         });
     };
@@ -971,6 +1029,29 @@
         };
     };
 
+    Viewer.prototype.getMainVisibleSlidesInfo = function () {
+        var self = this;
+        var elements = self.mainContainerList.find('.amp-slide');
+        var firstVisible = elements.length;
+        for (var i = 0; i < elements.length; i++) {
+            if (elements.eq(i).is('.amp-visible, .amp-partially-visible') && i < firstVisible) {
+                firstVisible = i;
+            }
+        }
+        var ampConfigs = self.getAmpConfigs();
+        var visibleCount = ampConfigs.mainContainerCarousel.width;
+
+        if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
+            visibleCount = elements.filter('.amp-visible, .amp-partially-visible').length;
+        }
+
+        return {
+            firstVisible: firstVisible,
+            isFirst: firstVisible === 0,
+            isLast: firstVisible >= elements.length - visibleCount
+        };
+    };
+
     Viewer.prototype.zoomIn = function () {
         var self = this;
         var slide = self.getZoomSlide();
@@ -997,6 +1078,10 @@
 
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
+        $.each(self._preventElements, function (ix, val) {
+            val.off('touchmove', self._prevent);
+        });
+        self._preventElements = [];
         var slide = self.getZoomSlide();
         if (slide.length > 0) {
             slide.ampZoomInline('zoomOutFull');
@@ -1092,7 +1177,6 @@
         // Need to remove mouse events on touch devices since it fires callbacks twice on tap
         var startEvents = (self.canTouch ? '' : 'mousedown ');
         var endEvents = (self.canTouch ? '' : 'mouseup ');
-
         if (this.settings.zoomInlineDoubleTap) {
             startEvents += self.doubleTapEvent(element);
             endEvents += 'doubletapend';
@@ -1101,10 +1185,8 @@
             endEvents += 'touchend';
         }
 
-
         element.on(startEvents, function (e) {
             var $self = $(this);
-
             if (e.which === 3) {
                 return false;
             }
@@ -1120,6 +1202,13 @@
                 if (e.which === 3) {
                     return false;
                 }
+
+                $.each(self._preventElements, function (ix, val) {
+                    val.off('touchmove', self._prevent);
+                });
+                self._preventElements = [];
+                element.on('touchmove', self._prevent);
+                self._preventElements.push(element);
 
                 var target = this;
                 var coords = getPageCoords(e);
@@ -1182,6 +1271,7 @@
     Viewer.prototype.bindIconClickEvent = function (icon, action) {
         var self = this;
         icon.on('click', function (e, data) {
+            e.stopPropagation();
             if ($(this).hasClass('disabled')) {
                 e.preventDefault();
             } else {
@@ -1206,25 +1296,39 @@
         rightArrow.css('right', shift);
     };
 
-    Viewer.prototype.checkMainContainerSlidesVisibility = function (hideImmediately) {
-        var self = this;
-        clearTimeout(self.hideSlidesTimeout);
-        self.mainContainerList.find('.amp-slide').css('opacity', 1);
+    Viewer.prototype.checkMainContainerSlidesVisibility = function (timeout) {
 
-        if (hideImmediately) {
-            hideSlides();
-        } else {
-            var ampConfigs = self.getAmpConfigs();
-
-            self.hideSlidesTimeout = setTimeout(function () {
-                hideSlides();
-            }, ampConfigs.mainContainerCarousel.animDuration);
+        if (!this.IE) {
+            return;
         }
 
-        function hideSlides() {
-            self.mainContainerList.find('.amp-slide:not(.amp-visible)').css('opacity', 0);
+        var self = this;
+        var assetIndex = self.currentAssetIndex;
+        var timeout = timeout || 0;
+
+        self.videoTimeout ? clearTimeout(self.videoTimeout) : null;
+        var currentAsset = self.assets[assetIndex];
+        var $slide = self.mainContainerList.find('.amp-slide').has('.video');
+
+        if (currentAsset.hasOwnProperty('media')) {
+            $slide.css({
+                opacity:1
+            })
+            return;
+        }
+
+        else {
+            self.videoTimeout = setTimeout(function () {
+                $slide.css({opacity: 0});
+            }, timeout);
         }
     };
+
+    Viewer.prototype._prevent = function (e) {
+        e.preventDefault();
+    };
+
+    Viewer.prototype._preventElements = [];
 
     global.amp.Viewer = Viewer;
 }(window, jQuery));

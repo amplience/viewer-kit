@@ -2,14 +2,10 @@
 
 .amp-viewer-kit {
   .amp-portrait-view {
-
+    position: relative;
     .amp-main-img {
       max-height: 100%;
       width: auto;
-    }
-
-    .amp-spin {
-      height: auto !important;
     }
 
     .main-container {

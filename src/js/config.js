@@ -13,7 +13,7 @@
     amp.viewerSettings = {
         viewerConfigs: {
             target: '#amp-container',
-            client: 'Natacha',
+            client: 'playground',
             imageBasePath: '//i1.adis.ws/',
             errImg: '404',
             errCallback: function () {
@@ -49,38 +49,82 @@
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
-                        text: ''
+                        noTouch: {
+                            text: 'Drag to rotate'
+                        },
+                        touch: {
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
+                        }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 },
                 desktopFull: {
                     image: {
                         noTouch: {
-                            text: ''
+                            text: 'Click to zoom'
                         },
                         touch: {
-                            text: ''
+                            text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
-                        text: ''
+                        noTouch: {
+                            text: 'Drag to rotate'
+                        },
+                        touch: {
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
+                        }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 },
@@ -91,22 +135,39 @@
                         },
                         touch: {
                             text: 'Tap to zoom'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to zoom'
                         }
                     },
                     spin: {
                         noTouch: {
-                            text: 'Click to spin'
+                            text: 'Drag to rotate'
                         },
                         touch: {
-                            text: 'Tap to spin'
+                            text: 'Tap to rotate'
+                        },
+                        doubleTouch: {
+                            text: 'Double tap to rotate'
                         }
+
                     },
                     video: {
                         play: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         },
                         pause: {
-                            text: ''
+                            noTouch:{
+                                text: ''
+                            },
+                            touch:{
+                                text: ''
+                            }
                         }
                     }
                 }
@@ -189,7 +250,8 @@
                     play: {
                         onLoad: true,
                         onVisible: true,
-                        repeat: 1
+                        repeat: 1,
+                        delay: 600
                     },
                     lazyLoad: false,
                     orientation: 'horz'
@@ -204,11 +266,12 @@
                     gesture: {
                         enabled: true,
                         fingers: 1
-                    },
+                    }
                 },
                 mainContainerVideo: {
                     width: 1,
                     height: 1,
+                    center: true,
                     responsive: true,
                     autoplay: false,
                     loop: false,
