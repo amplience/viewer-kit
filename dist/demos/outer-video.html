@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>Viewer Kit Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="../css/viewer.min.css">
+    <style>
+        .cont {
+            max-width: 587px;
+            margin: 0 auto;
+        }
+
+        .video-button {
+            display: inline-block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+            .cont {
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="cont">
+    <div class="blocks">
+        <div class="block block-8">
+            <div class="gallery">
+                <div id="amp-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<button id="switch" style="position: fixed;right: 0;bottom: 0;z-index:100;">Switch Set</button>
+
+<script src="../jquery.min.js"></script>
+
+<script src="../jquery-ui-custom.js"></script>
+<script src="../viewer.min.js"></script>
+
+<script src="js/outer_video.js"></script>
+
+<script>
+    $(function () {
+
+        var viewer = new amp.Viewer({
+            client: 'Natacha',
+            imageBasePath: '//i1.adis.ws/',
+            set: 'rendering_kit_square_ms',
+            locale: 'en-gb',
+            cacheControl: Date.now(),
+            secure: true,
+            zoomInlineDoubleTap: true,
+            doubleTapTime: 250,
+            initCallback: function () {
+                outerVideo(this);
+                this.externalVideo = true;
+            },
+            errCallback: function () {
+                console.log('set call failed');
+            },
+            navIconsMain: {
+                next: 'icon icon-right main-next-test',
+                prev: 'icon icon-left main-prev-test'
+            },
+            navIconsNav: {
+                next: 'icon icon-right nav-next-test',
+                prev: 'icon icon-left nav-prev-test'
+            },
+            navIconsPortraitNav: {
+                next: 'icon icon-right navPortrait-next-test',
+                prev: 'icon icon-left navPortrait-next-test'
+            },
+            ampConfigs: {
+                mainContainerZoomInline: {
+                    scaleStep: 0.5
+                },
+                mainContainerSpin: {
+                    friction: 0.8
+                }
+            }
+        });
+
+        window.viewer = viewer;
+        var set = 0;
+
+        $('#switch').on('click', function () {
+            if (set === 0) {
+                set = 1;
+                viewer.changeSet([
+                    {"type": "i", "name": "rendering_kit_square_2"},
+                    {"type": "i", "name": "rendering_kit_square_1"},
+                    {"type": "v", "name": "rendering_kit_v"},
+                    {"type": "s", "name": "rendering_kit_square_ss"},
+                    {"type": "i", "name": "rendering_kit_square_3"},
+                    {"type": "i", "name": "rendering_kit_square_5"},
+                    {"type": "i", "name": "rendering_kit_square_spin12"}
+                ]);
+            } else {
+                set = 0;
+                viewer.changeSet('rendering_kit_square_ms');
+            }
+        })
+    });
+</script>
+</body>
+
+</html>

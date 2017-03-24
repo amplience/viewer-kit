@@ -1,7 +1,7 @@
 @import "variables";
 
 .amp-viewer-kit {
-  font-family: "Neuzeit Regular", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: Helvetica, Roboto, Arial, sans-serif;
   position: relative;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -23,18 +23,9 @@
       transform: translateY(-50%);
     }
 
-    &.icon-left {
-      background-image: url('svg/ic_stepbackward_24px.svg');
-    }
-
-    &.icon-right {
-      background-image: url('svg/ic_stepforward_24px.svg');
-    }
-
     &.close {
       top: 0;
       right: 0;
-      background-image: url('svg/ic_closeoverlay_24px.svg');
     }
 
     &.disabled {
@@ -122,6 +113,7 @@
         transform: translateX(-50%) translateY(-50%);
         pointer-events: none;
         display: inline-table;
+        opacity: 1;
 
         .tooltip-icon {
           background-position: center;
@@ -143,10 +135,6 @@
           line-height: 42px;
           border-radius: 3px;
           position: fixed;
-
-          .tooltip-icon {
-            background-image: url('svg/ic_enlarge_24px.svg');
-          }
         }
 
         &.spin {
@@ -157,10 +145,6 @@
           left: 50%;
           right: auto;
           bottom: auto;
-
-          .tooltip-icon {
-            background-image: url('svg/ic_360spin_24px.svg');
-          }
         }
 
         &.spin-3d {
@@ -171,10 +155,6 @@
           left: 50%;
           right: auto;
           bottom: auto;
-
-          .tooltip-icon {
-            background-image: url('svg/ic_720spin_24px.svg');
-          }
         }
 
         &.video {
@@ -188,7 +168,6 @@
           display: none;
 
           .tooltip-icon {
-            background-image: url('svg/ic_play_24px.svg');
             height: 100%;
             width: 100%;
           }
@@ -238,6 +217,7 @@
         transform: translateX(-50%) translateY(-50%);
         pointer-events: none;
         display: block;
+        opacity: 1;
 
         .tooltip-icon {
           height: 100%;
@@ -254,10 +234,6 @@
         &.spin {
           width: 75%;
           height: 35%;
-
-          .tooltip-icon {
-            background-image: url('svg/ic_360spin_24px.svg');
-          }
         }
 
         &.spin-3d {
@@ -265,7 +241,6 @@
           height: 35%;
 
           .tooltip-icon {
-            background-image: url('svg/ic_720spin_24px.svg');
             background-size: 60%;
           }
         }
@@ -273,10 +248,6 @@
         &.video {
           width: 50%;
           height: 40%;
-
-          .tooltip-icon {
-            background-image: url('svg/ic_play_24px.svg');
-          }
         }
       }
     }
@@ -396,14 +367,6 @@
         display: inline-block;
         top: 50%;
         transform: translateY(-50%);
-
-        &.plus {
-          background-image: url('svg/ic_zoomin_24px.svg');
-        }
-
-        &.minus {
-          background-image: url('svg/ic_zoomout_24px.svg');
-        }
       }
     }
   }

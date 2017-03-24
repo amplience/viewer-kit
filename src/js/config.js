@@ -198,6 +198,7 @@
                     loop:false,
                     dragDistance: 200,
                     orientation: 'vert',
+                    preloadType: 'full',
                     width: 1,
                     height: 1,
                     gesture: {
@@ -215,8 +216,10 @@
                     controls: true,
                     pauseOnHide: true,
                     nativeControlsForTouch: false,
-                    plugins: {
-                        resolutions: true
+                    "plugins": {
+                        "videoJsResolutionSwitcher": {
+                            "default": "Medium"
+                        }
                     }
                 },
                 mainContainerZoomInline: {
@@ -341,14 +344,14 @@
                 pauseOnHide: true,
                 nativeControlsForTouch: true,
                 plugins: {
-                    resolutions: true
+                    videoJsResolutionSwitcher : true
                 }
             });
         },
         overwritePortraitSettings: function (settings) {
             var self = this;
             settings.ampConfigs.mainContainerCarousel.width = 0.8;
-            settings.ampConfigs.mainContainerCarousel.height = 1;
+            settings.ampConfigs.mainContainerCarousel.height = 1.2;
             settings.templates = {
                 thumb: 'w=85&h=85&qlt=70',
                 thumbPortrait: 'w=67&h=89&qlt=100',
