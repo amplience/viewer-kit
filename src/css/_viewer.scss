@@ -122,20 +122,13 @@ body {
         font-family: 'Neuzeit Light';
         font-size: 20px;
         position: absolute;
-        width: 230px;
-        height: 42px;
-        line-height: 42px;
-        margin-left: - 115px;
-        margin-top: -21px;
-        border-radius: 3px;
-        right: auto;
-        bottom: auto;
         padding: 0 10px;
         top: 50%;
         left: 50%;
         background-color: rgba(200, 200, 200, .5);
         color: white;
         text-align: center;
+        transform: translateX(-50%) translateY(-50%);
         pointer-events: none;
         display: inline-table;
         opacity: 1;
@@ -149,7 +142,6 @@ body {
           height: 38px;
           width: 38px;
           display: inline-block;
-          float: right;
         }
 
         &.image {
