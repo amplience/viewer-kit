@@ -813,7 +813,11 @@
     };
 
     Viewer.prototype.bindGenericEvents = function () {
+        var self = this;
         $(window).on('resize', this._resize.bind(this));
+        $(window).on('blur', function(){
+          self.zoomOutFull();
+        });
     };
 
     Viewer.prototype.bindAmpEvents = function () {

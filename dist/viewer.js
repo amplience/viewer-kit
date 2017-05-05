@@ -6328,8 +6328,8 @@ amp.stats.event = function(dom,type,event,value){
             this._moveSpin(this.options.orientation == 'horz' ? dx : dy,e,sindex);
 
             if(this.options.orientation == this.moveDir){
-                return false;
                 e.preventDefault();
+                return false;
             }
         },
 
@@ -8123,7 +8123,11 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     };
 
     Viewer.prototype.bindGenericEvents = function () {
+        var self = this;
         $(window).on('resize', this._resize.bind(this));
+        $(window).on('blur', function(){
+          self.zoomOutFull();
+        });
     };
 
     Viewer.prototype.bindAmpEvents = function () {
