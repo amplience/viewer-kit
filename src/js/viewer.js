@@ -717,6 +717,13 @@
         var lastTapTime2 = 0;
         var self = this;
         $element.on('touchstart', function (e) {
+            if (self.isZoomCycle) {
+                lastTapTime = 0;
+                lastTapTime2 = 0;
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime2;
             if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
@@ -1066,13 +1073,19 @@
 
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
-        $.each(self._preventElements, function (ix, val) {
-            val.off('touchmove', self._prevent);
-        });
-        self._preventElements = [];
-        var slide = self.getZoomSlide();
-        if (slide.length > 0) {
-            slide.ampZoomInline('zoomOutFull');
+        if (!self.isZoomCycle) {
+            self.isZoomCycle = true;
+            $.each(self._preventElements, function (ix, val) {
+              val.off('touchmove', self._prevent);
+            });
+            self._preventElements = [];
+            var slide = self.getZoomSlide();
+            if (slide.length > 0) {
+              slide.ampZoomInline('zoomOutFull');
+            }
+            setTimeout(function () {
+              self.isZoomCycle = false;
+            }, 600)
         }
     };
 
@@ -1091,7 +1104,13 @@
         if (!self.isZoomCycle) {
             self.isZoomCycle = true;
             var slide = self.getZoomSlide();
-            if (slide.length > 0) {
+            var state = slide.ampZoomInline('state');
+            if (self.lastZoomDir === 'Out' && state.scale - state.scaleStep === 1) {
+              $.each(self._preventElements, function (ix, val) {
+                val.off('touchmove', self._prevent);
+              });
+            }
+          if (slide.length > 0) {
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
             }
