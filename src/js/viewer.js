@@ -820,6 +820,9 @@
 
     Viewer.prototype.bindGenericEvents = function () {
         $(window).on('resize', this._resize.bind(this));
+        $(document).on('gesturestart', function (e) {
+            e.preventDefault();
+        });
     };
 
     Viewer.prototype.bindAmpEvents = function () {
