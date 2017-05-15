@@ -8452,12 +8452,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         if (!self.isZoomCycle) {
             self.isZoomCycle = true;
             var slide = self.getZoomSlide();
-            var state = slide.ampZoomInline('state');
-            if (self.lastZoomDir === 'Out' && state.scale - state.scaleStep === 1) {
-              $.each(self._preventElements, function (ix, val) {
-                val.off('touchmove', self._prevent);
-              });
-            }
           if (slide.length > 0) {
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
@@ -8515,6 +8509,11 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     state = slide.ampZoomInline('state');
                     if (state.scale > 1) {
                         close.css({display: 'block'});
+                    } else {
+                      $.each(self._preventElements, function (ix, val) {
+                        val.off('touchmove', self._prevent);
+                        self._preventElements = [];
+                      });
                     }
                 }
                 break;
