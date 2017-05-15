@@ -8129,9 +8129,45 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     };
 
     Viewer.prototype.bindGenericEvents = function () {
+        var self = this;
         $(window).on('resize', this._resize.bind(this));
         $(document).on('gesturestart', function (e) {
             e.preventDefault();
+        });
+        var touchmoves = [];
+        var $ampCarousel = false;
+        var blocked = false;
+        $(document).on('touchmove', function (e) {
+            if (e.originalEvent.touches[0] && e.originalEvent.touches[0].clientX !== undefined) {
+              if(!$ampCarousel)  {
+                $ampCarousel = $(e.target).parents('.amp-carousel');
+              }
+              if ($ampCarousel && $ampCarousel.length > 0) {
+                var coords = {
+                  clientX: e.originalEvent.touches[0].clientX,
+                  clientY: e.originalEvent.touches[0].clientY
+                };
+                touchmoves.push(coords);
+                var diffX = Math.abs(touchmoves[touchmoves.length-1].clientX - touchmoves[0].clientX);
+                var diffY = Math.abs(touchmoves[touchmoves.length-1].clientY - touchmoves[0].clientY);
+                if (!blocked && diffX >= diffY) {
+                  $ampCarousel.on('touchmove', self._prevent);
+                  blocked = true;
+                }
+                if (blocked && diffX < diffY) {
+                  $ampCarousel.off('touchmove', self._prevent);
+                  blocked = false;
+                }
+              }
+            }
+        });
+        $(document).on('touchend', function (e) {
+            touchmoves = [];
+            if (blocked && $ampCarousel && $ampCarousel.length > 0) {
+              $ampCarousel.off('touchmove', self._prevent);
+              blocked = false;
+            }
+            $ampCarousel = false;
         });
     };
 
