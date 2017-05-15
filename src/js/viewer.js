@@ -840,11 +840,11 @@
                 touchmoves.push(coords);
                 var diffX = Math.abs(touchmoves[touchmoves.length-1].clientX - touchmoves[0].clientX);
                 var diffY = Math.abs(touchmoves[touchmoves.length-1].clientY - touchmoves[0].clientY);
-                if (!blocked && diffX >= diffY) {
+                if (!blocked && diffX > diffY) {
                   $ampCarousel.on('touchmove', self._prevent);
                   blocked = true;
                 }
-                if (blocked && diffX < diffY) {
+                if (blocked && diffX <= diffY) {
                   $ampCarousel.off('touchmove', self._prevent);
                   blocked = false;
                 }
