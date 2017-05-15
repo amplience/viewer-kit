@@ -8151,11 +8151,19 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 var diffX = Math.abs(touchmoves[touchmoves.length-1].clientX - touchmoves[0].clientX);
                 var diffY = Math.abs(touchmoves[touchmoves.length-1].clientY - touchmoves[0].clientY);
                 if (!blocked && diffX > diffY) {
+                  $.each(self._preventElements, function (ix, val) {
+                    val.off('touchmove', self._prevent);
+                  });
+                  self._preventElements = [];
                   $ampCarousel.on('touchmove', self._prevent);
+                  self._preventElements.push($ampCarousel);
                   blocked = true;
                 }
                 if (blocked && diffX <= diffY) {
-                  $ampCarousel.off('touchmove', self._prevent);
+                  $.each(self._preventElements, function (ix, val) {
+                    val.off('touchmove', self._prevent);
+                  });
+                  self._preventElements = [];
                   blocked = false;
                 }
               }
