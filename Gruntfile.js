@@ -29,6 +29,17 @@ module.exports = function (grunt) {
                 ],
                 tasks: ['build-js']
             },
+            jsTest: {
+                options: {
+                    livereload: '<%= connect.serve.options.livereload %>'
+                },
+                files: [
+                    'src/**/*.js',
+                    'node_modules/amplience-sdk-client/src/**/*.js'
+
+                ],
+                tasks: ['build-js-develop']
+            },
             html: {
                 options: {
                     livereload: '<%= connect.serve.options.livereload %>'
