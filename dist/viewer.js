@@ -1178,7 +1178,7 @@ amp.get = function (assets, success, error, videoSort, timeout, transformData) {
             if(!isValid(assets[i]))
                 continue;
             var url = amp.getAssetURL(assets[i]);
-            jsonp(url + '.js', assets[i].name, win(url), fail(url),assets.transform, timeout);
+            jsonp(url + '.js', assets[i].name, win(url), fail(url),assets[i].transform, timeout);
         }
     }
 };
@@ -8023,9 +8023,26 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     };
 
     Viewer.prototype.doubleTapEvent = function ($element) {
+        var self = this;
         var lastTapTime = 0;
         var lastTapTime2 = 0;
-        var self = this;
+        var firsttouch = true;
+        var touchStart = {
+          x: 0,
+          y: 0
+        };
+        var touchEnd = {
+          x: 1000,
+          y: 1000
+        };
+        var touch1 = {
+          x: 0,
+          y: 0
+        };
+        var touch2 = {
+          x: 1000,
+          y: 1000
+        };
         $element.on('touchstart', function (e) {
             if (self.isZoomCycle) {
                 lastTapTime = 0;
@@ -8039,23 +8056,45 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
                 e.preventDefault();
             }
-
+            touchStart = {
+                x: Math.abs(e.originalEvent.touches[0].pageX) || 0,
+                y: Math.abs(e.originalEvent.touches[0].pageY) || 0
+            };
+            if (firsttouch) {
+              touch1 = touchStart;
+              firsttouch = false;
+            } else {
+              touch2 = touchStart;
+              firsttouch = true;
+            }
             lastTapTime2 = currentTime;
         });
-        $element.on('touchend', function () {
+        $element.on('touchend', function (e) {
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime;
             if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
-                $(this).trigger('doubletap');
-                $(this).trigger('doubletapend');
+                touchEnd = {
+                    x: Math.abs(e.originalEvent.changedTouches[0].pageX) || 1000,
+                    y: Math.abs(e.originalEvent.changedTouches[0].pageY) || 1000
+                };
+                var diff1 = {
+                    x: Math.abs(touch2.x - touch1.x),
+                    y: Math.abs(touch2.y - touch1.y)
+                };
+                var diff2 = {
+                    x: Math.abs(touchEnd.x - touchStart.x),
+                    y: Math.abs(touchEnd.y - touchStart.y)
+                };
+                if (diff1.x < 50 && diff1.y < 50 && diff2.x < 50 && diff2.y < 50) {
+                  $(this).trigger('doubletap');
+                  $(this).trigger('doubletapend');
+                }
             }
 
             lastTapTime = currentTime;
         });
-
         return 'doubletap';
     };
-
 
     Viewer.prototype.bindDesktopNormalViewEvents = function () {
         var self = this;
