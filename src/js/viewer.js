@@ -829,12 +829,16 @@
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
                 $(this).addClass('active-for-scrolling');
-                $(this).parent().on('touchstart', self._prevent);
+                if(spins.hasClass('amp-outer-spin')){
+                    $(this).parent().on('touchstart', self._prevent);
+                }
             });
 
             self.bindTapEvent(spins, function () {
                 $(this).parent().find('.spin-trap').removeClass('active-for-scrolling');
-                $(this).parent().off('touchstart', self._prevent);
+                if(spins.hasClass('amp-outer-spin')){
+                    $(this).parent().off('touchstart', self._prevent);
+                }
             });
         } else {
             spinTraps.css({display: 'none'});

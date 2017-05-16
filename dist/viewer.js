@@ -1178,7 +1178,7 @@ amp.get = function (assets, success, error, videoSort, timeout, transformData) {
             if(!isValid(assets[i]))
                 continue;
             var url = amp.getAssetURL(assets[i]);
-            jsonp(url + '.js', assets[i].name, win(url), fail(url),assets[i].transform, timeout);
+            jsonp(url + '.js', assets[i].name, win(url), fail(url),assets.transform, timeout);
         }
     }
 };
@@ -8139,12 +8139,16 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
                 $(this).addClass('active-for-scrolling');
-                $(this).parent().on('touchstart', self._prevent);
+                if(spins.hasClass('amp-outer-spin')){
+                    $(this).parent().on('touchstart', self._prevent);
+                }
             });
 
             self.bindTapEvent(spins, function () {
                 $(this).parent().find('.spin-trap').removeClass('active-for-scrolling');
-                $(this).parent().off('touchstart', self._prevent);
+                if(spins.hasClass('amp-outer-spin')){
+                    $(this).parent().off('touchstart', self._prevent);
+                }
             });
         } else {
             spinTraps.css({display: 'none'});
