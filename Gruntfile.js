@@ -18,7 +18,7 @@ module.exports = function (grunt) {
                     'src/css/**/*.scss',
                     'node_modules/amplience-sdk-client/css/amp.scss'
                 ],
-                tasks: ['build-css']
+                tasks: ['build-css', 'copy:demos', 'compress:build', 'processhtml']
             },
             javascript: {
                 options: {
@@ -27,16 +27,14 @@ module.exports = function (grunt) {
                 files: [
                     'src/**/*.js'
                 ],
-                tasks: ['build-js']
+                tasks: ['build-js', 'copy:demos', 'compress:build', 'processhtml']
             },
             jsTest: {
                 options: {
                     livereload: '<%= connect.serve.options.livereload %>'
                 },
                 files: [
-                    'src/**/*.js',
                     'node_modules/amplience-sdk-client/src/**/*.js'
-
                 ],
                 tasks: ['build-js-develop']
             },
@@ -400,8 +398,8 @@ module.exports = function (grunt) {
         'clean:html',
         'build-css',
         'build-js',
-        'copy:demos',
         'clean:templates',
+        'copy:demos',
         'handlebars',
         'compress:build',
         'processhtml'
@@ -413,8 +411,8 @@ module.exports = function (grunt) {
         'clean:html',
         'build-css',
         'build-js-develop',
-        'copy:demos',
         'clean:templates',
+        'copy:demos',
         'handlebars',
         'compress:build',
         'processhtml'
