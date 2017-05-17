@@ -911,7 +911,7 @@
         if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
             //@TODO check if spinset is not loaded and do nothing in this case.
             var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
-            if($spin.data()['amp-ampSpin']._loaded == true){
+            if($spin.length > 0 && $spin.data && $spin.data()['amp-ampSpin']._loaded == true){
                 setTimeout(function(){
                     $spin.ampSpin('playRepeat', 1);
                 }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
