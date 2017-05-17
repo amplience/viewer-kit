@@ -449,9 +449,9 @@
 
                 else {
                     var mainContainerSpin = ampConfigs.mainContainerSpin;
-                    if (spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1) {
-                        mainContainerSpin = $.extend(true, {}, mainContainerSpin, mainContainerSpin);
-                        mainContainerSpin.play.onLoad = false;
+                    if(mainContainerSpin.play.onVisible == true){
+                        self.spinVisible = true;
+                        mainContainerSpin.play.onVisible = false;
                     }
                     $spin.ampSpin(mainContainerSpin);
                 }
@@ -904,6 +904,21 @@
         });
     };
 
+    Viewer.prototype.startSpin = function(assetIndex){
+        var self = this;
+        var currentAsset = self.assets[assetIndex];
+
+        if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
+            //@TODO check if spinset is not loaded and do nothing in this case.
+            var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
+            if($spin.data()['amp-ampSpin']._loaded == true){
+                setTimeout(function(){
+                    $spin.ampSpin('playRepeat', 1);
+                }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
+            }
+        }
+    }
+
     Viewer.prototype.bindAmpEvents = function () {
         var self = this;
 
@@ -918,6 +933,9 @@
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
             self.checkMainContainerSlidesVisibility(self.settings.ampConfigs.mainContainerCarousel.animDuration);
+            if(self.spinVisible){
+                self.startSpin(self.currentAssetIndex);
+            }
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
