@@ -1178,7 +1178,7 @@ amp.get = function (assets, success, error, videoSort, timeout, transformData) {
             if(!isValid(assets[i]))
                 continue;
             var url = amp.getAssetURL(assets[i]);
-            jsonp(url + '.js', assets[i].name, win(url), fail(url),assets.transform, timeout);
+            jsonp(url + '.js', assets[i].name, win(url), fail(url),assets[i].transform, timeout);
         }
     }
 };
@@ -8072,25 +8072,27 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         $element.on('touchend', function (e) {
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime;
-            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
-                touchEnd = {
-                    x: Math.abs(e.originalEvent.changedTouches[0].pageX) || 1000,
-                    y: Math.abs(e.originalEvent.changedTouches[0].pageY) || 1000
-                };
-                var diff1 = {
-                    x: Math.abs(touch2.x - touch1.x),
-                    y: Math.abs(touch2.y - touch1.y)
-                };
-                var diff2 = {
-                    x: Math.abs(touchEnd.x - touchStart.x),
-                    y: Math.abs(touchEnd.y - touchStart.y)
-                };
-                if (diff1.x < 50 && diff1.y < 50 && diff2.x < 50 && diff2.y < 50) {
-                  $(this).trigger('doubletap');
-                  $(this).trigger('doubletapend');
+            touchEnd = {
+                x: Math.abs(e.originalEvent.changedTouches[0].pageX) || 1000,
+                y: Math.abs(e.originalEvent.changedTouches[0].pageY) || 1000
+            };
+            var diff1 = {
+                x: Math.abs(touch2.x - touch1.x),
+                y: Math.abs(touch2.y - touch1.y)
+            };
+            var diff2 = {
+                x: Math.abs(touchEnd.x - touchStart.x),
+                y: Math.abs(touchEnd.y - touchStart.y)
+            };
+            if (diff1.x < 50 && diff1.y < 50 && diff2.x < 50 && diff2.y < 50) {
+                if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+                    $(this).trigger('doubletap');
+                    $(this).trigger('doubletapend');
+                } else {
+                    e.preventDefault();
+                    e.stopPropagation();
                 }
             }
-
             lastTapTime = currentTime;
         });
         return 'doubletap';
