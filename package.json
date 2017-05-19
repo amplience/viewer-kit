@@ -11,7 +11,7 @@
   "author": "Amplience",
   "dependencies": {
     "jquery": "2.2.4",
-    "client-sdk": "git+https://github.com/amplience/amplience-sdk-client#a38fc76",
+    "client-sdk": "git+https://github.com/amplience/amplience-sdk-client#eee805e7111c4ed",
     "autoprefixer": "^6.0.2"
   },
   "devDependencies": {

@@ -6288,8 +6288,8 @@ amp.stats.event = function(dom,type,event,value){
                     return self._endDrag(e,o,mx,my,i);
                 }
             }(this._index);
-            this.$document.on(this.options.events.move, m);
-            this.$document.on(this.options.events.end,u);
+            this.element.on(this.options.events.move, m);
+            this.element.on(this.options.events.end,u);
 
             this._mouseMoveInfo = [{e:e,o:o,mx:mx,my:my,sindex:this._index}];
             if(window.navigator.userAgent.indexOf("MSIE ")>0){
@@ -6375,8 +6375,8 @@ amp.stats.event = function(dom,type,event,value){
             this._ended = true;
 
             this._track("endMove",{'domEvent': e});
-            this.$document.off(this.options.events.end,this._ubind);
-            this.$document.off(this.options.events.move,this._mbind);
+            this.element.off(this.options.events.end,this._ubind);
+            this.element.off(this.options.events.move,this._mbind);
             clearInterval(this._timer);
 
             this._setCursor(this.options.cursor.inactive);
