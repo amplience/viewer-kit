@@ -194,6 +194,7 @@
                     forDesktopFull: 4
                 },
                 mainContainerCarousel: {
+                    no3D: true,
                     width: 1,
                     height: 1,
                     responsive: true,
@@ -205,9 +206,9 @@
                         enabled: true,
                         fingers: 1,
                         dir: 'horz',
-                        distance: 5000
+                        distance: 100
                     },
-                    animDuration: 500,
+                    animDuration: 350,
                     layout: 'standard',
                     onActivate: {
                         select: true,

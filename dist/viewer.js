@@ -3169,6 +3169,10 @@ amp.stats.event = function(dom,type,event,value){
                 $(window).off('mouseup',$.proxy(this.stop,this));
                 this.moveDir = null;
                 if(this.moved && !this.changed){
+                    if(widget.preventStop){
+                        widget.preventStop = false;
+                        return;
+                    }
                     var nearest = this.findNearest();
                     var nearestIndex = nearest.index+1;
                     if (nearestIndex == widget._index) {
@@ -3214,6 +3218,7 @@ amp.stats.event = function(dom,type,event,value){
 
                     }
                 }
+                widget.preventStop = false;
             };
 
             m.getEvent = function(e) {
@@ -7065,6 +7070,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     forDesktopFull: 4
                 },
                 mainContainerCarousel: {
+                    no3D: true,
                     width: 1,
                     height: 1,
                     responsive: true,
@@ -7076,9 +7082,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                         enabled: true,
                         fingers: 1,
                         dir: 'horz',
-                        distance: 5000
+                        distance: 100
                     },
-                    animDuration: 500,
+                    animDuration: 350,
                     layout: 'standard',
                     onActivate: {
                         select: true,
