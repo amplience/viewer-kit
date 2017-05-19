@@ -422,6 +422,14 @@
         self.navContainerList.ampCarousel(navSettings);
         self.navContainerList.ampNav(ampConfigs.navContainerNav);
 
+        self.mainContainerList.on('touchstart', function(){
+            self.mainContainerList.data()['amp-ampCarousel'].preventStop = false;
+        });
+
+        self.navContainerList.find('.amp-slide').on('touchstart', function(){
+            self.mainContainerList.data()['amp-ampCarousel'].preventStop = true;
+        });
+
         for (var i = 0; i < self.assets.length; i++) {
             var asset = self.assets[i];
 
