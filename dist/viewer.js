@@ -8103,7 +8103,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     $(this).trigger('doubletapend');
                 } else {
                     e.preventDefault();
-                    e.stopPropagation();
+                    if ($(e.target).hasClass('amp-slide')) {
+                        e.stopPropagation();
+                    }
                 }
             }
             lastTapTime = currentTime;
