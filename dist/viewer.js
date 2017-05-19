@@ -3169,6 +3169,10 @@ amp.stats.event = function(dom,type,event,value){
                 $(window).off('mouseup',$.proxy(this.stop,this));
                 this.moveDir = null;
                 if(this.moved && !this.changed){
+                    if(widget.preventStop){
+                        widget.preventStop = false;
+                        return;
+                    }
                     var nearest = this.findNearest();
                     var nearestIndex = nearest.index+1;
                     if (nearestIndex == widget._index) {
@@ -3214,6 +3218,7 @@ amp.stats.event = function(dom,type,event,value){
 
                     }
                 }
+                widget.preventStop = false;
             };
 
             m.getEvent = function(e) {
@@ -6283,8 +6288,8 @@ amp.stats.event = function(dom,type,event,value){
                     return self._endDrag(e,o,mx,my,i);
                 }
             }(this._index);
-            this.$document.on(this.options.events.move, m);
-            this.$document.on(this.options.events.end,u);
+            this.element.on(this.options.events.move, m);
+            this.element.on(this.options.events.end,u);
 
             this._mouseMoveInfo = [{e:e,o:o,mx:mx,my:my,sindex:this._index}];
             if(window.navigator.userAgent.indexOf("MSIE ")>0){
@@ -6370,8 +6375,8 @@ amp.stats.event = function(dom,type,event,value){
             this._ended = true;
 
             this._track("endMove",{'domEvent': e});
-            this.$document.off(this.options.events.end,this._ubind);
-            this.$document.off(this.options.events.move,this._mbind);
+            this.element.off(this.options.events.end,this._ubind);
+            this.element.off(this.options.events.move,this._mbind);
             clearInterval(this._timer);
 
             this._setCursor(this.options.cursor.inactive);
@@ -7732,6 +7737,14 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.navContainerList.ampCarousel(navSettings);
         self.navContainerList.ampNav(ampConfigs.navContainerNav);
 
+        self.mainContainerList.on('touchstart', function(){
+            self.mainContainerList.data()['amp-ampCarousel'].preventStop = false;
+        });
+
+        self.navContainerList.find('.amp-slide').on('touchstart', function(){
+            self.mainContainerList.data()['amp-ampCarousel'].preventStop = true;
+        });
+
         for (var i = 0; i < self.assets.length; i++) {
             var asset = self.assets[i];
 
@@ -8090,7 +8103,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     $(this).trigger('doubletapend');
                 } else {
                     e.preventDefault();
-                    e.stopPropagation();
+                    if ($(e.target).hasClass('amp-slide')) {
+                        e.stopPropagation();
+                    }
                 }
             }
             lastTapTime = currentTime;
