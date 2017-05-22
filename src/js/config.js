@@ -300,7 +300,8 @@
                     activation: {
                         inGesture: true
                     },
-                    preload: false
+                    preload: false,
+                    preventVisibleZoomOut: true
                 },
                 navContainerCarousel: {
                     height: 1,
