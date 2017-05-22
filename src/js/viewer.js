@@ -751,9 +751,9 @@
             }
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime2;
-            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
-                e.preventDefault();
-            }
+            //if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+            //    e.preventDefault();
+            //}
             touchStart = {
                 x: Math.abs(e.originalEvent.touches[0].pageX) || 0,
                 y: Math.abs(e.originalEvent.touches[0].pageY) || 0
@@ -1186,13 +1186,14 @@
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
         if (!self.isZoomCycle) {
-            self.isZoomCycle = true;
+            var slide = self.getZoomSlide();
+
             $.each(self._preventElements, function (ix, val) {
               val.off('touchmove', self._prevent);
             });
             self._preventElements = [];
-            var slide = self.getZoomSlide();
-            if (slide.length > 0) {
+            if (self.isZoomed()) {
+              self.isZoomCycle = true;
               slide.ampZoomInline('zoomOutFull');
             }
 
@@ -1219,9 +1220,9 @@
     Viewer.prototype.zoomCycle = function () {
         var self = this;
         if (!self.isZoomCycle) {
-            self.isZoomCycle = true;
             var slide = self.getZoomSlide();
           if (slide.length > 0) {
+                self.isZoomCycle = true;
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
             }

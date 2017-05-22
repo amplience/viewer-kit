@@ -7083,9 +7083,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                         enabled: true,
                         fingers: 1,
                         dir: 'horz',
-                        distance: 5000
+                        distance: 100
                     },
-                    animDuration: 500,
+                    animDuration: 200,
                     layout: 'standard',
                     onActivate: {
                         select: true,
@@ -7095,6 +7095,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     easing: 'linear',
                     preferForward: true,
                     preloadNext: true
+
                 },
                 mainContainerNav: {
                     on: 'goTo',
@@ -8069,9 +8070,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             }
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime2;
-            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
-                e.preventDefault();
-            }
+            //if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+            //    e.preventDefault();
+            //}
             touchStart = {
                 x: Math.abs(e.originalEvent.touches[0].pageX) || 0,
                 y: Math.abs(e.originalEvent.touches[0].pageY) || 0
@@ -8504,13 +8505,14 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
         if (!self.isZoomCycle) {
-            self.isZoomCycle = true;
+            var slide = self.getZoomSlide();
+
             $.each(self._preventElements, function (ix, val) {
               val.off('touchmove', self._prevent);
             });
             self._preventElements = [];
-            var slide = self.getZoomSlide();
-            if (slide.length > 0) {
+            if (self.isZoomed()) {
+              self.isZoomCycle = true;
               slide.ampZoomInline('zoomOutFull');
             }
 
@@ -8537,9 +8539,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     Viewer.prototype.zoomCycle = function () {
         var self = this;
         if (!self.isZoomCycle) {
-            self.isZoomCycle = true;
             var slide = self.getZoomSlide();
           if (slide.length > 0) {
+                self.isZoomCycle = true;
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
             }

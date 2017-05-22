@@ -205,9 +205,9 @@
                         enabled: true,
                         fingers: 1,
                         dir: 'horz',
-                        distance: 5000
+                        distance: 100
                     },
-                    animDuration: 500,
+                    animDuration: 200,
                     layout: 'standard',
                     onActivate: {
                         select: true,
@@ -217,6 +217,7 @@
                     easing: 'linear',
                     preferForward: true,
                     preloadNext: true
+
                 },
                 mainContainerNav: {
                     on: 'goTo',
