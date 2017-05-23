@@ -8183,16 +8183,19 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         var spins = self.mainContainerList.find('.spin-trap + ul');
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
-                $(this).addClass('active-for-scrolling');
-                if(spins.hasClass('amp-outer-spin')){
-                    $(this).parent().on('touchstart', self._prevent);
+                var $spinTrap = $(this);
+                $spinTrap.addClass('active-for-scrolling');
+                if($spinTrap.next().hasClass('amp-outer-spin')){
+                    $spinTrap.parent().on('touchstart', self._prevent);
                 }
             });
 
             self.bindTapEvent(spins, function () {
-                $(this).parent().find('.spin-trap').removeClass('active-for-scrolling');
-                if(spins.hasClass('amp-outer-spin')){
-                    $(this).parent().off('touchstart', self._prevent);
+                var $spin = $(this);
+                var $parent = $(this).parent()
+                $parent.find('.spin-trap').removeClass('active-for-scrolling');
+                if($spin.hasClass('amp-outer-spin')){
+                    $parent.off('touchstart', self._prevent);
                 }
             });
         } else {
