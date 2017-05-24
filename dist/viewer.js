@@ -2592,7 +2592,7 @@ amp.stats.event = function(dom,type,event,value){
                     };
                     var move = function(evt) {
                         self._movedCounter +=1;
-                        if(self._movedCounter >= 7){
+                        if(self._movedCounter >= 3){
                             self.moved = true;
                         }
                     };
@@ -7216,7 +7216,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                         dir: 'horz',
                         distance: 50
                     },
-                    animDuration: 500,
+                    animDuration: 200,
                     layout: 'standard',
                     onActivate: {
                         select: true,

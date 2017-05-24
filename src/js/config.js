@@ -317,7 +317,7 @@
                         dir: 'horz',
                         distance: 50
                     },
-                    animDuration: 500,
+                    animDuration: 200,
                     layout: 'standard',
                     onActivate: {
                         select: true,
