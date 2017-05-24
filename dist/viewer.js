@@ -8370,6 +8370,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             case self.views.desktopNormalView:
                 if (!self.settings.view && !self.isPortraitView) {
                     ampConfigs.navContainerCarousel.width = self.settings.ampConfigs.navElementsCount.forDesktop;
+                    ampConfigs.navContainerCarousel.gesture.enabled = true;
                 }
                 break;
             case self.views.desktopFullView:
@@ -8385,6 +8386,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     //Calculate number of pagination dots fully visible inside thumbs container
                     ampConfigs.navContainerCarousel.width = Math.floor((containerWidth - navIconsWidth) /
                         ampConfigs.navElementsWidthPxMobile);
+                    ampConfigs.navContainerCarousel.gesture.enabled = true;
                 } else {
                     //Assume that all pagination dots could be shown
                     ampConfigs.navContainerCarousel.width = self.assets.length;
