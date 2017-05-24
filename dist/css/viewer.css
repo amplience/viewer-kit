@@ -481,7 +481,22 @@ body {
     .amp-viewer-kit .desktop-normal-view .main-container .list {
       margin: 0 52px; }
   .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide {
+    overflow: visible;
     margin: 0 10px; }
+    .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide .amp-margin-helper:before {
+      content: '';
+      width: 10px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: -10px; }
+    .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide .amp-margin-helper:after {
+      content: '';
+      width: 10px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: -10px; }
     .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide.amp-selected::after {
       content: "";
       position: absolute;
