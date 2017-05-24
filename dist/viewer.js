@@ -2588,10 +2588,7 @@ amp.stats.event = function(dom,type,event,value){
                 for (var i = 0 ; i < this.count; i++) {
                     var start = function() {
                         self.moved = false;
-                        setTimeout(function(){
-                            $(window).on(!this.canTouch?'mousemove':'touchmove', $.proxy(move,self));
-                        },1)
-
+                        $(window).on(!this.canTouch?'mousemove':'touchmove', $.proxy(move,self));
                     };
                     var move = function(evt) {
                         self._movedCounter +=1;
