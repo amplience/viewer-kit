@@ -3708,11 +3708,16 @@ amp.stats.event = function(dom,type,event,value){
         newLoad: function() {
             var src = (this.element.attr('src') && this.element.attr('src')!="")?this.element.attr('src'):this.element.attr('data-amp-src');
             src = this.dimensionsParams(src);
+            var ampSrcSet = this.element.attr('data-amp-srcset') || null;
+
             if($.inArray(src, this._loadedHistory)!==-1){
                 if(this.loading) {
                     this.loading.remove();
                 }
                 this.element.attr('src',src);
+                if(ampSrcSet){
+                    this.element.attr('srcset',ampSrcSet);
+                }
                 this.element.show();
                 return;
             }
@@ -3723,6 +3728,11 @@ amp.stats.event = function(dom,type,event,value){
             !this.options.insertAfter ? this.element.parent().append(this.loading) :this.options.insertAfter.prepend(this.loading);
             this.element.attr('src','');
             this.element.attr('src',src);
+
+            if(ampSrcSet){
+                this.element.attr('srcset','');
+                this.element.attr('srcset', ampSrcSet);
+            }
         },
 
         visible: function(visible) {
@@ -6780,7 +6790,7 @@ Handlebars.registerPartial("nav-container-list-item", this["amp"]["templates"]["
     + "?"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.templates : depth0)) != null ? stack1.thumb : stack1), depth0))
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.locale : depth0)) != null ? stack1.second : stack1), depth0))
-    + "\"\n        alt=\"\"\n        class=\"amp-main-img thumbnail\">\n</li>\n";
+    + "\"\n        alt=\"\"\n        class=\"amp-main-img thumbnail\">\n    <div class=\"amp-margin-helper\"></div>\n</li>\n";
 },"useData":true}));
 
 Handlebars.registerPartial("nav-container-list", this["amp"]["templates"]["nav-container-list"] = Handlebars.template({"1":function(depth0,helpers,partials,data,blockParams,depths) {
@@ -7115,7 +7125,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     minDistance: 50,
                     friction: 0.97,
                     dragDistance: 200,
-                    preload: true,
+                    preload: 'visible',
                     preloadType: 'full',
                     activate: 'down',
                     dir: 'normal',
@@ -7209,7 +7219,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     selector: '.main-container .list'
                 },
                 image: {
-                    preload: 'created',
+                    preload: 'visible',
                     insertAfter: false,
                     errImg: null
                 }
@@ -7716,10 +7726,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.initImagesSrcset = function () {
         var self = this;
-
-        self.wrapper.find('.main-container [data-amp-srcset]').each(function (index) {
-            $(this).attr('srcset', $(this).attr('data-amp-srcset'));
-        });
     };
 
     Viewer.prototype.initAmpWidgets = function (spinManipulate) {

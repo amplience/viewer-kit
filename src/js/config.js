@@ -240,7 +240,7 @@
                     minDistance: 50,
                     friction: 0.97,
                     dragDistance: 200,
-                    preload: true,
+                    preload: 'visible',
                     preloadType: 'full',
                     activate: 'down',
                     dir: 'normal',
@@ -334,7 +334,7 @@
                     selector: '.main-container .list'
                 },
                 image: {
-                    preload: 'created',
+                    preload: 'visible',
                     insertAfter: false,
                     errImg: null
                 }

@@ -400,10 +400,6 @@
 
     Viewer.prototype.initImagesSrcset = function () {
         var self = this;
-
-        self.wrapper.find('.main-container [data-amp-srcset]').each(function (index) {
-            $(this).attr('srcset', $(this).attr('data-amp-srcset'));
-        });
     };
 
     Viewer.prototype.initAmpWidgets = function (spinManipulate) {
