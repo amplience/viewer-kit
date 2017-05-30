@@ -6780,7 +6780,7 @@ Handlebars.registerPartial("nav-container-list-item", this["amp"]["templates"]["
     + "?"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.templates : depth0)) != null ? stack1.thumb : stack1), depth0))
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.locale : depth0)) != null ? stack1.second : stack1), depth0))
-    + "\"\n        alt=\"\"\n        class=\"amp-main-img thumbnail\">\n</li>\n";
+    + "\"\n        alt=\"\"\n        class=\"amp-main-img thumbnail\">\n    <div class=\"amp-margin-helper\"></div>\n</li>\n";
 },"useData":true}));
 
 Handlebars.registerPartial("nav-container-list", this["amp"]["templates"]["nav-container-list"] = Handlebars.template({"1":function(depth0,helpers,partials,data,blockParams,depths) {
