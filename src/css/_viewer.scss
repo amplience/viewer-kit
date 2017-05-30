@@ -303,7 +303,28 @@ body {
     .nav-container {
       .list {
         .amp-slide {
+          overflow:visible;
           margin: 0 10px;
+
+          .amp-margin-helper{
+            &:before {
+              content: '';
+              width: 10px;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: -10px;
+            }
+
+             &:after{
+               content:'';
+               width:10px;
+               height:100%;
+               position: absolute;
+               top: 0;
+               right: -10px;
+             }
+           }
 
           &.amp-selected::after {
             content: "";

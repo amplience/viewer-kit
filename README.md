@@ -154,7 +154,7 @@ Default options set in the viewer:
 }
 ```
 
-##ecommBridge integration
+## ecommBridge integration
 
 In order to use assets from ecommBridge, the customer needs to add the following data:
 
@@ -213,7 +213,7 @@ Test page is in **src/bridge.html**
 Test ecommBridge data is in **src/js/amplience-ecommerce-bridge-mock.js**
 
 
-##Tests
+## Tests
 
 
 To run tests, follow instructions below:

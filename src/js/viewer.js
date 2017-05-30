@@ -422,6 +422,14 @@
         self.navContainerList.ampCarousel(navSettings);
         self.navContainerList.ampNav(ampConfigs.navContainerNav);
 
+        self.mainContainerList.on('touchstart', function(){
+            self.mainContainerList.data()['amp-ampCarousel'].preventStop = false;
+        });
+
+        self.navContainerList.find('.amp-slide').on('touchstart', function(){
+            self.mainContainerList.data()['amp-ampCarousel'].preventStop = true;
+        });
+
         for (var i = 0; i < self.assets.length; i++) {
             var asset = self.assets[i];
 
@@ -449,9 +457,9 @@
 
                 else {
                     var mainContainerSpin = ampConfigs.mainContainerSpin;
-                    if (spinManipulate && navigator.userAgent.toLowerCase().search("firefox") == -1) {
-                        mainContainerSpin = $.extend(true, {}, mainContainerSpin, mainContainerSpin);
-                        mainContainerSpin.play.onLoad = false;
+                    if(mainContainerSpin.play.onVisible == true){
+                        self.spinVisible = true;
+                        mainContainerSpin.play.onVisible = false;
                     }
                     $spin.ampSpin(mainContainerSpin);
                 }
@@ -713,9 +721,26 @@
     };
 
     Viewer.prototype.doubleTapEvent = function ($element) {
+        var self = this;
         var lastTapTime = 0;
         var lastTapTime2 = 0;
-        var self = this;
+        var firsttouch = true;
+        var touchStart = {
+          x: 0,
+          y: 0
+        };
+        var touchEnd = {
+          x: 1000,
+          y: 1000
+        };
+        var touch1 = {
+          x: 0,
+          y: 0
+        };
+        var touch2 = {
+          x: 1000,
+          y: 1000
+        };
         $element.on('touchstart', function (e) {
             if (self.isZoomCycle) {
                 lastTapTime = 0;
@@ -726,26 +751,52 @@
             }
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime2;
-            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
-                e.preventDefault();
+            //if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+            //    e.preventDefault();
+            //}
+            touchStart = {
+                x: Math.abs(e.originalEvent.touches[0].pageX) || 0,
+                y: Math.abs(e.originalEvent.touches[0].pageY) || 0
+            };
+            if (firsttouch) {
+              touch1 = touchStart;
+              firsttouch = false;
+            } else {
+              touch2 = touchStart;
+              firsttouch = true;
             }
-
             lastTapTime2 = currentTime;
         });
-        $element.on('touchend', function () {
+        $element.on('touchend', function (e) {
+            e.preventDefault();
             var currentTime = new Date();
             var tapTime = currentTime - lastTapTime;
-            if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
-                $(this).trigger('doubletap');
-                $(this).trigger('doubletapend');
+            touchEnd = {
+                x: Math.abs(e.originalEvent.changedTouches[0].pageX) || 1000,
+                y: Math.abs(e.originalEvent.changedTouches[0].pageY) || 1000
+            };
+            var diff1 = {
+                x: Math.abs(touch2.x - touch1.x),
+                y: Math.abs(touch2.y - touch1.y)
+            };
+            var diff2 = {
+                x: Math.abs(touchEnd.x - touchStart.x),
+                y: Math.abs(touchEnd.y - touchStart.y)
+            };
+            if (diff1.x < 50 && diff1.y < 50 && diff2.x < 50 && diff2.y < 50) {
+                if (tapTime < self.settings.doubleTapTime && tapTime > 0) {
+                    $(this).trigger('doubletap');
+                    $(this).trigger('doubletapend');
+                } else {
+                    if ($(e.target).hasClass('amp-slide')) {
+                        e.stopPropagation();
+                    }
+                }
             }
-
             lastTapTime = currentTime;
         });
-
         return 'doubletap';
     };
-
 
     Viewer.prototype.bindDesktopNormalViewEvents = function () {
         var self = this;
@@ -787,16 +838,22 @@
         var self = this;
         var spinTraps = self.mainContainerList.find('.spin-trap');
         var spins = self.mainContainerList.find('.spin-trap + ul');
-        spinTraps.each(function (ix, val) {
-            $(val).parent().on('touchstart', self._prevent);
-        });
         if (self.canTouch) {
             self.bindTapEvent(spinTraps, function () {
-                $(this).addClass('active-for-scrolling');
+                var $spinTrap = $(this);
+                $spinTrap.addClass('active-for-scrolling');
+                if($spinTrap.next().hasClass('amp-outer-spin')){
+                    $spinTrap.parent().on('touchstart', self._prevent);
+                }
             });
 
             self.bindTapEvent(spins, function () {
-                $(this).parent().find('.spin-trap').removeClass('active-for-scrolling');
+                var $spin = $(this);
+                var $parent = $(this).parent()
+                $parent.find('.spin-trap').removeClass('active-for-scrolling');
+                if($spin.hasClass('amp-outer-spin')){
+                    $parent.off('touchstart', self._prevent);
+                }
             });
         } else {
             spinTraps.css({display: 'none'});
@@ -820,8 +877,62 @@
     };
 
     Viewer.prototype.bindGenericEvents = function () {
+        var self = this;
         $(window).on('resize', this._resize.bind(this));
+        $(document).on('gesturestart', function (e) {
+            e.preventDefault();
+        });
+        var touchmoves = [];
+        var $ampCarousel = false;
+        var blocked = false;
+        $(document).on('touchmove', function (e) {
+            if (e.originalEvent.touches[0] && e.originalEvent.touches[0].clientX !== undefined) {
+              if(!$ampCarousel)  {
+                $ampCarousel = $(e.target).parents('.amp-carousel');
+              }
+              if ($ampCarousel && $ampCarousel.length > 0) {
+                var coords = {
+                  clientX: e.originalEvent.touches[0].clientX,
+                  clientY: e.originalEvent.touches[0].clientY
+                };
+                touchmoves.push(coords);
+                var diffX = Math.abs(touchmoves[touchmoves.length-1].clientX - touchmoves[0].clientX);
+                var diffY = Math.abs(touchmoves[touchmoves.length-1].clientY - touchmoves[0].clientY);
+                if (!blocked && diffX > diffY) {
+                  $ampCarousel.on('touchmove', self._prevent);
+                  blocked = true;
+                }
+                if (blocked && diffX <= diffY) {
+                  $ampCarousel.off('touchmove', self._prevent);
+                  blocked = false;
+                }
+              }
+            }
+        });
+        $(document).on('touchend', function (e) {
+            touchmoves = [];
+            if (blocked && $ampCarousel && $ampCarousel.length > 0) {
+              $ampCarousel.off('touchmove', self._prevent);
+              blocked = false;
+            }
+            $ampCarousel = false;
+        });
     };
+
+    Viewer.prototype.startSpin = function(assetIndex){
+        var self = this;
+        var currentAsset = self.assets[assetIndex];
+
+        if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
+            //@TODO check if spinset is not loaded and do nothing in this case.
+            var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
+            if($spin.length > 0 && $spin.data && $spin.data()['amp-ampSpin']._loaded == true){
+                setTimeout(function(){
+                    $spin.ampSpin('playRepeat', 1);
+                }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
+            }
+        }
+    }
 
     Viewer.prototype.bindAmpEvents = function () {
         var self = this;
@@ -830,6 +941,7 @@
             $('.amp-spin').find('.amp-frame').css({
                 'margin-left': '-1px'
             });
+            self.prevAssetIndex = self.currentAssetIndex;
             self.currentAssetIndex = data.index - 1;
             self.zoomOutFull();
             self.initTooltips();
@@ -837,6 +949,9 @@
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
             self.checkMainContainerSlidesVisibility(self.settings.ampConfigs.mainContainerCarousel.animDuration);
+            if(self.spinVisible){
+                self.startSpin(self.currentAssetIndex);
+            }
         });
 
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
@@ -915,6 +1030,7 @@
             case self.views.desktopNormalView:
                 if (!self.settings.view && !self.isPortraitView) {
                     ampConfigs.navContainerCarousel.width = self.settings.ampConfigs.navElementsCount.forDesktop;
+                    ampConfigs.navContainerCarousel.gesture.enabled = true;
                 }
                 break;
             case self.views.desktopFullView:
@@ -930,6 +1046,7 @@
                     //Calculate number of pagination dots fully visible inside thumbs container
                     ampConfigs.navContainerCarousel.width = Math.floor((containerWidth - navIconsWidth) /
                         ampConfigs.navElementsWidthPxMobile);
+                    ampConfigs.navContainerCarousel.gesture.enabled = true;
                 } else {
                     //Assume that all pagination dots could be shown
                     ampConfigs.navContainerCarousel.width = self.assets.length;
@@ -1074,14 +1191,20 @@
     Viewer.prototype.zoomOutFull = function () {
         var self = this;
         if (!self.isZoomCycle) {
-            self.isZoomCycle = true;
+            var slide = self.getZoomSlide();
+
             $.each(self._preventElements, function (ix, val) {
               val.off('touchmove', self._prevent);
             });
             self._preventElements = [];
-            var slide = self.getZoomSlide();
-            if (slide.length > 0) {
+            if (self.isZoomed()) {
+              self.isZoomCycle = true;
               slide.ampZoomInline('zoomOutFull');
+            }
+
+            var prevSlide = self.getZoomSlide(self.prevAssetIndex);
+            if (prevSlide.length > 0) {
+                prevSlide.ampZoomInline('zoomOutFull');
             }
             setTimeout(function () {
               self.isZoomCycle = false;
@@ -1102,15 +1225,9 @@
     Viewer.prototype.zoomCycle = function () {
         var self = this;
         if (!self.isZoomCycle) {
-            self.isZoomCycle = true;
             var slide = self.getZoomSlide();
-            var state = slide.ampZoomInline('state');
-            if (self.lastZoomDir === 'Out' && state.scale - state.scaleStep === 1) {
-              $.each(self._preventElements, function (ix, val) {
-                val.off('touchmove', self._prevent);
-              });
-            }
           if (slide.length > 0) {
+                self.isZoomCycle = true;
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
             }
@@ -1134,9 +1251,10 @@
         }
     };
 
-    Viewer.prototype.getZoomSlide = function () {
+    Viewer.prototype.getZoomSlide = function (index) {
         var self = this;
-        return self.mainContainerList.find('> > li:eq(' + self.currentAssetIndex + ') .amp-zoom');
+        var index = index || self.currentAssetIndex;
+        return self.mainContainerList.find('> > li:eq(' + index + ') .amp-zoom');
     };
 
     Viewer.prototype.checkZoomIcons = function () {
@@ -1167,6 +1285,11 @@
                     state = slide.ampZoomInline('state');
                     if (state.scale > 1) {
                         close.css({display: 'block'});
+                    } else {
+                      $.each(self._preventElements, function (ix, val) {
+                        val.off('touchmove', self._prevent);
+                        self._preventElements = [];
+                      });
                     }
                 }
                 break;
@@ -1270,6 +1393,7 @@
         var spinTraps = self.mainContainerList.find('.spin-trap');
         if (self.canTouch) {
             spinTraps.removeClass('active-for-scrolling');
+            spinTraps.parent().off('touchstart', self._prevent);
         } else {
             spinTraps.css({display: 'none'});
         }
