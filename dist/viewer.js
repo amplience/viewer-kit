@@ -8195,6 +8195,13 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     Viewer.prototype.bindGenericEvents = function () {
         var self = this;
         $(window).on('resize', this._resize.bind(this));
+
+        window.addEventListener("orientationchange", function(){
+            setTimeout(function(){
+                self._resize();
+            }, 300)
+        });
+
         $(document).on('gesturestart', function (e) {
             e.preventDefault();
         });
