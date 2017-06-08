@@ -7746,12 +7746,14 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.navContainerList.ampCarousel(navSettings);
         self.navContainerList.ampNav(ampConfigs.navContainerNav);
 
+        var carouselData = self.mainContainerList.data()['amp-ampCarousel'] || self.mainContainerList.data()['ampAmpCarousel'];
+
         self.mainContainerList.on('touchstart', function(){
-            self.mainContainerList.data()['amp-ampCarousel'].preventStop = false;
+            carouselData.preventStop = false;
         });
 
         self.navContainerList.find('.amp-slide').on('touchstart', function(){
-            self.mainContainerList.data()['amp-ampCarousel'].preventStop = true;
+            carouselData.preventStop = true;
         });
 
         for (var i = 0; i < self.assets.length; i++) {
@@ -8246,9 +8248,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         var currentAsset = self.assets[assetIndex];
 
         if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
-            //@TODO check if spinset is not loaded and do nothing in this case.
             var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
-            if($spin.length > 0 && $spin.data && $spin.data()['amp-ampSpin']._loaded == true){
+            var spindData = $spin.data()['amp-ampSpin'] || $spin.data()['ampAmpSpin'];
+
+            if($spin.length > 0 && $spin.data && spindData._loaded == true){
                 setTimeout(function(){
                     $spin.ampSpin('playRepeat', 1);
                 }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
