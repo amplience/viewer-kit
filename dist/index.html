@@ -65,8 +65,8 @@
                     for (var x = 0; x < this.tags.length; x++) {
                         if (this.tags[x].alias === 'videoContainer') {
                             var $tag = this.tags[x].$tag;
-                            videoData = $tag.data();
-                            var player = videoData['amp-ampVideo']._player;
+                            videoData = $tag.data()['amp-ampVideo'] || $tag.data()['ampAmpVideo'];
+                            var player = videoData._player;
                             player.ready(function () {
                                 player.currentResolution('High');
                             });

@@ -6305,7 +6305,7 @@ amp.stats.event = function(dom,type,event,value){
                 return false;
             }
             this.element.find('.amp-spin').each(function(i, element){
-                var childSpin = $(element).data()['amp-ampSpin'];
+                var childSpin = $(element).data()['amp-ampSpin'] || $(element).data()['ampAmpSpin'];
                 if(childSpin && childSpin._startDrag){
                     childSpin._startDrag(e);
                 }
@@ -8249,9 +8249,11 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
         if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
             var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
-            var spindData = $spin.data()['amp-ampSpin'] || $spin.data()['ampAmpSpin'];
 
-            if($spin.length > 0 && $spin.data && spindData._loaded == true){
+            var spinData = typeof $spin.data() !== 'undefined' ?
+                ($spin.data()['amp-ampSpin'] || $spin.data()['ampAmpSpin']) : false;
+
+            if($spin.length > 0 && (!spinData || spinData._loaded == true)){
                 setTimeout(function(){
                     $spin.ampSpin('playRepeat', 1);
                 }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
