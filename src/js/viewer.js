@@ -412,6 +412,8 @@
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
+        self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
+
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
         self.mainContainerList.ampNav(ampConfigs.mainContainerNav);
 
@@ -498,8 +500,6 @@
         self.mainContainerList.find('.amp-spin').css({
             'line-height': mainHeight
         });
-
-        self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
     };
 
     Viewer.prototype.destroyAmpWidgets = function () {
@@ -959,10 +959,10 @@
             }
         });
 
-        self.mainContainerList.find('.zoom-trap > img')
-            .on('ampzoominlinezoomedin ampzoominlinezoomedinfull ' +
+        self.mainContainerList.find('.zoom-trap > img').on('ampzoominlinezoomedin ampzoominlinezoomedinfull ' +
                 'ampzoominlinezoomedout ampzoominlinezoomedoutfull', function (e, data) {
                 self.checkZoomIcons();
+                self.toggleZoomScrolling($(this).parent().find('.amp-zoomed'));
             })
             .on('ampzoominlinezoomedin ampzoominlinezoomedinfull', function (e, data) {
                 self.lastZoomDir = 'In';
@@ -1249,21 +1249,40 @@
 
     Viewer.prototype.getZoomSlide = function (index) {
         var self = this;
-        var index = index || self.currentAssetIndex;
+        var index = typeof index !== 'undefined' ? index : self.currentAssetIndex;
         return self.mainContainerList.find('> > li:eq(' + index + ') .amp-zoom');
+    };
+
+    Viewer.prototype.toggleZoomScrolling = function($elem){
+        var self = this;
+        var slide = this.getZoomSlide();
+        var state = slide.ampZoomInline('state')
+
+        $.each(self._preventElements, function (ix, val) {
+            val.off('touchmove', self._prevent);
+        });
+        self._preventElements = [];
+        self._preventElements.push($elem);
+
+
+        if(state.scale === 1){
+            $elem.off('touchmove', self._prevent);
+        }
+        else{
+            $elem.on('touchmove', self._prevent);
+        }
     };
 
     Viewer.prototype.checkZoomIcons = function () {
         var self = this;
         var slide = self.getZoomSlide();
-        var state;
+        var state = slide.ampZoomInline('state');
         switch (self.currentView) {
             case self.views.desktopFullView:
                 var plus = self.wrapper.find('.panel .plus');
                 var minus = self.wrapper.find('.panel .minus');
                 plus.add(minus).removeClass('disabled');
                 if (slide.length > 0) {
-                    state = slide.ampZoomInline('state');
                     if (state.scale === 1) {
                         minus.addClass('disabled');
                     }
@@ -1278,7 +1297,6 @@
                 var close = self.wrapper.find('.main-container .close');
                 close.css({display: 'none'});
                 if (slide.length > 0) {
-                    state = slide.ampZoomInline('state');
                     if (state.scale > 1) {
                         close.css({display: 'block'});
                     } else {
@@ -1300,6 +1318,9 @@
 
     Viewer.prototype.bindTapEvent = function (element, action) {
         var self = this;
+        var coords;
+        var newCoords;
+
         // Need to remove mouse events on touch devices since it fires callbacks twice on tap
         var startEvents = (self.canTouch ? '' : 'mousedown ');
         var endEvents = (self.canTouch ? '' : 'mouseup ');
@@ -1310,60 +1331,6 @@
             startEvents += 'touchstart';
             endEvents += 'touchend';
         }
-
-        element.on(startEvents, function (e) {
-            var $self = $(this);
-            if (e.which === 3) {
-                return false;
-            }
-
-            if ($self.data('startEvent') === 'progress') return;
-            $self.data('startEvent', 'progress');
-            setTimeout(function () {
-                $self.data('startEvent', 'done');
-            }, 500);
-
-            element.one(endEvents, function (e) {
-
-                if (e.which === 3) {
-                    return false;
-                }
-
-                $.each(self._preventElements, function (ix, val) {
-                    val.off('touchmove', self._prevent);
-                });
-                self._preventElements = [];
-                element.on('touchmove', self._prevent);
-                self._preventElements.push(element);
-
-                var target = this;
-                var coords = getPageCoords(e);
-
-                var distX = coords.x - target.swipeStartX;
-                var distY = coords.y - target.swipeStartY;
-
-                if (Math.abs(distX) >= 10 || Math.abs(distY) >= 10) {
-                    target.tap = false;
-                }
-
-                if (target.tap) {
-                    target.tap = false;
-                    action.call(target);
-                }
-            });
-
-            var target = this;
-            target.tap = true;
-
-            var coords = getPageCoords(e);
-            target.swipeStartX = coords.x;
-            target.swipeStartY = coords.y;
-
-            if (self.isZoomed()) {
-                e.stopPropagation();
-            }
-        });
-
 
         function getPageCoords(e) {
             var out = {x: 0, y: 0};
@@ -1382,6 +1349,57 @@
             }
             return out;
         }
+
+        element.on(startEvents, function (e) {
+            var $self = $(this);
+            if (e.which === 3) {
+                return false;
+            }
+
+            if ($self.data('startEvent') === 'progress') return;
+            $self.data('startEvent', 'progress');
+            setTimeout(function () {
+                $self.data('startEvent', 'done');
+            }, 500);
+
+            var target = this;
+            target.tap = true;
+            coords = getPageCoords(e);
+            element.one(endEvents, function (e) {
+
+                if (e.which === 3) {
+                    return false;
+                }
+
+                //$.each(self._preventElements, function (ix, val) {
+                //    val.off('touchmove', self._prevent);
+                //});
+                //self._preventElements = [];
+                ////element.on('touchmove', self._prevent);
+                //self._preventElements.push(element);
+
+                var target = this;
+                newCoords = getPageCoords(e);
+
+                var distX = coords.x - newCoords.x;
+                var distY = coords.y - newCoords.y;
+
+                if (Math.abs(distX) >= 5 || Math.abs(distY) >= 5) {
+                    target.tap = false;
+                }
+
+                if (target.tap) {
+                    target.tap = false;
+                    action.call(target);
+                }
+            });
+
+
+
+            if (self.isZoomed()) {
+                e.stopPropagation();
+            }
+        });
     };
 
     Viewer.prototype.checkSpins = function () {
