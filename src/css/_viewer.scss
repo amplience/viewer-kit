@@ -90,6 +90,7 @@ body {
   .desktop-full-view,
   .mobile-normal-view {
     .main-container {
+      touch-action: pan-x pan-y;
       position: relative;
       z-index: 2;
       .list {
