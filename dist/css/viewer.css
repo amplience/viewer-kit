@@ -601,7 +601,7 @@ body {
 .amp-viewer-kit .amp-slide .video-js .vjs-big-play-button {
   transition: all 0s; }
 
-.amp-inner-spinset .amp-progress-indicator {
+.amp-outer-spin .amp-progress-indicator {
   display: none; }
 
 @font-face {
