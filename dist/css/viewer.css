@@ -230,6 +230,8 @@ body {
   font-family: "Neuzeit Regular", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   position: relative;
   -webkit-tap-highlight-color: transparent; }
+  .amp-viewer-kit ul {
+    list-style-type: none; }
   .amp-viewer-kit img {
     -webkit-user-select: none;
        -moz-user-select: none;

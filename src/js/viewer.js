@@ -463,7 +463,6 @@
                     }
                     $spin.ampSpin(mainContainerSpin);
                 }
-
             } else if (asset.hasOwnProperty('media')) {
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
@@ -493,15 +492,6 @@
                     .ampZoomInline(ampConfigs.mainContainerZoomInline);
             }
         }
-
-        var mainHeight = self.mainContainerList.height() + 'px';
-
-        self.mainContainerList.find('.zoom-trap').css({
-            'line-height': mainHeight
-        });
-        self.mainContainerList.find('.amp-spin').css({
-            'line-height': mainHeight
-        });
     };
 
     Viewer.prototype.destroyAmpWidgets = function () {
@@ -874,16 +864,32 @@
         }
     };
 
+    Viewer.prototype._orientationChange = function(){
+        setTimeout(function(){
+            self._resize();
+        }, 300)
+    };
+
+
     Viewer.prototype.bindGenericEvents = function () {
         var self = this;
+        $(window).off('resize', this._resize);
         $(window).on('resize', this._resize.bind(this));
-        $(document).on('gesturestart', function (e) {
-            e.preventDefault();
-        });
+
+        $(document).off('gesturestart', self._prevent);
+        $(document).on('gesturestart', self._prevent.bind(this));
+
+
+        window.removeEventListener("orientationchange", self._orientationChange);
+        window.addEventListener("orientationchange", self._orientationChange.bind(this));
+
+
         var touchmoves = [];
         var $ampCarousel = false;
         var blocked = false;
-        $(document).on('touchmove', function (e) {
+
+        $(document).off('touchmove.viewerkit');
+        $(document).on('touchmove.viewerkit', function (e) {
             if (e.originalEvent.touches[0] && e.originalEvent.touches[0].clientX !== undefined) {
               if(!$ampCarousel)  {
                 $ampCarousel = $(e.target).parents('.amp-carousel');
@@ -907,7 +913,9 @@
               }
             }
         });
-        $(document).on('touchend', function (e) {
+
+        $(document).off('touchend.viewerkit');
+        $(document).on('touchend.viewerkit', function (e) {
             touchmoves = [];
             if (blocked && $ampCarousel && $ampCarousel.length > 0) {
               $ampCarousel.off('touchmove', self._prevent);
@@ -933,12 +941,13 @@
                 }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
             }
         }
-    }
+    };
 
     Viewer.prototype.bindAmpEvents = function () {
         var self = this;
 
         self.mainContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
+
             $('.amp-spin').find('.amp-frame').css({
                 'margin-left': '-1px'
             });

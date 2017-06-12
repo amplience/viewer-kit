@@ -17,6 +17,10 @@ body {
   position: relative;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  ul{
+    list-style-type: none;
+  }
+
   img {
     user-select: none;
   }
