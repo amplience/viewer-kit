@@ -449,7 +449,8 @@
                             play: {
                                 onVisible: false,
                                 onLoad: false
-                            }
+                            },
+                            preloadType: 'window'
                         });
                         $(this).ampSpin(spinConfig);
                     });

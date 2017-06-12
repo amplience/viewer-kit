@@ -601,6 +601,9 @@ body {
 .amp-viewer-kit .amp-slide .video-js .vjs-big-play-button {
   transition: all 0s; }
 
+.amp-inner-spinset .amp-progress-indicator {
+  display: none; }
+
 @font-face {
   font-family: 'Neuzeit Regular';
   src: url("fonts/neuzeitgrot-webfont.woff") format("woff");

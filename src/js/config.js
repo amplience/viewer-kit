@@ -261,7 +261,8 @@
                     loop:false,
                     dragDistance: 200,
                     orientation: 'vert',
-                    preloadType: 'full',
+                    preload:'visible',
+                    preloadType: 'window',
                     width: 1,
                     height: 1,
                     gesture: {

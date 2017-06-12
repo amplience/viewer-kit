@@ -6232,10 +6232,14 @@ amp.stats.event = function(dom,type,event,value){
                 var child = $(imgs[m]),
                     components = child.data();
 
-                if(components['amp-ampZoom']){
+                if(components['amp-ampZoom']  || components['ampAmpZoom']){
                     child.ampZoom({'loaded':onLoad});
                     child.ampZoom('load', this.options.preload);
                 }else{
+                    var imgComponent = components['amp-ampImage'] || components['ampAmpImage'];
+                    if(typeof imgComponent !== 'undefined' && imgComponent.loaded){
+                        onLoad();
+                    }
                     child.ampImage({'loaded':onLoad});
                     child.ampImage('load', this.options.preload);
                 }
@@ -6305,7 +6309,7 @@ amp.stats.event = function(dom,type,event,value){
                 return false;
             }
             this.element.find('.amp-spin').each(function(i, element){
-                var childSpin = $(element).data()['amp-ampSpin'];
+                var childSpin = $(element).data()['amp-ampSpin'] || $(element).data()['ampAmpSpin'];
                 if(childSpin && childSpin._startDrag){
                     childSpin._startDrag(e);
                 }
@@ -7146,7 +7150,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     loop:false,
                     dragDistance: 200,
                     orientation: 'vert',
-                    preloadType: 'full',
+                    preload:'visible',
+                    preloadType: 'window',
                     width: 1,
                     height: 1,
                     gesture: {
@@ -7775,7 +7780,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                             play: {
                                 onVisible: false,
                                 onLoad: false
-                            }
+                            },
+                            preloadType: 'window'
                         });
                         $(this).ampSpin(spinConfig);
                     });
