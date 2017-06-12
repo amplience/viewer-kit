@@ -6901,6 +6901,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     amp.viewerSettings = {
         viewerConfigs: {
+            v:'1.1.3',
             target: '#amp-container',
             client: 'playground',
             imageBasePath: '//i1.adis.ws/',
@@ -8198,7 +8199,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype._orientationChange = function(){
         var self = this;
-        
         setTimeout(function(){
             self._resize();
         }, 300)

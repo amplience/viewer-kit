@@ -12,6 +12,7 @@
 
     amp.viewerSettings = {
         viewerConfigs: {
+            v:'1.1.3',
             target: '#amp-container',
             client: 'playground',
             imageBasePath: '//i1.adis.ws/',
