@@ -219,6 +219,7 @@ body {
 
       .list {
         .amp-slide {
+          overflow:visible;
           cursor: pointer;
 
           .thumbnail {
@@ -308,28 +309,7 @@ body {
     .nav-container {
       .list {
         .amp-slide {
-          overflow:visible;
           margin: 0 10px;
-
-          .amp-margin-helper{
-            &:before {
-              content: '';
-              width: 10px;
-              height: 100%;
-              position: absolute;
-              top: 0;
-              left: -10px;
-            }
-
-             &:after{
-               content:'';
-               width:10px;
-               height:100%;
-               position: absolute;
-               top: 0;
-               right: -10px;
-             }
-           }
 
           &.amp-selected::after {
             content: "";
@@ -400,7 +380,6 @@ body {
 
     .nav-container {
       float: left;
-
       .list {
         .amp-slide {
           margin: 0 10px;;
@@ -444,11 +423,6 @@ body {
   }
 
   .mobile-normal-view {
-    .nav-container {
-      .list {
-        height: 50px !important
-      }
-    }
     .main-container {
       margin-bottom: 20px;
 
@@ -464,11 +438,9 @@ body {
     }
 
     .nav-container {
-      .amp-slide {
-
-      }
-
       .list {
+        height: 50px !important;
+
         .amp-slide .mobile-thumbnail {
           width: 30px;
           height: 30px;
@@ -491,14 +463,34 @@ body {
       }
     }
   }
+
+
+  .amp-outer-spin{
+    .amp-progress-indicator{
+      display:none;
+    }
+  }
+
+  .amp-margin-helper{
+    &:before {
+      content: '';
+      width: 10px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: -10px;
+    }
+
+    &:after{
+      content:'';
+      width:10px;
+      height:100%;
+      position: absolute;
+      top: 0;
+      right: -10px;
+    }
+  }
 }
 .amp-viewer-kit .amp-slide .video-js .vjs-big-play-button {
   transition: all 0s;
-}
-
-
-.amp-outer-spin{
-  .amp-progress-indicator{
-    display:none;
-  }
 }

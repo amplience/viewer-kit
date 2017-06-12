@@ -8197,6 +8197,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     };
 
     Viewer.prototype._orientationChange = function(){
+        var self = this;
+        
         setTimeout(function(){
             self._resize();
         }, 300)

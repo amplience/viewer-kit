@@ -90,6 +90,23 @@
           }
         }
       }
+
+      .amp-margin-helper{
+        &:before {
+          width: 100%;
+          height: 10px;
+          top: 0px;
+          left: 0;
+        }
+
+        &:after{
+          width: 100%;
+          height: 10px;
+          top: auto;
+          bottom: 0px;
+          right:auto;
+        }
+      }
     }
   }
 }

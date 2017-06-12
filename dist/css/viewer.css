@@ -407,6 +407,7 @@ body {
     .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide,
     .amp-viewer-kit .desktop-full-view .nav-container .list .amp-slide,
     .amp-viewer-kit .mobile-normal-view .nav-container .list .amp-slide {
+      overflow: visible;
       cursor: pointer; }
       .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide .thumbnail,
       .amp-viewer-kit .desktop-full-view .nav-container .list .amp-slide .thumbnail,
@@ -485,22 +486,7 @@ body {
     .amp-viewer-kit .desktop-normal-view .main-container .list {
       margin: 0 52px; }
   .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide {
-    overflow: visible;
     margin: 0 10px; }
-    .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide .amp-margin-helper:before {
-      content: '';
-      width: 10px;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: -10px; }
-    .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide .amp-margin-helper:after {
-      content: '';
-      width: 10px;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      right: -10px; }
     .amp-viewer-kit .desktop-normal-view .nav-container .list .amp-slide.amp-selected::after {
       content: "";
       position: absolute;
@@ -573,36 +559,49 @@ body {
           background-image: url("svg/ic_zoomin_24px.svg"); }
         .amp-viewer-kit .desktop-full-view .panel .icon.minus {
           background-image: url("svg/ic_zoomout_24px.svg"); }
-  .amp-viewer-kit .mobile-normal-view .nav-container .list {
-    height: 50px !important; }
   .amp-viewer-kit .mobile-normal-view .main-container {
     margin-bottom: 20px; }
     .amp-viewer-kit .mobile-normal-view .main-container .tooltip.image {
       position: absolute; }
     .amp-viewer-kit .mobile-normal-view .main-container .close {
       display: none; }
-  .amp-viewer-kit .mobile-normal-view .nav-container .list .amp-slide .mobile-thumbnail {
-    width: 30px;
-    height: 30px;
+  .amp-viewer-kit .mobile-normal-view .nav-container .list {
+    height: 50px !important; }
+    .amp-viewer-kit .mobile-normal-view .nav-container .list .amp-slide .mobile-thumbnail {
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translateX(-50%) translateY(-50%);
+          transform: translateX(-50%) translateY(-50%);
+      background-color: #c1bab0;
+      border-radius: 50%; }
+    .amp-viewer-kit .mobile-normal-view .nav-container .list .amp-slide.amp-selected .mobile-thumbnail {
+      width: 35px;
+      height: 35px;
+      background-color: #707175;
+      -ms-transform: translateX(-50%) translateY(-50%);
+          transform: translateX(-50%) translateY(-50%); }
+  .amp-viewer-kit .amp-outer-spin .amp-progress-indicator {
+    display: none; }
+  .amp-viewer-kit .amp-margin-helper:before {
+    content: '';
+    width: 10px;
+    height: 100%;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translateX(-50%) translateY(-50%);
-        transform: translateX(-50%) translateY(-50%);
-    background-color: #c1bab0;
-    border-radius: 50%; }
-  .amp-viewer-kit .mobile-normal-view .nav-container .list .amp-slide.amp-selected .mobile-thumbnail {
-    width: 35px;
-    height: 35px;
-    background-color: #707175;
-    -ms-transform: translateX(-50%) translateY(-50%);
-        transform: translateX(-50%) translateY(-50%); }
+    top: 0;
+    left: -10px; }
+  .amp-viewer-kit .amp-margin-helper:after {
+    content: '';
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: -10px; }
 
 .amp-viewer-kit .amp-slide .video-js .vjs-big-play-button {
   transition: all 0s; }
-
-.amp-outer-spin .amp-progress-indicator {
-  display: none; }
 
 @font-face {
   font-family: 'Neuzeit Regular';
@@ -683,6 +682,17 @@ body {
         background-color: transparent; }
       .amp-viewer-kit .amp-portrait-view .nav-container .list .amp-slide .thumbnail {
         margin: 0 0 10px 0; }
+    .amp-viewer-kit .amp-portrait-view .nav-container .amp-margin-helper:before {
+      width: 100%;
+      height: 10px;
+      top: 0px;
+      left: 0; }
+    .amp-viewer-kit .amp-portrait-view .nav-container .amp-margin-helper:after {
+      width: 100%;
+      height: 10px;
+      top: auto;
+      bottom: 0px;
+      right: auto; }
 
 .vjs-paused.vjs-has-started .vjs-big-play-button {
   display: block; }
