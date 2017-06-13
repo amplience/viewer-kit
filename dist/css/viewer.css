@@ -515,7 +515,7 @@ body {
           max-width: 100%;
           max-height: 100%;
           height: auto;
-          display: block;
+          display: block !important;
           margin: auto;
           position: relative;
           top: 50%;
