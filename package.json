@@ -11,7 +11,7 @@
   "author": "Amplience",
   "dependencies": {
     "jquery": "2.2.4",
-    "client-sdk": "git+https://github.com/amplience/amplience-sdk-client#feature/fix-spin-preload-bug",
+    "client-sdk": "git+https://github.com/amplience/amplience-sdk-client#feature/pre-v1.0.4",
     "autoprefixer": "^6.0.2"
   },
   "devDependencies": {

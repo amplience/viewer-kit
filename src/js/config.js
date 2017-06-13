@@ -241,7 +241,7 @@
                     minDistance: 50,
                     friction: 0.97,
                     dragDistance: 200,
-                    preload: 'visible',
+                    preload: 'created',
                     preloadType: 'full',
                     activate: 'down',
                     dir: 'normal',
@@ -262,7 +262,7 @@
                     loop:false,
                     dragDistance: 200,
                     orientation: 'vert',
-                    preload:'visible',
+                    preload:'created',
                     preloadType: 'window',
                     width: 1,
                     height: 1,
@@ -336,7 +336,7 @@
                     selector: '.main-container .list'
                 },
                 image: {
-                    preload: 'visible',
+                    preload: 'created',
                     insertAfter: false,
                     errImg: null
                 }
@@ -384,7 +384,7 @@
                 minDistance: 50,
                 friction: 0.97,
                 dragDistance: 200,
-                preload: true,
+                preload: 'created',
                 preloadType: 'full',
                 activate: 'down',
                 dir: 'normal',
