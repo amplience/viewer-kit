@@ -17,6 +17,10 @@ body {
   position: relative;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+  ul{
+    list-style-type: none;
+  }
+
   img {
     user-select: none;
   }
@@ -90,6 +94,7 @@ body {
   .desktop-full-view,
   .mobile-normal-view {
     .main-container {
+      touch-action: pan-x pan-y;
       position: relative;
       z-index: 2;
       .list {
@@ -214,6 +219,7 @@ body {
 
       .list {
         .amp-slide {
+          overflow:visible;
           cursor: pointer;
 
           .thumbnail {
@@ -303,28 +309,7 @@ body {
     .nav-container {
       .list {
         .amp-slide {
-          overflow:visible;
           margin: 0 10px;
-
-          .amp-margin-helper{
-            &:before {
-              content: '';
-              width: 10px;
-              height: 100%;
-              position: absolute;
-              top: 0;
-              left: -10px;
-            }
-
-             &:after{
-               content:'';
-               width:10px;
-               height:100%;
-               position: absolute;
-               top: 0;
-               right: -10px;
-             }
-           }
 
           &.amp-selected::after {
             content: "";
@@ -364,7 +349,7 @@ body {
             max-width: 100%;
             max-height: 100%;
             height: auto;
-            display: block;
+            display: block !important;
             margin: auto;
             position: relative;
             top: 50%;
@@ -395,7 +380,6 @@ body {
 
     .nav-container {
       float: left;
-
       .list {
         .amp-slide {
           margin: 0 10px;;
@@ -439,11 +423,6 @@ body {
   }
 
   .mobile-normal-view {
-    .nav-container {
-      .list {
-        height: 50px !important
-      }
-    }
     .main-container {
       margin-bottom: 20px;
 
@@ -459,11 +438,9 @@ body {
     }
 
     .nav-container {
-      .amp-slide {
-
-      }
-
       .list {
+        height: 50px !important;
+
         .amp-slide .mobile-thumbnail {
           width: 30px;
           height: 30px;
@@ -484,6 +461,33 @@ body {
           transform: translateX(-50%) translateY(-50%);
         }
       }
+    }
+  }
+
+
+  .amp-outer-spin{
+    .amp-progress-indicator{
+      display:none;
+    }
+  }
+
+  .amp-margin-helper{
+    &:before {
+      content: '';
+      width: 10px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: -10px;
+    }
+
+    &:after{
+      content:'';
+      width:10px;
+      height:100%;
+      position: absolute;
+      top: 0;
+      right: -10px;
     }
   }
 }

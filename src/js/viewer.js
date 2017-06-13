@@ -400,10 +400,6 @@
 
     Viewer.prototype.initImagesSrcset = function () {
         var self = this;
-
-        self.wrapper.find('.main-container [data-amp-srcset]').each(function (index) {
-            $(this).attr('srcset', $(this).attr('data-amp-srcset'));
-        });
     };
 
     Viewer.prototype.initAmpWidgets = function (spinManipulate) {
@@ -416,18 +412,22 @@
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
+        self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
+
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
         self.mainContainerList.ampNav(ampConfigs.mainContainerNav);
 
         self.navContainerList.ampCarousel(navSettings);
         self.navContainerList.ampNav(ampConfigs.navContainerNav);
 
+        var carouselData = self.mainContainerList.data()['amp-ampCarousel'] || self.mainContainerList.data()['ampAmpCarousel'];
+
         self.mainContainerList.on('touchstart', function(){
-            self.mainContainerList.data()['amp-ampCarousel'].preventStop = false;
+            carouselData.preventStop = false;
         });
 
         self.navContainerList.find('.amp-slide').on('touchstart', function(){
-            self.mainContainerList.data()['amp-ampCarousel'].preventStop = true;
+            carouselData.preventStop = true;
         });
 
         for (var i = 0; i < self.assets.length; i++) {
@@ -449,7 +449,8 @@
                             play: {
                                 onVisible: false,
                                 onLoad: false
-                            }
+                            },
+                            preloadType: 'window'
                         });
                         $(this).ampSpin(spinConfig);
                     });
@@ -463,7 +464,6 @@
                     }
                     $spin.ampSpin(mainContainerSpin);
                 }
-
             } else if (asset.hasOwnProperty('media')) {
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
@@ -493,17 +493,6 @@
                     .ampZoomInline(ampConfigs.mainContainerZoomInline);
             }
         }
-
-        var mainHeight = self.mainContainerList.height() + 'px';
-
-        self.mainContainerList.find('.zoom-trap').css({
-            'line-height': mainHeight
-        });
-        self.mainContainerList.find('.amp-spin').css({
-            'line-height': mainHeight
-        });
-
-        self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
     };
 
     Viewer.prototype.destroyAmpWidgets = function () {
@@ -876,16 +865,33 @@
         }
     };
 
+    Viewer.prototype._orientationChange = function(){
+        var self = this;
+        setTimeout(function(){
+            self._resize();
+        }, 300)
+    };
+
+
     Viewer.prototype.bindGenericEvents = function () {
         var self = this;
+        $(window).off('resize', this._resize);
         $(window).on('resize', this._resize.bind(this));
-        $(document).on('gesturestart', function (e) {
-            e.preventDefault();
-        });
+
+        $(document).off('gesturestart', self._prevent);
+        $(document).on('gesturestart', self._prevent.bind(this));
+
+
+        window.removeEventListener("orientationchange", self._orientationChange);
+        window.addEventListener("orientationchange", self._orientationChange.bind(this));
+
+
         var touchmoves = [];
         var $ampCarousel = false;
         var blocked = false;
-        $(document).on('touchmove', function (e) {
+
+        $(document).off('touchmove.viewerkit');
+        $(document).on('touchmove.viewerkit', function (e) {
             if (e.originalEvent.touches[0] && e.originalEvent.touches[0].clientX !== undefined) {
               if(!$ampCarousel)  {
                 $ampCarousel = $(e.target).parents('.amp-carousel');
@@ -909,7 +915,9 @@
               }
             }
         });
-        $(document).on('touchend', function (e) {
+
+        $(document).off('touchend.viewerkit');
+        $(document).on('touchend.viewerkit', function (e) {
             touchmoves = [];
             if (blocked && $ampCarousel && $ampCarousel.length > 0) {
               $ampCarousel.off('touchmove', self._prevent);
@@ -924,20 +932,24 @@
         var currentAsset = self.assets[assetIndex];
 
         if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
-            //@TODO check if spinset is not loaded and do nothing in this case.
             var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
-            if($spin.length > 0 && $spin.data && $spin.data()['amp-ampSpin']._loaded == true){
+
+            var spinData = typeof $spin.data() !== 'undefined' ?
+                ($spin.data()['amp-ampSpin'] || $spin.data()['ampAmpSpin']) : false;
+
+            if($spin.length > 0 && (!spinData || spinData._loaded == true)){
                 setTimeout(function(){
                     $spin.ampSpin('playRepeat', 1);
                 }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
             }
         }
-    }
+    };
 
     Viewer.prototype.bindAmpEvents = function () {
         var self = this;
 
         self.mainContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
+
             $('.amp-spin').find('.amp-frame').css({
                 'margin-left': '-1px'
             });
@@ -963,10 +975,10 @@
             }
         });
 
-        self.mainContainerList.find('.zoom-trap > img')
-            .on('ampzoominlinezoomedin ampzoominlinezoomedinfull ' +
+        self.mainContainerList.find('.zoom-trap > img').on('ampzoominlinezoomedin ampzoominlinezoomedinfull ' +
                 'ampzoominlinezoomedout ampzoominlinezoomedoutfull', function (e, data) {
                 self.checkZoomIcons();
+                self.toggleZoomScrolling($(this).parent().find('.amp-zoomed'));
             })
             .on('ampzoominlinezoomedin ampzoominlinezoomedinfull', function (e, data) {
                 self.lastZoomDir = 'In';
@@ -1253,21 +1265,40 @@
 
     Viewer.prototype.getZoomSlide = function (index) {
         var self = this;
-        var index = index || self.currentAssetIndex;
+        var index = typeof index !== 'undefined' ? index : self.currentAssetIndex;
         return self.mainContainerList.find('> > li:eq(' + index + ') .amp-zoom');
+    };
+
+    Viewer.prototype.toggleZoomScrolling = function($elem){
+        var self = this;
+        var slide = this.getZoomSlide();
+        var state = slide.ampZoomInline('state')
+
+        $.each(self._preventElements, function (ix, val) {
+            val.off('touchmove', self._prevent);
+        });
+        self._preventElements = [];
+        self._preventElements.push($elem);
+
+
+        if(state.scale === 1){
+            $elem.off('touchmove', self._prevent);
+        }
+        else{
+            $elem.on('touchmove', self._prevent);
+        }
     };
 
     Viewer.prototype.checkZoomIcons = function () {
         var self = this;
         var slide = self.getZoomSlide();
-        var state;
+        var state = slide.ampZoomInline('state');
         switch (self.currentView) {
             case self.views.desktopFullView:
                 var plus = self.wrapper.find('.panel .plus');
                 var minus = self.wrapper.find('.panel .minus');
                 plus.add(minus).removeClass('disabled');
                 if (slide.length > 0) {
-                    state = slide.ampZoomInline('state');
                     if (state.scale === 1) {
                         minus.addClass('disabled');
                     }
@@ -1282,7 +1313,6 @@
                 var close = self.wrapper.find('.main-container .close');
                 close.css({display: 'none'});
                 if (slide.length > 0) {
-                    state = slide.ampZoomInline('state');
                     if (state.scale > 1) {
                         close.css({display: 'block'});
                     } else {
@@ -1304,6 +1334,9 @@
 
     Viewer.prototype.bindTapEvent = function (element, action) {
         var self = this;
+        var coords;
+        var newCoords;
+
         // Need to remove mouse events on touch devices since it fires callbacks twice on tap
         var startEvents = (self.canTouch ? '' : 'mousedown ');
         var endEvents = (self.canTouch ? '' : 'mouseup ');
@@ -1314,60 +1347,6 @@
             startEvents += 'touchstart';
             endEvents += 'touchend';
         }
-
-        element.on(startEvents, function (e) {
-            var $self = $(this);
-            if (e.which === 3) {
-                return false;
-            }
-
-            if ($self.data('startEvent') === 'progress') return;
-            $self.data('startEvent', 'progress');
-            setTimeout(function () {
-                $self.data('startEvent', 'done');
-            }, 500);
-
-            element.one(endEvents, function (e) {
-
-                if (e.which === 3) {
-                    return false;
-                }
-
-                $.each(self._preventElements, function (ix, val) {
-                    val.off('touchmove', self._prevent);
-                });
-                self._preventElements = [];
-                element.on('touchmove', self._prevent);
-                self._preventElements.push(element);
-
-                var target = this;
-                var coords = getPageCoords(e);
-
-                var distX = coords.x - target.swipeStartX;
-                var distY = coords.y - target.swipeStartY;
-
-                if (Math.abs(distX) >= 10 || Math.abs(distY) >= 10) {
-                    target.tap = false;
-                }
-
-                if (target.tap) {
-                    target.tap = false;
-                    action.call(target);
-                }
-            });
-
-            var target = this;
-            target.tap = true;
-
-            var coords = getPageCoords(e);
-            target.swipeStartX = coords.x;
-            target.swipeStartY = coords.y;
-
-            if (self.isZoomed()) {
-                e.stopPropagation();
-            }
-        });
-
 
         function getPageCoords(e) {
             var out = {x: 0, y: 0};
@@ -1386,6 +1365,57 @@
             }
             return out;
         }
+
+        element.on(startEvents, function (e) {
+            var $self = $(this);
+            if (e.which === 3) {
+                return false;
+            }
+
+            if ($self.data('startEvent') === 'progress') return;
+            $self.data('startEvent', 'progress');
+            setTimeout(function () {
+                $self.data('startEvent', 'done');
+            }, 500);
+
+            var target = this;
+            target.tap = true;
+            coords = getPageCoords(e);
+            element.one(endEvents, function (e) {
+
+                if (e.which === 3) {
+                    return false;
+                }
+
+                //$.each(self._preventElements, function (ix, val) {
+                //    val.off('touchmove', self._prevent);
+                //});
+                //self._preventElements = [];
+                ////element.on('touchmove', self._prevent);
+                //self._preventElements.push(element);
+
+                var target = this;
+                newCoords = getPageCoords(e);
+
+                var distX = coords.x - newCoords.x;
+                var distY = coords.y - newCoords.y;
+
+                if (Math.abs(distX) >= 5 || Math.abs(distY) >= 5) {
+                    target.tap = false;
+                }
+
+                if (target.tap) {
+                    target.tap = false;
+                    action.call(target);
+                }
+            });
+
+
+
+            if (self.isZoomed()) {
+                e.stopPropagation();
+            }
+        });
     };
 
     Viewer.prototype.checkSpins = function () {

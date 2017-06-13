@@ -3708,11 +3708,16 @@ amp.stats.event = function(dom,type,event,value){
         newLoad: function() {
             var src = (this.element.attr('src') && this.element.attr('src')!="")?this.element.attr('src'):this.element.attr('data-amp-src');
             src = this.dimensionsParams(src);
+            var ampSrcSet = this.element.attr('data-amp-srcset') || null;
+
             if($.inArray(src, this._loadedHistory)!==-1){
                 if(this.loading) {
                     this.loading.remove();
                 }
                 this.element.attr('src',src);
+                if(ampSrcSet){
+                    this.element.attr('srcset',ampSrcSet);
+                }
                 this.element.show();
                 return;
             }
@@ -3723,12 +3728,21 @@ amp.stats.event = function(dom,type,event,value){
             !this.options.insertAfter ? this.element.parent().append(this.loading) :this.options.insertAfter.prepend(this.loading);
             this.element.attr('src','');
             this.element.attr('src',src);
+
+            if(ampSrcSet){
+                this.element.attr('srcset','');
+                this.element.attr('srcset', ampSrcSet);
+            }
         },
 
         visible: function(visible) {
             if(visible && visible!= this._visible) {
-                if(this.options.preload == 'visible')
+                if(this.options.preload == 'visible'){
+                    if(this.loaded || this.loading)
+                        return;
+
                     this.newLoad();
+            }
             }
             this._visible = visible;
         },
@@ -6210,7 +6224,7 @@ amp.stats.event = function(dom,type,event,value){
                 var child = $(imgs[m]),
                     components = child.data();
 
-                if(components['amp-ampZoom']){
+                if(components['amp-ampZoom'] || components['ampAmpZoom']){
                     child.ampZoom({'loaded':null});
                 }else{
                     child.ampImage({'loaded':null});
@@ -6222,10 +6236,14 @@ amp.stats.event = function(dom,type,event,value){
                 var child = $(imgs[m]),
                     components = child.data();
 
-                if(components['amp-ampZoom']){
+                if(components['amp-ampZoom']  || components['ampAmpZoom']){
                     child.ampZoom({'loaded':onLoad});
                     child.ampZoom('load', this.options.preload);
                 }else{
+                    var imgComponent = components['amp-ampImage'] || components['ampAmpImage'];
+                    if(typeof imgComponent !== 'undefined' && imgComponent.loaded){
+                        onLoad();
+                    }
                     child.ampImage({'loaded':onLoad});
                     child.ampImage('load', this.options.preload);
                 }
@@ -6295,7 +6313,7 @@ amp.stats.event = function(dom,type,event,value){
                 return false;
             }
             this.element.find('.amp-spin').each(function(i, element){
-                var childSpin = $(element).data()['amp-ampSpin'];
+                var childSpin = $(element).data()['amp-ampSpin'] || $(element).data()['ampAmpSpin'];
                 if(childSpin && childSpin._startDrag){
                     childSpin._startDrag(e);
                 }
@@ -6887,6 +6905,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     amp.viewerSettings = {
         viewerConfigs: {
+            v:'1.1.3',
             target: '#amp-container',
             client: 'playground',
             imageBasePath: '//i1.adis.ws/',
@@ -7115,7 +7134,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     minDistance: 50,
                     friction: 0.97,
                     dragDistance: 200,
-                    preload: true,
+                    preload: 'created',
                     preloadType: 'full',
                     activate: 'down',
                     dir: 'normal',
@@ -7136,7 +7155,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     loop:false,
                     dragDistance: 200,
                     orientation: 'vert',
-                    preloadType: 'full',
+                    preload:'created',
+                    preloadType: 'window',
                     width: 1,
                     height: 1,
                     gesture: {
@@ -7257,7 +7277,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 minDistance: 50,
                 friction: 0.97,
                 dragDistance: 200,
-                preload: true,
+                preload: 'created',
                 preloadType: 'full',
                 activate: 'down',
                 dir: 'normal',
@@ -7716,10 +7736,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.initImagesSrcset = function () {
         var self = this;
-
-        self.wrapper.find('.main-container [data-amp-srcset]').each(function (index) {
-            $(this).attr('srcset', $(this).attr('data-amp-srcset'));
-        });
     };
 
     Viewer.prototype.initAmpWidgets = function (spinManipulate) {
@@ -7732,18 +7748,22 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             navSettings = ampConfigs.navContainerCarouselPortrait;
         }
 
+        self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
+
         self.mainContainerList.ampCarousel(ampConfigs.mainContainerCarousel);
         self.mainContainerList.ampNav(ampConfigs.mainContainerNav);
 
         self.navContainerList.ampCarousel(navSettings);
         self.navContainerList.ampNav(ampConfigs.navContainerNav);
 
+        var carouselData = self.mainContainerList.data()['amp-ampCarousel'] || self.mainContainerList.data()['ampAmpCarousel'];
+
         self.mainContainerList.on('touchstart', function(){
-            self.mainContainerList.data()['amp-ampCarousel'].preventStop = false;
+            carouselData.preventStop = false;
         });
 
         self.navContainerList.find('.amp-slide').on('touchstart', function(){
-            self.mainContainerList.data()['amp-ampCarousel'].preventStop = true;
+            carouselData.preventStop = true;
         });
 
         for (var i = 0; i < self.assets.length; i++) {
@@ -7765,7 +7785,8 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                             play: {
                                 onVisible: false,
                                 onLoad: false
-                            }
+                            },
+                            preloadType: 'window'
                         });
                         $(this).ampSpin(spinConfig);
                     });
@@ -7779,7 +7800,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     }
                     $spin.ampSpin(mainContainerSpin);
                 }
-
             } else if (asset.hasOwnProperty('media')) {
                 var videoSettings = ampConfigs.mainContainerVideo;
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
@@ -7809,17 +7829,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     .ampZoomInline(ampConfigs.mainContainerZoomInline);
             }
         }
-
-        var mainHeight = self.mainContainerList.height() + 'px';
-
-        self.mainContainerList.find('.zoom-trap').css({
-            'line-height': mainHeight
-        });
-        self.mainContainerList.find('.amp-spin').css({
-            'line-height': mainHeight
-        });
-
-        self.wrapper.find('[data-amp-src]').ampImage(ampConfigs.image);
     };
 
     Viewer.prototype.destroyAmpWidgets = function () {
@@ -8192,16 +8201,33 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         }
     };
 
+    Viewer.prototype._orientationChange = function(){
+        var self = this;
+        setTimeout(function(){
+            self._resize();
+        }, 300)
+    };
+
+
     Viewer.prototype.bindGenericEvents = function () {
         var self = this;
+        $(window).off('resize', this._resize);
         $(window).on('resize', this._resize.bind(this));
-        $(document).on('gesturestart', function (e) {
-            e.preventDefault();
-        });
+
+        $(document).off('gesturestart', self._prevent);
+        $(document).on('gesturestart', self._prevent.bind(this));
+
+
+        window.removeEventListener("orientationchange", self._orientationChange);
+        window.addEventListener("orientationchange", self._orientationChange.bind(this));
+
+
         var touchmoves = [];
         var $ampCarousel = false;
         var blocked = false;
-        $(document).on('touchmove', function (e) {
+
+        $(document).off('touchmove.viewerkit');
+        $(document).on('touchmove.viewerkit', function (e) {
             if (e.originalEvent.touches[0] && e.originalEvent.touches[0].clientX !== undefined) {
               if(!$ampCarousel)  {
                 $ampCarousel = $(e.target).parents('.amp-carousel');
@@ -8225,7 +8251,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
               }
             }
         });
-        $(document).on('touchend', function (e) {
+
+        $(document).off('touchend.viewerkit');
+        $(document).on('touchend.viewerkit', function (e) {
             touchmoves = [];
             if (blocked && $ampCarousel && $ampCarousel.length > 0) {
               $ampCarousel.off('touchmove', self._prevent);
@@ -8240,20 +8268,24 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         var currentAsset = self.assets[assetIndex];
 
         if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
-            //@TODO check if spinset is not loaded and do nothing in this case.
             var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
-            if($spin.length > 0 && $spin.data && $spin.data()['amp-ampSpin']._loaded == true){
+
+            var spinData = typeof $spin.data() !== 'undefined' ?
+                ($spin.data()['amp-ampSpin'] || $spin.data()['ampAmpSpin']) : false;
+
+            if($spin.length > 0 && (!spinData || spinData._loaded == true)){
                 setTimeout(function(){
                     $spin.ampSpin('playRepeat', 1);
                 }, self.settings.ampConfigs.mainContainerCarousel.animDuration);
             }
         }
-    }
+    };
 
     Viewer.prototype.bindAmpEvents = function () {
         var self = this;
 
         self.mainContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
+
             $('.amp-spin').find('.amp-frame').css({
                 'margin-left': '-1px'
             });
@@ -8279,10 +8311,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             }
         });
 
-        self.mainContainerList.find('.zoom-trap > img')
-            .on('ampzoominlinezoomedin ampzoominlinezoomedinfull ' +
+        self.mainContainerList.find('.zoom-trap > img').on('ampzoominlinezoomedin ampzoominlinezoomedinfull ' +
                 'ampzoominlinezoomedout ampzoominlinezoomedoutfull', function (e, data) {
                 self.checkZoomIcons();
+                self.toggleZoomScrolling($(this).parent().find('.amp-zoomed'));
             })
             .on('ampzoominlinezoomedin ampzoominlinezoomedinfull', function (e, data) {
                 self.lastZoomDir = 'In';
@@ -8569,21 +8601,40 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.getZoomSlide = function (index) {
         var self = this;
-        var index = index || self.currentAssetIndex;
+        var index = typeof index !== 'undefined' ? index : self.currentAssetIndex;
         return self.mainContainerList.find('> > li:eq(' + index + ') .amp-zoom');
+    };
+
+    Viewer.prototype.toggleZoomScrolling = function($elem){
+        var self = this;
+        var slide = this.getZoomSlide();
+        var state = slide.ampZoomInline('state')
+
+        $.each(self._preventElements, function (ix, val) {
+            val.off('touchmove', self._prevent);
+        });
+        self._preventElements = [];
+        self._preventElements.push($elem);
+
+
+        if(state.scale === 1){
+            $elem.off('touchmove', self._prevent);
+        }
+        else{
+            $elem.on('touchmove', self._prevent);
+        }
     };
 
     Viewer.prototype.checkZoomIcons = function () {
         var self = this;
         var slide = self.getZoomSlide();
-        var state;
+        var state = slide.ampZoomInline('state');
         switch (self.currentView) {
             case self.views.desktopFullView:
                 var plus = self.wrapper.find('.panel .plus');
                 var minus = self.wrapper.find('.panel .minus');
                 plus.add(minus).removeClass('disabled');
                 if (slide.length > 0) {
-                    state = slide.ampZoomInline('state');
                     if (state.scale === 1) {
                         minus.addClass('disabled');
                     }
@@ -8598,7 +8649,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 var close = self.wrapper.find('.main-container .close');
                 close.css({display: 'none'});
                 if (slide.length > 0) {
-                    state = slide.ampZoomInline('state');
                     if (state.scale > 1) {
                         close.css({display: 'block'});
                     } else {
@@ -8620,6 +8670,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.bindTapEvent = function (element, action) {
         var self = this;
+        var coords;
+        var newCoords;
+
         // Need to remove mouse events on touch devices since it fires callbacks twice on tap
         var startEvents = (self.canTouch ? '' : 'mousedown ');
         var endEvents = (self.canTouch ? '' : 'mouseup ');
@@ -8630,60 +8683,6 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             startEvents += 'touchstart';
             endEvents += 'touchend';
         }
-
-        element.on(startEvents, function (e) {
-            var $self = $(this);
-            if (e.which === 3) {
-                return false;
-            }
-
-            if ($self.data('startEvent') === 'progress') return;
-            $self.data('startEvent', 'progress');
-            setTimeout(function () {
-                $self.data('startEvent', 'done');
-            }, 500);
-
-            element.one(endEvents, function (e) {
-
-                if (e.which === 3) {
-                    return false;
-                }
-
-                $.each(self._preventElements, function (ix, val) {
-                    val.off('touchmove', self._prevent);
-                });
-                self._preventElements = [];
-                element.on('touchmove', self._prevent);
-                self._preventElements.push(element);
-
-                var target = this;
-                var coords = getPageCoords(e);
-
-                var distX = coords.x - target.swipeStartX;
-                var distY = coords.y - target.swipeStartY;
-
-                if (Math.abs(distX) >= 10 || Math.abs(distY) >= 10) {
-                    target.tap = false;
-                }
-
-                if (target.tap) {
-                    target.tap = false;
-                    action.call(target);
-                }
-            });
-
-            var target = this;
-            target.tap = true;
-
-            var coords = getPageCoords(e);
-            target.swipeStartX = coords.x;
-            target.swipeStartY = coords.y;
-
-            if (self.isZoomed()) {
-                e.stopPropagation();
-            }
-        });
-
 
         function getPageCoords(e) {
             var out = {x: 0, y: 0};
@@ -8702,6 +8701,57 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             }
             return out;
         }
+
+        element.on(startEvents, function (e) {
+            var $self = $(this);
+            if (e.which === 3) {
+                return false;
+            }
+
+            if ($self.data('startEvent') === 'progress') return;
+            $self.data('startEvent', 'progress');
+            setTimeout(function () {
+                $self.data('startEvent', 'done');
+            }, 500);
+
+            var target = this;
+            target.tap = true;
+            coords = getPageCoords(e);
+            element.one(endEvents, function (e) {
+
+                if (e.which === 3) {
+                    return false;
+                }
+
+                //$.each(self._preventElements, function (ix, val) {
+                //    val.off('touchmove', self._prevent);
+                //});
+                //self._preventElements = [];
+                ////element.on('touchmove', self._prevent);
+                //self._preventElements.push(element);
+
+                var target = this;
+                newCoords = getPageCoords(e);
+
+                var distX = coords.x - newCoords.x;
+                var distY = coords.y - newCoords.y;
+
+                if (Math.abs(distX) >= 5 || Math.abs(distY) >= 5) {
+                    target.tap = false;
+                }
+
+                if (target.tap) {
+                    target.tap = false;
+                    action.call(target);
+                }
+            });
+
+
+
+            if (self.isZoomed()) {
+                e.stopPropagation();
+            }
+        });
     };
 
     Viewer.prototype.checkSpins = function () {

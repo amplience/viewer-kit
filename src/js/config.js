@@ -12,6 +12,7 @@
 
     amp.viewerSettings = {
         viewerConfigs: {
+            v:'1.1.3',
             target: '#amp-container',
             client: 'playground',
             imageBasePath: '//i1.adis.ws/',
@@ -240,7 +241,7 @@
                     minDistance: 50,
                     friction: 0.97,
                     dragDistance: 200,
-                    preload: true,
+                    preload: 'created',
                     preloadType: 'full',
                     activate: 'down',
                     dir: 'normal',
@@ -261,7 +262,8 @@
                     loop:false,
                     dragDistance: 200,
                     orientation: 'vert',
-                    preloadType: 'full',
+                    preload:'created',
+                    preloadType: 'window',
                     width: 1,
                     height: 1,
                     gesture: {
@@ -382,7 +384,7 @@
                 minDistance: 50,
                 friction: 0.97,
                 dragDistance: 200,
-                preload: true,
+                preload: 'created',
                 preloadType: 'full',
                 activate: 'down',
                 dir: 'normal',
