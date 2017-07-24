@@ -1,8 +1,21 @@
 @import "variables";
 
 .amp-viewer-kit {
+  .mobile-portrait-view{
+    .amp-spin{
+      height:100% !important;
+    }
+  }
+
   .amp-portrait-view {
     position: relative;
+
+    &.desktop-normal-view{
+      .amp-spin{
+        height:100% !important;
+      }
+    }
+
     .amp-main-img {
       max-height: 100%;
       width: auto;

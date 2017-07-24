@@ -621,8 +621,13 @@ body {
 * {
   box-sizing: border-box; }
 
+.amp-viewer-kit .mobile-portrait-view .amp-spin {
+  height: 100% !important; }
+
 .amp-viewer-kit .amp-portrait-view {
   position: relative; }
+  .amp-viewer-kit .amp-portrait-view.desktop-normal-view .amp-spin {
+    height: 100% !important; }
   .amp-viewer-kit .amp-portrait-view .amp-main-img {
     max-height: 100%;
     width: auto; }

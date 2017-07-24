@@ -6858,14 +6858,22 @@ this["amp"]["templates"]["desktopNormalView"] = Handlebars.template({"1":functio
 },"useData":true});
 
 this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "mobile-"
+    + this.escapeExpression(((helper = (helper = helpers.view || (depth0 != null ? depth0.view : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"view","hash":{},"data":data}) : helper)))
+    + "-view";
+},"3":function(depth0,helpers,partials,data) {
     return "                <div>\n                    <div class=\"mobile-thumbnail\"></div>\n                </div>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.escapeExpression, alias2=this.lambda;
 
-  return "<div class=\"mobile-normal-view\">\n    <div class=\"main-container\">\n        "
+  return "<div class=\"mobile-normal-view "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.view : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\">\n    <div class=\"main-container\">\n        "
     + alias1((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0,"main-container-list",{"name":"renderPartial","hash":{"locale":(depth0 != null ? depth0.locale : depth0),"templates":(depth0 != null ? depth0.templates : depth0),"items":(depth0 != null ? depth0.items : depth0)},"data":data}))
     + "\n        <div class=\"icon close\"></div>\n        <div class=\"tooltip\">\n            <span class=\"text\"></span>\n            <span class=\"tooltip-icon\"></span>\n        </div>\n    </div>\n    <div class=\"nav-container\">\n        <ul class=\"list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":this.program(3, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "        </ul>\n        <div class=\""
     + alias1(alias2(((stack1 = ((stack1 = ((stack1 = (depth0 != null ? depth0.templates : depth0)) != null ? stack1.navIcons : stack1)) != null ? stack1.nav : stack1)) != null ? stack1.prev : stack1), depth0))
     + " amp-js-nav nav-container-prev\"></div>\n        <div class=\""
