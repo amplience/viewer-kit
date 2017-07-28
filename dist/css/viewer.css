@@ -276,6 +276,8 @@ body {
         transform: translateX(-50%) translateY(-50%); }
   .amp-viewer-kit .amp-outer-spin > .amp-progress {
     display: none; }
+  .amp-viewer-kit .desktop-normal-view .main-container .multiple {
+    overflow: hidden; }
   .amp-viewer-kit .desktop-normal-view .main-container,
   .amp-viewer-kit .desktop-full-view .main-container,
   .amp-viewer-kit .mobile-normal-view .main-container {

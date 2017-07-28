@@ -25,6 +25,11 @@
 
         self.settings = $.extend(true, {}, defaultSettings, settings);
 
+        self.listVisible = self.settings.ampConfigs.mainContainerCarousel.listVisible;
+        if (typeof self.listVisible !== 'number' || self.listVisible < 1) {
+            self.listVisible = 1;
+        }
+
         if (self.settings.locale && self.settings.locale.length > 0) {
             self.settings.ampConfigs.mainContainerZoomInline.transforms.push('locale=' + self.settings.locale);
         }
@@ -44,6 +49,7 @@
         self.controller();
         self.tags = [];
         self.IE = self.isIE();
+        self.tooltipsTimeout = [];
     };
 
     Viewer.prototype.controller = function () {
@@ -262,9 +268,11 @@
         }
 
         self.mainContainerList = self.wrapper.find('.main-container .list');
+
+        self.slides = false;
         self.navContainerList = self.wrapper.find('.nav-container .list');
-        self.tooltip = self.wrapper.find('.main-container .tooltip');
-        self.tooltipText = self.tooltip.find('span.text');
+        self.tooltips = self.wrapper.find('.main-container .tooltip');
+        self.tooltipsText = self.tooltips.find('span.text');
 
         self.bindGenericEvents();
         self.bindAmpEvents();
@@ -327,6 +335,14 @@
         var self = this;
         self.currentView = self.views.desktopNormalView;
         self.wrapper.html(amp.templates.desktopNormalView(self.getTemplateData()));
+        self.cloneTooltip(self.listVisible);
+    };
+
+    Viewer.prototype.cloneTooltip = function (listVisible) {
+        var tooltip = this.wrapper.find('.main-container .tooltip');
+        for (var i = 1; i < listVisible; i++) {
+            tooltip.clone().insertAfter(tooltip);
+        }
     };
 
     Viewer.prototype.renderDesktopFullView = function () {
@@ -576,6 +592,7 @@
     Viewer.prototype.mainContainerMove = function (dir) {
         var self = this;
         var info = self.getMainVisibleSlidesInfo();
+        var slides = self.mainContainerList.find('.amp-slide');
         var goToIndex = info.firstVisible + 1;
         if (dir === 'prev') {
             goToIndex = info.isFirst ? 1 : info.firstVisible;
@@ -583,129 +600,168 @@
             goToIndex = info.isLast ? info.firstVisible + 1 : info.firstVisible + 2;
         }
         self.mainContainerList.ampCarousel('goTo', goToIndex);
+        slides.removeClass('amp-visible');
+        slides.eq(goToIndex-1).addClass('amp-visible');
     };
 
     Viewer.prototype.initTooltips = function () {
         var self = this;
+        if (!self.slides) {
+            self.slides = self.mainContainerList.find('li.amp-slide');
+        }
+        self.slides.off('mousemove mouseout');
 
-        self.mainContainerList.off('mousemove mouseout');
-        self.tooltip.attr({style: ''});
+        self.tooltips.attr({style: ''});
+        self.tooltips.css({display: 'none'});
 
         var assetIndex = self.currentAssetIndex;
-        var currentAsset = self.assets[assetIndex];
 
-        if (currentAsset.hasOwnProperty('set')) {
-            var spin3D = false;
-            if (currentAsset.set.items && currentAsset.set.items.length > 0 && currentAsset.set.items[0].set) {
-                spin3D = true;
+        for (var i = 0; i < self.listVisible; i++) {
+            if (self.currentView !== self.views.desktopNormalView && i > 0) {
+                return;
             }
-            self.initSpinTooltip(spin3D);
-        } else if (currentAsset.hasOwnProperty('media')) {
-            self.initVideoTooltip();
-        } else {
-            self.initImageTooltip();
+            var currentAsset = self.assets[assetIndex + i];
+            if (!currentAsset) return;
+            if (currentAsset.hasOwnProperty('set')) {
+                var spin3D = false;
+                if (currentAsset.set.items && currentAsset.set.items.length > 0 && currentAsset.set.items[0].set) {
+                    spin3D = true;
+                }
+                self.initSpinTooltip(spin3D, i);
+            } else if (currentAsset.hasOwnProperty('media')) {
+                self.initVideoTooltip(i);
+            } else {
+                self.initImageTooltip(i);
+            }
         }
     };
 
-    Viewer.prototype.initImageTooltip = function () {
+    Viewer.prototype.initImageTooltip = function (listVisibleNum) {
         var self = this;
         var tapText = '';
-        self.tooltip.attr({class: 'tooltip image'});
+        var assetIndex = self.currentAssetIndex + listVisibleNum;
+        var $tooltip = $(self.tooltips[listVisibleNum]);
+        var $tooltipText = $(self.tooltipsText[listVisibleNum]);
+        $tooltip.attr({class: 'tooltip image'});
         switch (self.currentView) {
             case self.views.desktopNormalView:
                 if (self.canTouch) {
                     tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktop.image.doubleTouch.text :
                         self.settings.tooltips.desktop.image.touch.text;
-                    self.tooltip.css({position: 'absolute'});
-                    self.tooltipText.text(tapText);
-                    self.fadeOutTooltip();
+                    $tooltip.css({position: 'absolute'});
+                    $tooltipText.text(tapText);
+                    self.fadeOutTooltip(listVisibleNum);
                 } else {
-                    self.tooltip.fadeOut(0);
+                    $tooltip.fadeOut(0);
 
                     var margin = +self.mainContainerList.css('margin-left').replace('px', '');
 
-                    self.tooltipText.text(self.settings.tooltips.desktop.image.noTouch.text);
+                    $tooltipText.text(self.settings.tooltips.desktop.image.noTouch.text);
 
-                    self.mainContainerList.on('mousemove', function (e) {
-                        self.tooltip.css({
+                    $(self.slides[assetIndex]).on('mousemove', function (e) {
+                        $tooltip.css({
                             top: e.clientY - self.settings.tooltips.offsets.top,
                             left: e.clientX - self.settings.tooltips.offsets.left,
                             display: 'block'
                         });
                     });
 
-                    self.mainContainerList.on('mouseout', function () {
-                        self.tooltip.fadeOut(0);
+                    $(self.slides[assetIndex]).on('mouseout', function () {
+                        $tooltip.fadeOut(0);
                     });
                 }
                 break;
             case self.views.desktopFullView:
                 tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktopFull.image.doubleTouch.text :
                     self.settings.tooltips.desktopFull.image.touch.text;
-                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.image.noTouch.text);
-                self.tooltip.fadeOut(0);
+                $tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.image.noTouch.text);
+                $tooltip.fadeOut(0);
                 break;
             case self.views.mobileNormalView:
                 tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.mobile.image.doubleTouch.text :
                     self.settings.tooltips.mobile.image.touch.text;
-                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.image.noTouch.text);
-                self.fadeOutTooltip();
+                $tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.image.noTouch.text);
+                self.fadeOutTooltip(listVisibleNum);
                 break;
         }
     };
 
-    Viewer.prototype.initSpinTooltip = function (spin3D) {
+    Viewer.prototype.initSpinTooltip = function (spin3D, listVisibleNum) {
         var self = this;
         var tapText = '';
+        var $tooltip = $(self.tooltips[listVisibleNum]);
+        var $tooltipText = $(self.tooltipsText[listVisibleNum]);
         var spinClass = spin3D ? 'spin-3d' : 'spin';
-        self.tooltip.attr({class: 'tooltip ' + spinClass});
+        $tooltip.attr({class: 'tooltip ' + spinClass});
+        $tooltip.css({display: 'block'});
         switch (self.currentView) {
             case self.views.desktopNormalView:
                 tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktop.spin.doubleTouch.text :
                     self.settings.tooltips.desktop.spin.touch.text;
-                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktop.spin.noTouch.text);
+                $tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktop.spin.noTouch.text);
+                if (self.listVisible > 1) {
+                    var tMarginLeft = parseInt($tooltip.css('margin-left'));
+                    var tWidth = $tooltip.outerWidth();
+                    var cWidth = $(self.slides[listVisibleNum]).outerWidth();
+                    var transition = -tMarginLeft + (cWidth - tWidth)/2 + cWidth * listVisibleNum;
+                    $tooltip.css({
+                        left: transition + 'px'
+                    });
+                    if (tWidth > cWidth) {
+                        $tooltip.css({
+                            transform: 'scale(0.5)'
+                        });
+                    }
+                }
                 break;
             case self.views.desktopFullView:
                 tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.desktopFull.spin.doubleTouch.text :
                     self.settings.tooltips.desktopFull.spin.touch.text;
-                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.spin.noTouch.text);
+                $tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.desktopFull.spin.noTouch.text);
                 break;
             case self.views.mobileNormalView:
                 tapText = (self.settings.zoomInlineDoubleTap) ? self.settings.tooltips.mobile.spin.doubleTouch.text :
                     self.settings.tooltips.mobile.spin.touch.text;
-                self.tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.spin.noTouch.text);
+                $tooltipText.text(self.canTouch ? tapText : self.settings.tooltips.mobile.spin.noTouch.text);
                 break;
         }
 
-        self.fadeOutTooltip();
+        self.fadeOutTooltip(listVisibleNum);
     };
 
-    Viewer.prototype.initVideoTooltip = function () {
+    Viewer.prototype.initVideoTooltip = function (listVisibleNum) {
         var self = this;
+        var $tooltip = $(self.tooltips[listVisibleNum]);
+        var $tooltipText = $(self.tooltipsText[listVisibleNum]);
 
-        self.tooltip.attr({class: 'tooltip video'});
+        $tooltip.attr({class: 'tooltip video'});
+
+        return;
 
         switch (self.currentView) {
             case self.views.desktopNormalView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktop.video.play.touch.text : self.settings.tooltips.desktop.video.play.noTouch.text);
+                $tooltipText.text(self.canTouch ? self.settings.tooltips.desktop.video.play.touch.text : self.settings.tooltips.desktop.video.play.noTouch.text);
                 break;
             case self.views.desktopFullView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.desktopFull.video.play.touch.text : self.settings.tooltips.desktopFull.video.play.noTouch.text);
+                $tooltipText.text(self.canTouch ? self.settings.tooltips.desktopFull.video.play.touch.text : self.settings.tooltips.desktopFull.video.play.noTouch.text);
                 break;
             case self.views.mobileNormalView:
-                self.tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.video.play.touch.text : self.settings.tooltips.mobile.video.play.noTouch.text);
+                $tooltipText.text(self.canTouch ? self.settings.tooltips.mobile.video.play.touch.text : self.settings.tooltips.mobile.video.play.noTouch.text);
                 break;
         }
 
-        self.fadeOutTooltip();
+        self.fadeOutTooltip(listVisibleNum);
     };
 
-    Viewer.prototype.fadeOutTooltip = function () {
+    Viewer.prototype.fadeOutTooltip = function (listVisibleNum) {
         var self = this;
-        clearTimeout(self.tooltipTimeout);
-        self.tooltip.stop();
-        self.tooltipTimeout = setTimeout(function () {
-            self.tooltip.fadeOut();
+        if (self.tooltipsTimeout[listVisibleNum]) {
+            clearTimeout(self.tooltipsTimeout[listVisibleNum]);
+            self.tooltipsTimeout[listVisibleNum] = false;
+        }
+        $(self.tooltips[listVisibleNum]).stop();
+        self.tooltipsTimeout[listVisibleNum] = setTimeout(function () {
+            $(self.tooltips[listVisibleNum]).fadeOut();
         }, self.settings.tooltips.displayTime);
     };
 
@@ -715,20 +771,20 @@
         var lastTapTime2 = 0;
         var firsttouch = true;
         var touchStart = {
-          x: 0,
-          y: 0
+            x: 0,
+            y: 0
         };
         var touchEnd = {
-          x: 1000,
-          y: 1000
+            x: 1000,
+            y: 1000
         };
         var touch1 = {
-          x: 0,
-          y: 0
+            x: 0,
+            y: 0
         };
         var touch2 = {
-          x: 1000,
-          y: 1000
+            x: 1000,
+            y: 1000
         };
         $element.on('touchstart', function (e) {
             if (self.isZoomCycle) {
@@ -748,11 +804,11 @@
                 y: Math.abs(e.originalEvent.touches[0].pageY) || 0
             };
             if (firsttouch) {
-              touch1 = touchStart;
-              firsttouch = false;
+                touch1 = touchStart;
+                firsttouch = false;
             } else {
-              touch2 = touchStart;
-              firsttouch = true;
+                touch2 = touchStart;
+                firsttouch = true;
             }
             lastTapTime2 = currentTime;
         });
@@ -893,26 +949,26 @@
         $(document).off('touchmove.viewerkit');
         $(document).on('touchmove.viewerkit', function (e) {
             if (e.originalEvent.touches[0] && e.originalEvent.touches[0].clientX !== undefined) {
-              if(!$ampCarousel)  {
-                $ampCarousel = $(e.target).parents('.amp-carousel');
-              }
-              if ($ampCarousel && $ampCarousel.length > 0) {
-                var coords = {
-                  clientX: e.originalEvent.touches[0].clientX,
-                  clientY: e.originalEvent.touches[0].clientY
-                };
-                touchmoves.push(coords);
-                var diffX = Math.abs(touchmoves[touchmoves.length-1].clientX - touchmoves[0].clientX);
-                var diffY = Math.abs(touchmoves[touchmoves.length-1].clientY - touchmoves[0].clientY);
-                if (!blocked && diffX > diffY) {
-                  $ampCarousel.on('touchmove', self._prevent);
-                  blocked = true;
+                if(!$ampCarousel)  {
+                    $ampCarousel = $(e.target).parents('.amp-carousel');
                 }
-                if (blocked && diffX <= diffY) {
-                  $ampCarousel.off('touchmove', self._prevent);
-                  blocked = false;
+                if ($ampCarousel && $ampCarousel.length > 0) {
+                    var coords = {
+                        clientX: e.originalEvent.touches[0].clientX,
+                        clientY: e.originalEvent.touches[0].clientY
+                    };
+                    touchmoves.push(coords);
+                    var diffX = Math.abs(touchmoves[touchmoves.length-1].clientX - touchmoves[0].clientX);
+                    var diffY = Math.abs(touchmoves[touchmoves.length-1].clientY - touchmoves[0].clientY);
+                    if (!blocked && diffX > diffY) {
+                        $ampCarousel.on('touchmove', self._prevent);
+                        blocked = true;
+                    }
+                    if (blocked && diffX <= diffY) {
+                        $ampCarousel.off('touchmove', self._prevent);
+                        blocked = false;
+                    }
                 }
-              }
             }
         });
 
@@ -920,8 +976,8 @@
         $(document).on('touchend.viewerkit', function (e) {
             touchmoves = [];
             if (blocked && $ampCarousel && $ampCarousel.length > 0) {
-              $ampCarousel.off('touchmove', self._prevent);
-              blocked = false;
+                $ampCarousel.off('touchmove', self._prevent);
+                blocked = false;
             }
             $ampCarousel = false;
         });
@@ -931,7 +987,7 @@
         var self = this;
         var currentAsset = self.assets[assetIndex];
 
-        if(currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
+        if(currentAsset && currentAsset.type === 'set' && currentAsset.set.items[0].type != 'set'){
             var $spin = self.mainContainerList.find('.amp-slide').eq(assetIndex).find('.amp-spin');
 
             var spinData = typeof $spin.data() !== 'undefined' ?
@@ -976,10 +1032,10 @@
         });
 
         self.mainContainerList.find('.zoom-trap > img').on('ampzoominlinezoomedin ampzoominlinezoomedinfull ' +
-                'ampzoominlinezoomedout ampzoominlinezoomedoutfull', function (e, data) {
-                self.checkZoomIcons();
-                self.toggleZoomScrolling($(this).parent().find('.amp-zoomed'));
-            })
+            'ampzoominlinezoomedout ampzoominlinezoomedoutfull', function (e, data) {
+            self.checkZoomIcons();
+            self.toggleZoomScrolling($(this).parent().find('.amp-zoomed'));
+        })
             .on('ampzoominlinezoomedin ampzoominlinezoomedinfull', function (e, data) {
                 self.lastZoomDir = 'In';
             })
@@ -1002,13 +1058,19 @@
         var self = this;
         var assetIndex = self.currentAssetIndex;
 
-        self.wrapper.find('.main-container > .amp-js-nav').removeClass('disabled');
+        self.wrapper.find('.main-container .amp-js-nav').removeClass('disabled');
 
         if (assetIndex === 0) {
             self.wrapper.find('.main-container-prev').addClass('disabled');
         }
-        if (assetIndex === self.assets.length - 1) {
-            self.wrapper.find('.main-container-next').addClass('disabled');
+        if (self.currentView === self.views.desktopNormalView && self.listVisible > 1) {
+            if (assetIndex >= self.assets.length - self.listVisible) {
+                self.wrapper.find('.main-container-next').addClass('disabled');
+            }
+        } else {
+            if (assetIndex === self.assets.length - 1) {
+                self.wrapper.find('.main-container-next').addClass('disabled');
+            }
         }
     };
 
@@ -1040,15 +1102,35 @@
 
         switch (self.currentView) {
             case self.views.desktopNormalView:
+
+                if (self.listVisible > 1) {
+                    self.mainContainerList.css({
+                        'width': 100 / self.listVisible + '%',
+                        'overflow': 'visible',
+                        'margin': 0
+                    });
+                }
+
                 if (!self.settings.view && !self.isPortraitView) {
                     ampConfigs.navContainerCarousel.width = self.settings.ampConfigs.navElementsCount.forDesktop;
                     ampConfigs.navContainerCarousel.gesture.enabled = true;
                 }
                 break;
             case self.views.desktopFullView:
+
+                if (self.listVisible > 1) {
+                    self.mainContainerList.css('width', '100%');
+                }
+
                 ampConfigs.navContainerCarousel.width = self.settings.ampConfigs.navElementsCount.forDesktopFull;
+
                 break;
             case self.views.mobileNormalView:
+
+                if (self.listVisible > 1) {
+                    self.mainContainerList.css('width', '100%');
+                }
+
                 var containerWidth = self.wrapper.width();
                 var assetsCount = self.assets.length;
                 var assetsWidth = assetsCount * ampConfigs.navElementsWidthPxMobile;
@@ -1124,7 +1206,7 @@
 
         // For desktop thumnails we need to substract extra 20px due to margin
         var thumbWidth = self.currentView !== self.views.mobileNormalView ?
-        'calc(' + navElementsWidthPercent + '% - 20px)'
+            'calc(' + navElementsWidthPercent + '% - 20px)'
             : ampConfigs.navElementsWidthPxMobile + 'px';
 
         self.navContainerList.find('.amp-slide').css('width', thumbWidth);
@@ -1206,12 +1288,12 @@
             var slide = self.getZoomSlide();
 
             $.each(self._preventElements, function (ix, val) {
-              val.off('touchmove', self._prevent);
+                val.off('touchmove', self._prevent);
             });
             self._preventElements = [];
             if (self.isZoomed()) {
-              self.isZoomCycle = true;
-              slide.ampZoomInline('zoomOutFull');
+                self.isZoomCycle = true;
+                slide.ampZoomInline('zoomOutFull');
             }
 
             var prevSlide = self.getZoomSlide(self.prevAssetIndex);
@@ -1219,7 +1301,7 @@
                 prevSlide.ampZoomInline('zoomOutFull');
             }
             setTimeout(function () {
-              self.isZoomCycle = false;
+                self.isZoomCycle = false;
             }, 600)
         }
     };
@@ -1238,7 +1320,7 @@
         var self = this;
         if (!self.isZoomCycle) {
             var slide = self.getZoomSlide();
-          if (slide.length > 0) {
+            if (slide.length > 0) {
                 self.isZoomCycle = true;
                 var dir = self.getNextCycleDir();
                 slide.ampZoomInline('zoom' + dir);
@@ -1316,10 +1398,10 @@
                     if (state.scale > 1) {
                         close.css({display: 'block'});
                     } else {
-                      $.each(self._preventElements, function (ix, val) {
-                        val.off('touchmove', self._prevent);
-                        self._preventElements = [];
-                      });
+                        $.each(self._preventElements, function (ix, val) {
+                            val.off('touchmove', self._prevent);
+                            self._preventElements = [];
+                        });
                     }
                 }
                 break;

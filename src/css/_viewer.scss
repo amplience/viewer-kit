@@ -89,7 +89,9 @@ body {
       display: none;
     }
   }
-
+  .desktop-normal-view .main-container .multiple {
+    overflow: hidden;
+  }
   .desktop-normal-view,
   .desktop-full-view,
   .mobile-normal-view {

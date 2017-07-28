@@ -70,7 +70,12 @@
             locale: 'en-gb',
             cacheControl: Date.now(),
             secure: true,
-            view: 'portrait'
+            view: 'portrait',
+            ampConfigs: {
+                mainContainerCarousel: {
+                    listVisible: 2
+                }
+            }
         });
 
         window.viewer = viewer;
