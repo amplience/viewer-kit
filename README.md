@@ -1,5 +1,9 @@
 # SDK Client Viewer : Viewer Kit
 
+## Playground Documentation
+Interactive documentation can be found in our <a href="http://playground.amplience.com/viewer-kit/docs/">playground</a>
+
+
 ## Installation
 
 
