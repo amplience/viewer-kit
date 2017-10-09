@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <title>Viewer Kit Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- build:[href] css/viewer.min.css -->
     <link rel="stylesheet" href="../dist/css/viewer.css">
     <!-- /build -->
@@ -37,9 +37,15 @@
 </div>
 <button id="switch" style="position: fixed;right: 0;bottom: 0;z-index:100;">Switch Set</button>
 
-<!-- build:js jquery.min.js -->
-<script src="../node_modules/jquery/dist/jquery.min.js"></script>
-<!-- /build -->
+<!--&lt;!&ndash; build:js jquery.min.js &ndash;&gt;-->
+<!--<script src="../node_modules/jquery/dist/jquery.min.js"></script>-->
+<!--&lt;!&ndash; /build &ndash;&gt;-->
+
+
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
 
 <!-- build:js jquery-ui-custom.js -->
 <script src="../bower_components/jquery-ui/ui/jquery.ui.core.js"></script>
@@ -59,6 +65,7 @@
             locale: 'en-gb',
             cacheControl: Date.now(),
             secure: true,
+            zoomInlineDoubleTap: false,
             doubleTapTime: 250,
             initCallback: function () {
                 if (this.currentView === "desktopFullView") {
@@ -66,8 +73,8 @@
                     for (var x = 0; x < this.tags.length; x++) {
                         if (this.tags[x].alias === 'videoContainer') {
                             var $tag = this.tags[x].$tag;
-                            videoData = $tag.data();
-                            var player = videoData['amp-ampVideo']._player;
+                            videoData = $tag.data()['amp-ampVideo'] || $tag.data()['ampAmpVideo'];
+                            var player = videoData._player;
                             player.ready(function () {
                                 player.currentResolution('High');
                             });

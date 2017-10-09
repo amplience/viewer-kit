@@ -1,4 +1,4 @@
-<div class="mobile-normal-view">
+<div class="mobile-normal-view {{#if view}}mobile-{{view}}-view{{/if}}">
     <div class="main-container">
         {{renderPartial 'main-container-list' items=items templates=templates locale=locale}}
         <div class="icon close"></div>

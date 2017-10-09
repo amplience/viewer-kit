@@ -1,8 +1,21 @@
 @import "variables";
 
 .amp-viewer-kit {
+  .mobile-portrait-view{
+    .amp-spin{
+      height:100% !important;
+    }
+  }
+
   .amp-portrait-view {
     position: relative;
+
+    &.desktop-normal-view{
+      .amp-spin{
+        height:100% !important;
+      }
+    }
+
     .amp-main-img {
       max-height: 100%;
       width: auto;
@@ -88,6 +101,23 @@
           .thumbnail {
             margin: 0 0 10px 0;
           }
+        }
+      }
+
+      .amp-margin-helper{
+        &:before {
+          width: 100%;
+          height: 10px;
+          top: 0px;
+          left: 0;
+        }
+
+        &:after{
+          width: 100%;
+          height: 10px;
+          top: auto;
+          bottom: 0px;
+          right:auto;
         }
       }
     }
