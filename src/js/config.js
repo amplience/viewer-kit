@@ -272,6 +272,7 @@
                     }
                 },
                 mainContainerVideo: {
+                    preload:"none",
                     width: 1,
                     height: 1,
                     center: true,
@@ -402,6 +403,7 @@
             });
 
             addConfig(self.viewerConfigs.ampConfigs, 'mainContainerVideoPortrait', {
+                preload: 'none',
                 height: '100%',
                 responsive: true,
                 autoplay: false,

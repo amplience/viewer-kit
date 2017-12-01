@@ -471,6 +471,10 @@
                     videoSettings.nativeControlsForTouch = false;
                 }
 
+                if(self.IE && videoSettings.preload ==='none'){
+                    delete videoSettings.preload;
+                }
+
                 var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
 
                 $videoTag.find('video').on('touchstart', function () {

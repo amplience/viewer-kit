@@ -7173,6 +7173,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     }
                 },
                 mainContainerVideo: {
+                    preload:"none",
                     width: 1,
                     height: 1,
                     center: true,
@@ -7303,6 +7304,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             });
 
             addConfig(self.viewerConfigs.ampConfigs, 'mainContainerVideoPortrait', {
+                preload: 'none',
                 height: '100%',
                 responsive: true,
                 autoplay: false,
@@ -7813,6 +7815,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                 if (self.settings.view && self.isPortraitView && self.currentView === self.views.desktopNormalView) {
                     videoSettings = ampConfigs.mainContainerVideoPortrait;
                     videoSettings.nativeControlsForTouch = false;
+                }
+
+                if(self.IE && videoSettings.preload ==='none'){
+                    delete videoSettings.preload;
                 }
 
                 var $videoTag = self.mainContainerList.find('#' + asset.name).ampVideo(videoSettings);
