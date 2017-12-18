@@ -7895,24 +7895,28 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.bindNavigationEvents = function () {
         var self = this;
-
+        var loop = self.settings.ampConfigs.mainContainerCarousel.loop;
         self.bindIconClickEvent(self.wrapper.find('.main-container-prev'), function () {
-            self.mainContainerMove('prev');
+            self.mainContainerMove('prev', loop);
         });
         self.bindIconClickEvent(self.wrapper.find('.main-container-next'), function () {
-            self.mainContainerMove('next');
+            self.mainContainerMove('next', loop);
         });
 
         self.bindIconClickEvent(self.wrapper.find('.nav-container-prev'), function () {
-            self.navContainerMove('prev');
+            self.navContainerMove('prev', loop);
         });
         self.bindIconClickEvent(self.wrapper.find('.nav-container-next'), function () {
-            self.navContainerMove('next');
+            self.navContainerMove('next', loop);
         });
     };
 
-    Viewer.prototype.navContainerMove = function (dir) {
+    Viewer.prototype.navContainerMove = function (dir, loop) {
         var self = this;
+        if(loop){
+            self.navContainerList.ampCarousel(dir);
+            return;
+        }
         var info = self.getNavigationVisibleSlidesInfo();
         var goToIndex = info.firstVisible + 1;
         if (dir === 'prev') {
@@ -7923,8 +7927,13 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.navContainerList.ampCarousel('goTo', goToIndex);
     };
 
-    Viewer.prototype.mainContainerMove = function (dir) {
+    Viewer.prototype.mainContainerMove = function (dir, loop) {
         var self = this;
+        if(loop){
+            self.mainContainerList.ampCarousel(dir);
+            return;
+        }
+
         var info = self.getMainVisibleSlidesInfo();
         var goToIndex = info.firstVisible + 1;
         if (dir === 'prev') {
@@ -7932,6 +7941,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         } else if (dir === 'next') {
             goToIndex = info.isLast ? info.firstVisible + 1 : info.firstVisible + 2;
         }
+
         self.mainContainerList.ampCarousel('goTo', goToIndex);
     };
 
@@ -8350,8 +8360,12 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.checkMainContainerNavArrows = function () {
         var self = this;
-        var assetIndex = self.currentAssetIndex;
 
+        if(self.settings.ampConfigs.mainContainerCarousel.loop){
+            return;
+        }
+
+        var assetIndex = self.currentAssetIndex;
         self.wrapper.find('.main-container > .amp-js-nav').removeClass('disabled');
 
         if (assetIndex === 0) {
@@ -8364,6 +8378,11 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 
     Viewer.prototype.checkNavContainerNavArrows = function () {
         var self = this;
+
+        if(self.settings.ampConfigs.navContainerCarousel.loop){
+            return;
+        }
+
         self.wrapper.find('.nav-container > .amp-js-nav').removeClass('disabled');
         var info = self.getNavigationVisibleSlidesInfo();
         if (info.isFirst) {
