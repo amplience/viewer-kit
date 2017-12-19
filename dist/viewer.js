@@ -7375,6 +7375,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.settings.ampConfigs.mainContainerZoomInline.transforms.push('locale=' + self.settings.locale);
         }
 
+        if (self.settings.ampConfigs.mainContainerCarousel.loop) {
+            self.settings.ampConfigs.navContainerCarousel.loop = true
+        }
+
         self.views = {
             desktopNormalView: 'desktopNormalView',
             desktopFullView: 'desktopFullView',
@@ -7382,6 +7386,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         };
         self.assets = [];
         self.currentAssetIndex = 0;
+        self.navCurrentAssetIndex = 0;
         self.canTouch = !!(('ontouchstart' in window) ||
         window.DocumentTouch && document instanceof window.DocumentTouch);
         self.wrapper = $('<div class="amp-viewer-kit"></div>');
@@ -7862,15 +7867,33 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
 //Move thumbs to one position after active or to one position before active
     Viewer.prototype.navMove = function (thumb) {
         var self = this;
+        var slidesLength = self.mainContainerList.data()['ampAmpCarousel'].count;
+        var next = self.settings.ampConfigs.mainContainerCarousel.loop ? (self.navPrevAssetIndex - 1 === slidesLength && self.navCurrentAssetIndex === 0) : false;
+        var prev = self.settings.ampConfigs.mainContainerCarousel.loop ? (self.navPrevAssetIndex === 0 && self.navCurrentAssetIndex === (slidesLength - 1)) : false;
         var $thumb = $(thumb);
         var $next = $thumb.next();
-        if ($next.length > 0) {
-            if (!$next.hasClass('amp-visible')) {
-                self.navContainerList.ampCarousel('next');
-            }
-            else if (!$thumb.prev().hasClass('amp-visible')) {
-                self.navContainerList.ampCarousel('prev');
-            }
+        var $prev = $thumb.prev();
+
+        if(self.navPrevAssetIndex === self.navCurrentAssetIndex){
+            return;
+        }
+
+        if ($next.length > 0 || self.settings.ampConfigs.mainContainerCarousel.loop) {
+            setTimeout(function () {
+                if (!$next.hasClass('amp-visible')  && !prev) {
+                    if(!self.settings.ampConfigs.mainContainerCarousel.loop && $next.length < 1){
+                        return;
+                    }
+                    self.navContainerList.ampCarousel('next');
+
+                }
+                else if (!$prev.hasClass('amp-visible') && !next) {
+                    if(!self.settings.ampConfigs.mainContainerCarousel.loop && $prev.length < 1){
+                        return;
+                    }
+                    self.navContainerList.ampCarousel('prev');
+                }
+            }, 100);
         }
     };
 
@@ -8219,7 +8242,10 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         this.checkView();
         if (this.currentView === this.views.mobileNormalView ||
             this.isPortraitView && this.currentView === this.views.desktopNormalView) {
-            this.navigateToActiveThumb();
+            if(!self.settings.ampConfigs.mainContainerCarousel.loop){
+                this.navigateToActiveThumb();
+            }
+
             this.applyNavigationStyles();
             this.checkNavContainerNavArrows();
         }
@@ -8308,6 +8334,11 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     Viewer.prototype.bindAmpEvents = function () {
         var self = this;
 
+        self.mainContainerList.on('ampcarouselselected', function (e, data) {
+            self.navPrevAssetIndex = self.navCurrentAssetIndex;
+            self.navCurrentAssetIndex = (data.index - 1);
+        });
+
         self.mainContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
 
             $('.amp-spin').find('.amp-frame').css({
@@ -8321,7 +8352,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             self.checkMainContainerNavArrows();
             self.checkZoomIcons();
             self.checkMainContainerSlidesVisibility(self.settings.ampConfigs.mainContainerCarousel.animDuration);
-            if(self.spinVisible){
+            if (self.spinVisible) {
                 self.startSpin(self.currentAssetIndex);
             }
         });
@@ -8329,9 +8360,16 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         self.navContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
             self.checkNavContainerNavArrows();
             if (self.currentView === self.views.mobileNormalView && e.type === 'ampcarouselcreated') {
-                self.navContainerList.find('.amp-slide').on('mouseup', function () {
-                    self.navMove(this);
-                });
+                var selected = false;
+                self.navContainerList.find('.amp-slide')
+                    .on('touchstart mousedown', function(){
+                        selected = $(this).hasClass('amp-selected');
+                    })
+                    .on('touchend mouseup', function () {
+                        if (!selected) {
+                            self.navMove(this);
+                        }
+                    });
             }
         });
 
@@ -8379,7 +8417,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
     Viewer.prototype.checkNavContainerNavArrows = function () {
         var self = this;
 
-        if(self.settings.ampConfigs.navContainerCarousel.loop){
+        if (self.settings.ampConfigs.mainContainerCarousel.loop) {
             return;
         }
 
