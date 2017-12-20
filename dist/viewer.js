@@ -8242,7 +8242,7 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
         this.checkView();
         if (this.currentView === this.views.mobileNormalView ||
             this.isPortraitView && this.currentView === this.views.desktopNormalView) {
-            if(!self.settings.ampConfigs.mainContainerCarousel.loop){
+            if(!this.settings.ampConfigs.mainContainerCarousel.loop){
                 this.navigateToActiveThumb();
             }
 
