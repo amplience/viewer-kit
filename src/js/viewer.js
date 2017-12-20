@@ -30,7 +30,7 @@
         }
 
         if (self.settings.ampConfigs.mainContainerCarousel.loop) {
-            self.settings.ampConfigs.navContainerCarousel.loop = true
+            self.settings.ampConfigs.navContainerCarousel.loop = true;
         }
 
         self.views = {
@@ -574,9 +574,11 @@
         var self = this;
         var loop = self.settings.ampConfigs.mainContainerCarousel.loop;
         self.bindIconClickEvent(self.wrapper.find('.main-container-prev'), function () {
+            self.checkMainContainerSlidesVisibility(0, true);
             self.mainContainerMove('prev', loop);
         });
         self.bindIconClickEvent(self.wrapper.find('.main-container-next'), function () {
+            self.checkMainContainerSlidesVisibility(0, true);
             self.mainContainerMove('next', loop);
         });
 
@@ -991,10 +993,10 @@
         self.mainContainerList.on('ampcarouselselected', function (e, data) {
             self.navPrevAssetIndex = self.navCurrentAssetIndex;
             self.navCurrentAssetIndex = (data.index - 1);
+            self.checkMainContainerSlidesVisibility(0, true);
         });
 
         self.mainContainerList.on('ampcarouselcreated ampcarouselchange', function (e, data) {
-
             $('.amp-spin').find('.amp-frame').css({
                 'margin-left': '-1px'
             });
@@ -1518,31 +1520,30 @@
         rightArrow.css('right', shift);
     };
 
-    Viewer.prototype.checkMainContainerSlidesVisibility = function (timeout) {
-
-        if (!this.IE) {
-            return;
-        }
+    Viewer.prototype.checkMainContainerSlidesVisibility = function (timeout, showSlide) {
 
         var self = this;
         var assetIndex = self.currentAssetIndex;
         var timeout = timeout || 0;
-
-        self.videoTimeout ? clearTimeout(self.videoTimeout) : null;
         var currentAsset = self.assets[assetIndex];
         var $slide = self.mainContainerList.find('.amp-slide').has('.video');
 
+        if (typeof showSlide !== 'undefined' && showSlide) {
+            $slide.css({
+                opacity: 1
+            })
+            return;
+        }
+
         if (currentAsset.hasOwnProperty('media')) {
             $slide.css({
-                opacity:1
+                opacity: 1
             })
             return;
         }
 
         else {
-            self.videoTimeout = setTimeout(function () {
                 $slide.css({opacity: 0});
-            }, timeout);
         }
     };
 
