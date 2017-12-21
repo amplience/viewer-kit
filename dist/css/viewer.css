@@ -229,14 +229,13 @@ body {
 .amp-viewer-kit {
   font-family: "Neuzeit Regular", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   position: relative;
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
   .amp-viewer-kit ul {
     list-style-type: none; }
-  .amp-viewer-kit img {
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none; }
   .amp-viewer-kit .icon {
     cursor: pointer;
     background-color: #c1bab0;
