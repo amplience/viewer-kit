@@ -12,20 +12,20 @@
         .cont {
             margin: 0 auto;
         }
+
         .desktop-normal-view, .mobile-normal-view {
             max-width: 580px;
             margin: 0 auto;
         }
 
         @media screen and (max-width: 768px) {
-            .cont{
+            .cont {
                 max-width: 400px;
             }
         }
 
-
-        .nav-container{
-            max-height:420px;
+        .nav-container {
+            max-height: 420px;
         }
     </style>
 </head>
@@ -70,13 +70,18 @@
             locale: 'en-gb',
             cacheControl: Date.now(),
             secure: true,
-            view: 'portrait'
+            view: 'portrait',
+            ampConfigs: {
+                mainContainerCarousel: {
+                    loop: true
+                }
+            }
         });
 
         window.viewer = viewer;
         var set = 0;
 
-        $('#switch').on('click', function(){
+        $('#switch').on('click', function () {
             if (set === 0) {
                 set = 1;
                 viewer.changeSet('123');

@@ -31,6 +31,9 @@
 
         if (self.settings.ampConfigs.mainContainerCarousel.loop) {
             self.settings.ampConfigs.navContainerCarousel.loop = true;
+            if(self.isPortraitView){
+                self.settings.ampConfigs.navContainerCarouselPortrait.loop = true;
+            }
         }
 
         self.views = {
