@@ -10,7 +10,6 @@
   "main": "src/",
   "author": "Amplience",
   "dependencies": {
-    "jquery": "2.2.4",
     "client-sdk": "git+https://github.com/amplience/amplience-sdk-client#v1.0.4",
     "autoprefixer": "^6.0.2"
   },

@@ -158,9 +158,6 @@ module.exports = function (grunt) {
             },
             build: {
                 files: {
-                    'dist/jquery.min.js': [
-                        'node_modules/jquery/dist/jquery.min.js',
-                    ],
                     'dist/jquery-ui-custom.js': [
                         'bower_components/jquery-ui/ui/jquery.ui.core.js',
                         'bower_components/jquery-ui/ui/jquery.ui.widget.js'
@@ -183,9 +180,6 @@ module.exports = function (grunt) {
             },
             'build-develop': {
                 files: {
-                    'dist/jquery.min.js': [
-                        'node_modules/jquery/dist/jquery.min.js',
-                    ],
                     'dist/jquery-ui-custom.js': [
                         'bower_components/jquery-ui/ui/jquery.ui.core.js',
                         'bower_components/jquery-ui/ui/jquery.ui.widget.js'
