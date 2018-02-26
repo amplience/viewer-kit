@@ -7962,11 +7962,11 @@ Handlebars.registerPartial("main-container-list", this["amp"]["templates"]["main
   return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},((stack1 = ((stack1 = ((stack1 = (depth0 != null ? depth0.set : depth0)) != null ? stack1.items : stack1)) != null ? stack1["0"] : stack1)) != null ? stack1.set : stack1),{"name":"if","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.program(5, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "");
 },"3":function(container,depth0,helpers,partials,data,blockParams,depths) {
     return "                "
-    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-spin-3d",{"name":"renderPartial","hash":{"locale":(depths[3] != null ? depths[3].locale : depths[3]),"templates":(depths[3] != null ? depths[3].templates : depths[3]),"spin":depth0},"data":data}))
+    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-spin-3d",{"name":"renderPartial","hash":{"locale":(depths[1] != null ? depths[1].locale : depths[1]),"templates":(depths[1] != null ? depths[1].templates : depths[1]),"spin":depth0},"data":data}))
     + "\n";
 },"5":function(container,depth0,helpers,partials,data,blockParams,depths) {
     return "                "
-    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-spin",{"name":"renderPartial","hash":{"locale":(depths[3] != null ? depths[3].locale : depths[3]),"templates":(depths[3] != null ? depths[3].templates : depths[3]),"spin":depth0},"data":data}))
+    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-spin",{"name":"renderPartial","hash":{"locale":(depths[1] != null ? depths[1].locale : depths[1]),"templates":(depths[1] != null ? depths[1].templates : depths[1]),"spin":depth0},"data":data}))
     + "\n";
 },"7":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1;
@@ -7974,11 +7974,11 @@ Handlebars.registerPartial("main-container-list", this["amp"]["templates"]["main
   return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.media : depth0),{"name":"if","hash":{},"fn":container.program(8, data, 0, blockParams, depths),"inverse":container.program(10, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "");
 },"8":function(container,depth0,helpers,partials,data,blockParams,depths) {
     return "                "
-    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-video",{"name":"renderPartial","hash":{"locale":(depths[3] != null ? depths[3].locale : depths[3]),"templates":(depths[3] != null ? depths[3].templates : depths[3]),"video":depth0},"data":data}))
+    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-video",{"name":"renderPartial","hash":{"locale":(depths[1] != null ? depths[1].locale : depths[1]),"templates":(depths[1] != null ? depths[1].templates : depths[1]),"video":depth0},"data":data}))
     + "\n";
 },"10":function(container,depth0,helpers,partials,data,blockParams,depths) {
     return "                "
-    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-image",{"name":"renderPartial","hash":{"locale":(depths[3] != null ? depths[3].locale : depths[3]),"templates":(depths[3] != null ? depths[3].templates : depths[3]),"image":depth0},"data":data}))
+    + container.escapeExpression((helpers.renderPartial || (depth0 && depth0.renderPartial) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"main-container-list-image",{"name":"renderPartial","hash":{"locale":(depths[1] != null ? depths[1].locale : depths[1]),"templates":(depths[1] != null ? depths[1].templates : depths[1]),"image":depth0},"data":data}))
     + "\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1;
