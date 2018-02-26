@@ -2,15 +2,15 @@
     {{#each items}}
         {{#if set}}
             {{#if set.items.[0].set}}
-                {{renderPartial 'main-container-list-spin-3d' spin=this templates=../../../templates locale=../../../locale}}
+                {{renderPartial 'main-container-list-spin-3d' spin=this templates=../templates locale=../locale}}
             {{else}}
-                {{renderPartial 'main-container-list-spin' spin=this templates=../../../templates locale=../../../locale}}
+                {{renderPartial 'main-container-list-spin' spin=this templates=../templates locale=../locale}}
             {{/if}}
         {{else}}
             {{#if media}}
-                {{renderPartial 'main-container-list-video' video=this templates=../../../templates locale=../../../locale}}
+                {{renderPartial 'main-container-list-video' video=this templates=../templates locale=../locale}}
             {{else}}
-                {{renderPartial 'main-container-list-image' image=this templates=../../../templates locale=../../../locale}}
+                {{renderPartial 'main-container-list-image' image=this templates=../templates locale=../locale}}
             {{/if}}
         {{/if}}
     {{/each}}
