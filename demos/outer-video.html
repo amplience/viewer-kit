@@ -40,9 +40,10 @@
 </div>
 <button id="switch" style="position: fixed;right: 0;bottom: 0;z-index:100;">Switch Set</button>
 
-<!-- build:js ../jquery.min.js -->
-<script src="../node_modules/jquery/dist/jquery.min.js"></script>
-<!-- /build -->
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
 
 <!-- build:js ../jquery-ui-custom.js -->
 <script src="../bower_components/jquery-ui/ui/jquery.ui.core.js"></script>
@@ -59,9 +60,9 @@
     $(function () {
 
         var viewer = new amp.Viewer({
-            client: 'Natacha',
+            client: 'playground',
             imageBasePath: '//i1.adis.ws/',
-            set: 'rendering_kit_square_ms',
+            set: 'viewer_kit_set',
             locale: 'en-gb',
             cacheControl: Date.now(),
             secure: true,
