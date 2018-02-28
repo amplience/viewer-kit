@@ -894,7 +894,7 @@
     Viewer.prototype.bindZoomEvents = function (zoomAction) {
         var self = this;
         var zoomTraps = self.mainContainerList.find('.zoom-trap');
-        self.bindTapEvent(zoomTraps, zoomAction.bind(self));
+        self.bindTapEvent(zoomTraps, zoomAction.bind(self), true);
     };
 
     Viewer.prototype._resize = function () {
@@ -1398,7 +1398,7 @@
         return state.scale > 1;
     };
 
-    Viewer.prototype.bindTapEvent = function (element, action) {
+    Viewer.prototype.bindTapEvent = function (element, action, preventDefault) {
         var self = this;
         var coords;
         var newCoords;
@@ -1434,6 +1434,11 @@
 
         element.on(startEvents, function (e) {
             var $self = $(this);
+
+            if(preventDefault){
+                e.preventDefault();
+            }
+
             if (e.which === 3) {
                 return false;
             }
