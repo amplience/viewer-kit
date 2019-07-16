@@ -36,14 +36,12 @@
     "grunt-jscs": "^3.0.1",
     "grunt-postcss": "^0.6.0",
     "grunt-processhtml": "^0.4.2",
-    "grunt-sass": "^3.0.2",
+    "grunt-sass": "2.1.0",
     "grunt-shell": "0.7.0",
     "handlebars": "^4.1.2",
     "jasmine-jquery": "latest",
     "jshint-stylish": "^1.0.1",
-    "load-grunt-tasks": "^3.2.0",
-    "lodash": "^4.17.14",
-    "node-sass": "^4.12.0"
+    "load-grunt-tasks": "^3.2.0"
   },
   "directories": {},
   "keywords": [

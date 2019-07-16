@@ -3,8 +3,6 @@ module.exports = function (grunt) {
     /* jshint camelcase: false */
     'use strict';
 
-    var sass = require('node-sass');
-
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
@@ -13,7 +11,6 @@ module.exports = function (grunt) {
         watch: {
             sass: {
                 options: {
-                    implementation: sass,
                     livereload: '<%= connect.serve.options.livereload %>'
                 },
                 files: [
@@ -75,9 +72,6 @@ module.exports = function (grunt) {
             }
         },
         sass: {
-            options: {
-                implementation: sass
-            },
             dist: {
                 files: {
                     '.tmp/css/viewer.css': 'src/css/main.scss'
