@@ -3,7 +3,6 @@ module.exports = function (grunt) {
     /* jshint camelcase: false */
     'use strict';
 
-
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({

@@ -229,7 +229,7 @@ body {
 .amp-viewer-kit {
   font-family: "Neuzeit Regular", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   position: relative;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
