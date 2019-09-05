@@ -285,7 +285,7 @@
                     nativeControlsForTouch: false,
                     "plugins": {
                         "videoJsResolutionSwitcher": {
-                            "default": "Medium"
+                            "default": "High"
                         }
                     }
                 },
