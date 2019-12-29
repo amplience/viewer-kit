@@ -38,7 +38,7 @@
     "grunt-processhtml": "^0.4.2",
     "grunt-sass": "2.1.0",
     "grunt-shell": "0.7.0",
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.3.0",
     "jasmine-jquery": "latest",
     "jshint-stylish": "^1.0.1",
     "load-grunt-tasks": "^3.2.0"
