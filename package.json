@@ -10,7 +10,7 @@
   "main": "src/",
   "author": "Amplience",
   "dependencies": {
-    "amplience-sdk-client": "git+https://github.com/amplience/amplience-sdk-client#v1.0.4",
+    "amplience-sdk-client": "git://github.com/PikinerLiliya/amplience-sdk-client.git#feature/updateUrls",
     "autoprefixer": "^6.0.2"
   },
   "devDependencies": {

@@ -28,7 +28,7 @@ Example options object:
 ```javascript
 {
     client: 'playground',
-    imageBasePath: '//i1.adis.ws/',
+    imageBasePath: '//cdn.media.amplience.net/',
     set: 'viewer_kit_set',
     errImg: '404'
 }
@@ -51,7 +51,7 @@ The viewer has a number of configurable options (most of which will probably not
 
 - **templates** : Object containing templates to be used.  Templates can be applied to **_main_**, **_thumb_**, **_zoom_**, **_mobilemain_** and **_mobilezoom_**.
 
-- **imageBasePath** - Base path to DI instance (default: '//i1.adis.ws/')
+- **imageBasePath** - Base path to DI instance (default: '//cdn.media.amplience.net/')
 
 - **mainWidth** : The width of main image.  This is used to calculate zoom scale and shoud match any width applied to the main transformation templates.
 
@@ -63,7 +63,7 @@ Default options set in the viewer:
 {
     target: '#amp-container',
     client: 'playground',
-    imageBasePath: '//i1.adis.ws/',
+    imageBasePath: '//cdn.media.amplience.net/',
     set: 'viewer_kit_set',
     errImg: '404',
     mainWidth: 1000,

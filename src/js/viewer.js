@@ -175,7 +175,7 @@
                 },
                 function () {
                     resolve({
-                        url: '//i1.adis.ws/i/playground/404'
+                        url: '//cdn.media.amplience.net/i/playground/404'
                     });
                 },
                 false,
