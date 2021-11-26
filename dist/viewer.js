@@ -8937,6 +8937,9 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
                     } else {
                         items = data[setInfo.name].items;
                     }
+
+                    self.enrichAssets(items);
+                    
                     resolve(items);
                 },
                 function () {
@@ -9299,6 +9302,23 @@ this["amp"]["templates"]["mobileNormalView"] = Handlebars.template({"1":function
             }
         }
     };
+
+    Viewer.prototype.enrichAssets = function (assets) {
+        for (var i = 0; i < assets.length; i++) {
+            var asset = assets[i];
+
+            // Rewrite webm videos to use SEO url with .webm extension, 
+            // as some versions of Safari need this.
+            if (asset.media) {
+                for (var i = 0; i < asset.media.length; i++) {
+                    var media = asset.media[i];
+                    if (media.format === 'webm') {
+                        media.src = media.src + '/' + media.profile + '.webm';
+                    }
+                }
+            }
+        }
+    }
 
     Viewer.prototype.destroyAmpWidgets = function () {
         var self = this;
